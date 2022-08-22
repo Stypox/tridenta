@@ -1,8 +1,11 @@
 package org.stypox.tridenta
 
+import okhttp3.OkHttpClient
 import org.junit.Test
-
-import org.junit.Assert.*
+import org.stypox.tridenta.data.StopLineType
+import org.stypox.tridenta.extractor.Extractor
+import org.stypox.tridenta.extractor.HttpClient
+import java.time.LocalDateTime
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,6 +15,13 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        val extractor = Extractor(HttpClient(OkHttpClient()))
+        println(extractor.getStops().first())
+        println(extractor.getLines().first())
+    }
+    @Test
+    fun addition_isCorrect2() {
+        val extractor = Extractor(HttpClient(OkHttpClient()))
+        println(extractor.getTripsByStop(247, StopLineType.Urban, LocalDateTime.now(), 1))
     }
 }
