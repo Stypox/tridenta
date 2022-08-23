@@ -6,20 +6,29 @@ import android.graphics.Color.HSVToColor
 import android.graphics.Color.colorToHSV
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.ui.theme.AppTheme
@@ -77,13 +86,18 @@ fun SuburbanAreasMap(modifier: Modifier = Modifier, onAreaClick: (Area) -> Unit)
                     color = color
                 ),
                 modifier = Modifier
-                    .clickable { onAreaClick(areaPosition.area) }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false),
+                        onClick = { onAreaClick(areaPosition.area) }
+                    )
                     .align { zone, space, _ ->
                         IntOffset(
                             (space.width * areaPosition.x - zone.width / 2).toInt(),
                             (space.height * areaPosition.y - zone.height / 2).toInt()
                         )
                     }
+                    .padding(this@BoxWithConstraints.maxWidth / 16, 0.dp)
             )
         }
     }
