@@ -75,7 +75,7 @@ fun AreaChip(
 }
 
 @Composable
-fun AreaChipGroup(selectedArea: MutableState<Area>, modifier: Modifier = Modifier) {
+fun AreaChipGroup(selectedArea: Area, onAreaClick: (Area) -> Unit, modifier: Modifier = Modifier) {
     @Composable
     fun AreaChipGroupRow(vararg areas: Area) {
         FlowRow(
@@ -86,8 +86,8 @@ fun AreaChipGroup(selectedArea: MutableState<Area>, modifier: Modifier = Modifie
             areas.forEach { area ->
                 AreaChip(
                     area = area,
-                    selected = area == selectedArea.value,
-                    onClick = { clickedArea -> selectedArea.value = clickedArea }
+                    selected = area == selectedArea,
+                    onClick = onAreaClick
                 )
             }
         }
@@ -133,5 +133,6 @@ fun AreaChipPreview() {
 @Preview(name = "Area chip group, small width", widthDp = 200)
 @Composable
 fun AreaChipGroupPreview() {
-    AreaChipGroup(selectedArea = mutableStateOf(Area.UrbanAltoGarda))
+    var selectedArea by rememberSaveable { mutableStateOf(Area.UrbanAltoGarda) }
+    AreaChipGroup(selectedArea = selectedArea, onAreaClick = { selectedArea = it })
 }

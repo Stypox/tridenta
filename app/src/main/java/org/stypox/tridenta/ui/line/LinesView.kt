@@ -5,6 +5,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,8 +23,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.skip
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
@@ -53,10 +52,6 @@ fun LinesView(lines: List<Line>, selectedArea: MutableState<Area>) {
 fun LinesViewHeader(selectedArea: MutableState<Area>) {
     var expanded by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { selectedArea.value }.drop(1).collect { expanded = false }
-    }
-
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -65,15 +60,21 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
     ) {
         if (expanded) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                val onAreaClick = { area: Area ->
+                    selectedArea.value = area
+                    expanded = false // un-expand once the user tapped on an area chip
+                }
+
                 SuburbanAreasMap(
-                    onAreaClick = { selectedArea.value = it },
+                    onAreaClick = onAreaClick,
                     modifier = Modifier
                         .widthIn(0.dp, 300.dp)
                         .padding(8.dp)
                 )
 
                 AreaChipGroup(
-                    selectedArea = selectedArea,
+                    selectedArea = selectedArea.value,
+                    onAreaClick = onAreaClick,
                     modifier = Modifier.padding(16.dp)
                 )
             }
