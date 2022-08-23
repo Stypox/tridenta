@@ -5,7 +5,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,16 +18,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.skip
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
@@ -57,6 +52,10 @@ fun LinesView(lines: List<Line>, selectedArea: MutableState<Area>) {
 @Composable
 fun LinesViewHeader(selectedArea: MutableState<Area>) {
     var expanded by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { selectedArea.value }.drop(1).collect { expanded = false }
+    }
 
     Box(
         contentAlignment = Alignment.TopCenter,
