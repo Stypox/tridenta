@@ -2,6 +2,7 @@ package org.stypox.tridenta.ui.line
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -31,11 +32,22 @@ import org.stypox.tridenta.data.Area
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun AreaChip(area: Area, selected: Boolean, onClick: (Area) -> Unit) {
+fun AreaChip(
+    area: Area,
+    selected: Boolean? = null,
+    onClick: (Area) -> Unit = { },
+    modifier: Modifier = Modifier
+) {
+    val iconTextColor by animateColorAsState(
+        targetValue = if (selected == false) Color(0xffdddddd) else Color.White
+    )
+
     Surface(
         color = Color(0xff000000 + area.color),
         // clip instead of doing shape= to ensure the touch ripple remains inside
-        modifier = Modifier.clip(MaterialTheme.shapes.small).clickable { onClick(area) },
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small)
+            .clickable { onClick(area) },
     ) {
         Row(
             modifier = Modifier.padding(6.dp),
@@ -45,18 +57,18 @@ fun AreaChip(area: Area, selected: Boolean, onClick: (Area) -> Unit) {
                 targetState = selected,
             ) { targetState ->
                 Image(
-                    imageVector = if (targetState) Icons.Filled.RadioButtonChecked else area.icon,
+                    imageVector = if (targetState == true) Icons.Filled.RadioButtonChecked else area.icon,
                     contentDescription = area.icon.name,
-                    colorFilter = ColorFilter.tint(Color.White)
+                    colorFilter = ColorFilter.tint(iconTextColor)
                 )
             }
 
             val weight by animateIntAsState(
-                targetValue = (if (selected) FontWeight.ExtraBold else FontWeight.Normal).weight
+                targetValue = (if (selected == true) FontWeight.ExtraBold else FontWeight.Normal).weight
             )
             Text(
                 text = stringResource(id = area.nameRes),
-                color = Color.White,
+                color = iconTextColor,
                 fontWeight = FontWeight(weight),
                 modifier = Modifier.padding(4.dp, 0.dp, 0.dp, 0.dp),
             )
