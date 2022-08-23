@@ -59,19 +59,14 @@ fun AreaChip(area: Area, selected: Boolean, onClick: (Area) -> Unit) {
 }
 
 @Composable
-fun AreaChipGroup(selectedArea: MutableState<Area>, onAreaChanged: () -> Unit) {
-    val onClick = { clickedArea: Area ->
-        selectedArea.value = clickedArea
-        onAreaChanged()
-    }
-
+fun AreaChipGroup(selectedArea: MutableState<Area>) {
     @Composable
     fun AreaChipGroupRow(vararg areas: Area) {
         areas.forEach { area ->
             AreaChip(
                 area = area,
                 selected = area == selectedArea.value,
-                onClick = onClick
+                onClick = { clickedArea -> selectedArea.value = clickedArea }
             )
         }
         Spacer(modifier = Modifier.fillMaxWidth()) // complete current row
@@ -113,7 +108,6 @@ fun AreaChipPreview() {
     var selected by remember { mutableStateOf(false) }
     AreaChip(area = Area.Railway, selected = selected, onClick = {
         selected = !selected
-        println(selected)
     })
 }
 
@@ -122,5 +116,5 @@ fun AreaChipPreview() {
 @Preview(name = "Area chip group, small width", widthDp = 200)
 @Composable
 fun AreaChipGroupPreview() {
-    AreaChipGroup(selectedArea = mutableStateOf(Area.UrbanAltoGarda), onAreaChanged = { })
+    AreaChipGroup(selectedArea = mutableStateOf(Area.UrbanAltoGarda))
 }
