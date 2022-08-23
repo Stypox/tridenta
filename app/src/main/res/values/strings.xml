@@ -3,4 +3,16 @@
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
     <string name="map_of_trentino">Map of Trentino</string>
+    <string name="area_suburban1">1</string>
+    <string name="area_suburban2">2</string>
+    <string name="area_suburban3">3</string>
+    <string name="area_suburban4">4</string>
+    <string name="area_suburban5">5</string>
+    <string name="area_suburban6">6</string>
+    <string name="area_railway">Railway</string>
+    <string name="area_funicular">Funicular</string>
+    <string name="area_urban_pergine">Pergine</string>
+    <string name="area_urban_alto_garda">Alto Garda</string>
+    <string name="area_urban_trento">Trento</string>
+    <string name="area_urban_rovereto">Rovereto</string>
 </resources>
