@@ -53,9 +53,7 @@ fun AreaChip(
             modifier = Modifier.padding(6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AnimatedContent(
-                targetState = selected,
-            ) { targetState ->
+            AnimatedContent(targetState = selected) { targetState ->
                 Image(
                     imageVector = if (targetState == true) Icons.Filled.RadioButtonChecked else area.icon,
                     contentDescription = area.icon.name,

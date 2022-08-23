@@ -1,5 +1,7 @@
 package org.stypox.tridenta.ui.line
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -11,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -49,6 +53,7 @@ fun LinesView(lines: List<Line>, selectedArea: MutableState<Area>) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LinesViewHeader(selectedArea: MutableState<Area>) {
     var expanded by rememberSaveable { mutableStateOf(true) }
@@ -80,13 +85,24 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            val alpha by animateFloatAsState(targetValue = if (expanded) 0.0f else 1.0f)
-            AreaChip(
-                area = selectedArea.value,
-                modifier = Modifier
-                    .padding(12.dp)
-                    .alpha(alpha)
-            )
+            AnimatedContent(targetState = expanded) { targetState ->
+                if (targetState) {
+                    Spacer(modifier = Modifier)
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(16.dp, 12.dp, 8.dp, 12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.selected_line),
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+
+                        AreaChip(area = selectedArea.value)
+                    }
+                }
+            }
 
             IconButton(
                 onClick = { expanded = !expanded },
