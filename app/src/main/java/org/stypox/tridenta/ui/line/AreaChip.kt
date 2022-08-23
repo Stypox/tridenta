@@ -59,7 +59,7 @@ fun AreaChip(area: Area, selected: Boolean, onClick: (Area) -> Unit) {
 }
 
 @Composable
-fun AreaChipGroup(selectedArea: MutableState<Area>) {
+fun AreaChipGroup(selectedArea: MutableState<Area>, modifier: Modifier = Modifier) {
     @Composable
     fun AreaChipGroupRow(vararg areas: Area) {
         areas.forEach { area ->
@@ -73,7 +73,7 @@ fun AreaChipGroup(selectedArea: MutableState<Area>) {
         Spacer(modifier = Modifier.fillMaxWidth()) // add a separator
     }
 
-    Column {
+    Column(modifier = modifier) {
         FlowRow(
             mainAxisSpacing = 8.dp,
             crossAxisSpacing = 4.dp,
