@@ -92,7 +92,9 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(16.dp, 12.dp, 8.dp, 12.dp)
+                        modifier = Modifier
+                            .clickable { expanded = true }
+                            .padding(16.dp, 12.dp, 16.dp, 12.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.selected_line),
