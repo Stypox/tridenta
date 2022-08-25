@@ -35,19 +35,22 @@ import org.stypox.tridenta.data.Area
 fun AreaChip(
     area: Area,
     selected: Boolean? = null,
-    onClick: (Area) -> Unit = { },
+    onClick: ((Area) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val iconTextColor by animateColorAsState(
         targetValue = if (selected == false) Color(0xffdddddd) else Color.White
     )
 
+    var clickableModifier = modifier.clip(MaterialTheme.shapes.small)
+    if (onClick != null) {
+        clickableModifier = clickableModifier.clickable { onClick(area) }
+    }
+
     Surface(
         color = Color(0xff000000 + area.color),
         // clip instead of doing shape= to ensure the touch ripple remains inside
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small)
-            .clickable { onClick(area) },
+        modifier = clickableModifier
     ) {
         Row(
             modifier = Modifier.padding(6.dp),
