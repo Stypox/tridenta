@@ -4,11 +4,13 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.SocketTimeoutException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class HttpClient @Inject constructor(
-    private val okHttpClient: OkHttpClient,
-    private val retries: Int = 5
+    private val okHttpClient: OkHttpClient
 ) {
+    private val retries: Int = 5
 
     fun fetchJson(url: String): String {
         val request = Request.Builder()

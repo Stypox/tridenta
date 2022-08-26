@@ -5,7 +5,9 @@ import org.json.JSONObject
 import org.stypox.tridenta.data.*
 import java.time.LocalDateTime
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class Extractor @Inject constructor(private val httpClient: HttpClient) {
 
     /**
