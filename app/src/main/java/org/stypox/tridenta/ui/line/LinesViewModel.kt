@@ -2,9 +2,11 @@ package org.stypox.tridenta.ui.line
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -13,8 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.stypox.tridenta.TridentaApplication
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.extractor.Extractor
+import org.stypox.tridenta.ui.pref.PreferenceKeys
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +29,7 @@ class LinesViewModel @Inject constructor(
     private val mutableUiState = MutableStateFlow(
         LinesUiState(
             lines = listOf(),
-            selectedArea = Area.UrbanTrento,
+            selectedArea = Area.DEFAULT_AREA,
             headerExpanded = false, // start with an unexpanded header to avoid visual issues
             loading = true // start with showing a loading indicator
         )
@@ -33,7 +37,19 @@ class LinesViewModel @Inject constructor(
     val uiState = mutableUiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            val selectedArea = PreferenceManager.getDefaultSharedPreferences(application)
+                .getInt(PreferenceKeys.LAST_SELECTED_AREA, Area.DEFAULT_AREA.value)
 
+            mutableUiState.update { linesUiState ->
+                linesUiState.copy(
+                    selectedArea = Area.values().first { it.value == selectedArea },
+                    headerExpanded = false
+                )
+            }
+
+            reloadLines()
+        }
     }
 
     fun setHeaderExpanded(headerExpanded: Boolean) {
@@ -54,6 +70,12 @@ class LinesViewModel @Inject constructor(
                 linesUiState.copy(selectedArea = area, lines = listOf(), headerExpanded = false)
             }
             reloadLines()
+            viewModelScope.launch {
+                PreferenceManager.getDefaultSharedPreferences(getApplication())
+                    .edit()
+                    .putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value)
+                    .apply()
+            }
         }
     }
 

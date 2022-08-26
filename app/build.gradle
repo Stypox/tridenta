@@ -60,6 +60,7 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20220320'

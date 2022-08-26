@@ -27,5 +27,9 @@ enum class Area(
     UrbanPergine(21, R.string.area_urban_pergine, 0x000000, Icons.Filled.LocationCity),
     UrbanAltoGarda(22, R.string.area_urban_alto_garda, 0x000000, Icons.Filled.LocationCity),
     UrbanTrento(23, R.string.area_urban_trento, 0x000000, Icons.Filled.LocationCity),
-    UrbanRovereto(24, R.string.area_urban_rovereto, 0x000000, Icons.Filled.LocationCity),
+    UrbanRovereto(24, R.string.area_urban_rovereto, 0x000000, Icons.Filled.LocationCity);
+
+    companion object {
+        val DEFAULT_AREA = Area.UrbanTrento
+    }
 }
