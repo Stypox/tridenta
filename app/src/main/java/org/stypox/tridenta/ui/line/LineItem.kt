@@ -1,5 +1,7 @@
 package org.stypox.tridenta.ui.line
 
+import androidx.annotation.ColorInt
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,17 +20,22 @@ import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
 fun LineItem(line: Line, modifier: Modifier = Modifier) {
+    val backgroundColor = if (line.color == null)
+        Color.LightGray
+    else
+        Color(0xff000000 + line.color)
+
     Row(
         modifier = modifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Surface(
-            color = if (line.color == null) Color.LightGray else Color(0xff000000 + line.color),
+            color = backgroundColor,
             shape = MaterialTheme.shapes.small
         ) {
             Text(
                 text = line.shortName,
-                color = Color.Black,
+                color = textColorOnBackground(backgroundColor),
                 modifier = Modifier.padding(8.dp, 4.dp)
             )
         }
@@ -44,16 +51,54 @@ fun LineItem(line: Line, modifier: Modifier = Modifier) {
 @Composable
 fun LineItemPreview() {
     AppTheme {
-        LineItem(
-            line = Line(
-                0,
-                Area.UrbanTrento,
-                null,
-                "Trento-Vezzano-Sarche-Tione",
-                "B201",
-                StopLineType.Urban,
-                listOf()
-            ),
-        )
+        Column {
+            LineItem(
+                line = Line(
+                    0,
+                    Area.Suburban2,
+                    null,
+                    "Trento-Vezzano-Sarche-Tione",
+                    "B201",
+                    StopLineType.Suburban,
+                    listOf()
+                ),
+            )
+            LineItem(
+                line = Line(
+                    0,
+                    Area.UrbanTrento,
+                    0xe490b0,
+                    "P.Dante Via Sanseverino Belvedere Ravina",
+                    "14",
+                    StopLineType.Urban,
+                    listOf()
+                ),
+            )
+            LineItem(
+                line = Line(
+                    0,
+                    Area.UrbanTrento,
+                    0x52332a,
+                    "Centochiavi Piazza Dante Mattarello",
+                    "8",
+                    StopLineType.Urban,
+                    listOf()
+                ),
+            )
+        }
+    }
+}
+
+/**
+ * Returns one of [Color.Black] or [Color.White], such that text with such color is readable on
+ * [backgroundColor].
+ * @see <a href="https://stackoverflow.com/a/3943023/9481500">Stack Overflow</a>
+ */
+private fun textColorOnBackground(@ColorInt backgroundColor: Color): Color {
+    return backgroundColor.run {
+        if ((red * 0.299 + green * 0.587 + blue * 0.114) > 0.5)
+            Color.Black
+        else
+            Color.White
     }
 }
