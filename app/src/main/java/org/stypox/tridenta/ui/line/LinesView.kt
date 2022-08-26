@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
@@ -30,12 +31,31 @@ import org.stypox.tridenta.data.StopLineType
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
-fun LinesView(lines: List<Line>, selectedArea: MutableState<Area>) {
+fun LinesView(linesViewModel: LinesViewModel = viewModel()) {
+    val linesUiState by linesViewModel.uiState.collectAsState()
+
+    LinesView(
+        lines = linesUiState.lines,
+        selectedArea = linesUiState.selectedArea,
+        headerExpanded = linesUiState.headerExpanded,
+        setSelectedArea = linesViewModel::setSelectedArea,
+        setHeaderExpanded = linesViewModel::setHeaderExpanded
+    )
+}
+
+@Composable
+private fun LinesView(
+    lines: List<Line>,
+    selectedArea: Area,
+    headerExpanded: Boolean,
+    setSelectedArea: (Area) -> Unit,
+    setHeaderExpanded: (Boolean) -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        LinesViewHeader(selectedArea)
+        LinesViewHeader(selectedArea, headerExpanded, setSelectedArea, setHeaderExpanded)
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
@@ -49,9 +69,12 @@ fun LinesView(lines: List<Line>, selectedArea: MutableState<Area>) {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun LinesViewHeader(selectedArea: MutableState<Area>) {
-    var expanded by rememberSaveable { mutableStateOf(true) }
-
+private fun LinesViewHeader(
+    selectedArea: Area,
+    expanded: Boolean,
+    setSelectedArea: (Area) -> Unit,
+    setHeaderExpanded: (Boolean) -> Unit
+) {
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -60,21 +83,16 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
     ) {
         if (expanded) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                val onAreaClick = { area: Area ->
-                    selectedArea.value = area
-                    expanded = false // un-expand once the user tapped on an area chip
-                }
-
                 SuburbanAreasMap(
-                    onAreaClick = onAreaClick,
+                    onAreaClick = setSelectedArea,
                     modifier = Modifier
                         .widthIn(0.dp, 300.dp)
                         .padding(8.dp)
                 )
 
                 AreaChipGroup(
-                    selectedArea = selectedArea.value,
-                    onAreaClick = onAreaClick,
+                    selectedArea = selectedArea,
+                    onAreaClick = setSelectedArea,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -93,7 +111,7 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier
-                            .clickable { expanded = true }
+                            .clickable { setHeaderExpanded(true) }
                             .padding(16.dp, 12.dp, 16.dp, 12.dp)
                     ) {
                         Text(
@@ -101,13 +119,13 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
                             style = MaterialTheme.typography.headlineMedium
                         )
 
-                        AreaChip(area = selectedArea.value)
+                        AreaChip(area = selectedArea)
                     }
                 }
             }
 
             IconButton(
-                onClick = { expanded = !expanded },
+                onClick = { setHeaderExpanded(!expanded) },
                 modifier = Modifier.padding(8.dp)
             ) {
                 val rotation by animateFloatAsState(
@@ -131,7 +149,9 @@ fun LinesViewHeader(selectedArea: MutableState<Area>) {
 
 @Preview
 @Composable
-fun LinesViewPreview() {
+private fun LinesViewPreview() {
+    val selectedArea = rememberSaveable { mutableStateOf(Area.Suburban3) }
+    val expanded = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesView(
             lines = listOf(
@@ -154,7 +174,13 @@ fun LinesViewPreview() {
                     listOf()
                 )
             ),
-            selectedArea = mutableStateOf(Area.Suburban3)
+            selectedArea = selectedArea.value,
+            headerExpanded = expanded.value,
+            setSelectedArea = {
+                selectedArea.value = it
+                expanded.value = false
+            },
+            setHeaderExpanded = { expanded.value = it }
         )
     }
 }
