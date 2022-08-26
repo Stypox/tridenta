@@ -51,18 +51,14 @@ private fun LinesView(
     setSelectedArea: (Area) -> Unit,
     setHeaderExpanded: (Boolean) -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
-        LinesViewHeader(selectedArea, headerExpanded, setSelectedArea, setHeaderExpanded)
-
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(lines) {
-                LineItem(line = it)
-            }
+        item {
+            LinesViewHeader(selectedArea, headerExpanded, setSelectedArea, setHeaderExpanded)
+        }
+        items(lines) {
+            LineItem(line = it)
         }
     }
 }
@@ -148,6 +144,7 @@ private fun LinesViewHeader(
 }
 
 @Preview
+@Preview(heightDp = 500) // smaller height to ensure scrolling works
 @Composable
 private fun LinesViewPreview() {
     val selectedArea = rememberSaveable { mutableStateOf(Area.Suburban3) }
