@@ -1,22 +1,18 @@
 package org.stypox.tridenta.ui.line
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.stypox.tridenta.TridentaApplication
 import org.stypox.tridenta.data.Area
+import org.stypox.tridenta.data.shortNameComparator
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.ui.pref.PreferenceKeys
 import javax.inject.Inject
@@ -83,6 +79,7 @@ class LinesViewModel @Inject constructor(
         viewModelScope.launch {
             val lines = withContext(Dispatchers.IO) {
                 extractor.getLines(areas = arrayOf(mutableUiState.value.selectedArea))
+                    .sortedWith(::shortNameComparator)
             }
             mutableUiState.update { linesUiState ->
                 linesUiState.copy(lines = lines, loading = false)
