@@ -15,5 +15,5 @@
     <string name="area_urban_alto_garda">Alto Garda</string>
     <string name="area_urban_trento">Trento</string>
     <string name="area_urban_rovereto">Rovereto</string>
-    <string name="selected_line">Selected line:</string>
+    <string name="selected_area">Selected area:</string>
 </resources>

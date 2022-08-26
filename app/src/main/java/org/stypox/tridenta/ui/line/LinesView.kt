@@ -115,7 +115,7 @@ private fun LinesViewHeader(
                             .padding(16.dp, 12.dp, 16.dp, 12.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.selected_line),
+                            text = stringResource(R.string.selected_area),
                             style = MaterialTheme.typography.headlineMedium
                         )
 
