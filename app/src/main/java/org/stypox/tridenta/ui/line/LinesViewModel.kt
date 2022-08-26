@@ -26,30 +26,26 @@ class LinesViewModel @Inject constructor(
     application: Application,
     private val extractor: Extractor
 ) : AndroidViewModel(application) {
-    private val mutableUiState = MutableStateFlow(
-        LinesUiState(
-            lines = listOf(),
-            selectedArea = Area.DEFAULT_AREA,
-            headerExpanded = false, // start with an unexpanded header to avoid visual issues
-            loading = true // start with showing a loading indicator
-        )
-    )
+    private val mutableUiState =
+        PreferenceManager.getDefaultSharedPreferences(application)
+            .getInt(PreferenceKeys.LAST_SELECTED_AREA, -1) // see handling below
+            .let { prefArea ->
+                MutableStateFlow(
+                    LinesUiState(
+                        lines = listOf(),
+                        // If the preferences do not contain a selected area, use DEFAULT_AREA and
+                        // expand the header, so the user becomes aware that the header exists.
+                        selectedArea = Area.values().firstOrNull { it.value == prefArea }
+                            ?: Area.DEFAULT_AREA,
+                        headerExpanded = Area.values().all { it.value != prefArea },
+                        loading = true
+                    )
+                )
+            }
     val uiState = mutableUiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            val selectedArea = PreferenceManager.getDefaultSharedPreferences(application)
-                .getInt(PreferenceKeys.LAST_SELECTED_AREA, Area.DEFAULT_AREA.value)
-
-            mutableUiState.update { linesUiState ->
-                linesUiState.copy(
-                    selectedArea = Area.values().first { it.value == selectedArea },
-                    headerExpanded = false
-                )
-            }
-
-            reloadLines()
-        }
+        reloadLines()
     }
 
     fun setHeaderExpanded(headerExpanded: Boolean) {
@@ -69,13 +65,14 @@ class LinesViewModel @Inject constructor(
             mutableUiState.update { linesUiState ->
                 linesUiState.copy(selectedArea = area, lines = listOf(), headerExpanded = false)
             }
+
             reloadLines()
-            viewModelScope.launch {
-                PreferenceManager.getDefaultSharedPreferences(getApplication())
-                    .edit()
-                    .putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value)
-                    .apply()
-            }
+
+            // save the last selected area to preferences
+            PreferenceManager.getDefaultSharedPreferences(getApplication())
+                .edit()
+                .putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value)
+                .apply()
         }
     }
 
@@ -88,7 +85,7 @@ class LinesViewModel @Inject constructor(
                 extractor.getLines(areas = arrayOf(mutableUiState.value.selectedArea))
             }
             mutableUiState.update { linesUiState ->
-                linesUiState.copy(lines = lines)
+                linesUiState.copy(lines = lines, loading = false)
             }
         }
     }
