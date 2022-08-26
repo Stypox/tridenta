@@ -97,5 +97,5 @@ fun directionFromInt(i: Int): Direction {
 
 @ColorInt
 fun colorFromString(s: String?): Int? {
-    return if (s.isNullOrEmpty()) null else s.toInt(16)
+    return if (s.isNullOrEmpty() || s == "null") null else s.toInt(16)
 }
