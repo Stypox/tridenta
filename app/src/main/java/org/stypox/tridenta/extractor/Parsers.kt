@@ -6,13 +6,13 @@ import org.stypox.tridenta.data.*
 
 
 fun stopFromJSONObject(o: JSONObject): Stop {
-    val address = listOfNotNull(o.get("street"), o.get("town")).joinToString(" - ")
     return Stop(
         stopId = o.getInt("stopId"),
         latitude = o.getDouble("stopLat"),
         longitude = o.getDouble("stopLon"),
         name = o.getString("stopName"),
-        address = address,
+        street = o.optString("street", ""),
+        town = o.optString("town", ""),
         type = stopLineTypeFromString(o.getString("type")),
         lines = o.getJSONArray("routes").map(::lineFromJSONObject)
     )

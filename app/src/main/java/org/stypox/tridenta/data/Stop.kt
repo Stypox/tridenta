@@ -5,7 +5,8 @@ data class Stop(
     val latitude: Double,
     val longitude: Double,
     val name: String,
-    val address: String,
+    val street: String,
+    val town: String,
     val type: StopLineType,
     val lines: List<Line>,
 )
