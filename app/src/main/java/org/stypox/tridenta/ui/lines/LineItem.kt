@@ -20,29 +20,34 @@ import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
 fun LineItem(line: Line, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        LineShortName(line = line)
+
+        Text(
+            text = line.longName,
+            modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 0.dp)
+        )
+    }
+}
+
+@Composable
+fun LineShortName(line: Line) {
     val backgroundColor = if (line.color == null)
         Color.LightGray
     else
         Color(0xff000000 + line.color)
 
-    Row(
-        modifier = modifier.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        color = backgroundColor,
+        shape = MaterialTheme.shapes.small,
     ) {
-        Surface(
-            color = backgroundColor,
-            shape = MaterialTheme.shapes.small
-        ) {
-            Text(
-                text = line.shortName,
-                color = textColorOnBackground(backgroundColor),
-                modifier = Modifier.padding(8.dp, 4.dp)
-            )
-        }
-
         Text(
-            text = line.longName,
-            modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 0.dp)
+            text = line.shortName,
+            color = textColorOnBackground(backgroundColor),
+            modifier = Modifier.padding(8.dp, 4.dp)
         )
     }
 }
