@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.line
+package org.stypox.tridenta.ui.lines
 
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line

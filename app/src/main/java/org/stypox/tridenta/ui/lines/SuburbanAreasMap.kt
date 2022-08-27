@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.line
+package org.stypox.tridenta.ui.lines
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES

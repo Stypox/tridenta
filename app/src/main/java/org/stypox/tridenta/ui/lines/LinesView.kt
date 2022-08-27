@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.line
+package org.stypox.tridenta.ui.lines
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi

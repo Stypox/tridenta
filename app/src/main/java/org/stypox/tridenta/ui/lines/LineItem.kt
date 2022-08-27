@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.line
+package org.stypox.tridenta.ui.lines
 
 import androidx.annotation.ColorInt
 import androidx.compose.foundation.layout.Column

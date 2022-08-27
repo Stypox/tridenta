@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.line
+package org.stypox.tridenta.ui.lines
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

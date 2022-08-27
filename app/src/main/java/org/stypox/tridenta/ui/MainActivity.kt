@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import org.stypox.tridenta.ui.line.LinesView
+import org.stypox.tridenta.ui.lines.LinesView
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @AndroidEntryPoint
