@@ -64,6 +64,8 @@ fun AreaChip(
                 )
             }
 
+            // once supported by the compose material3 library, font grade instead of weight should
+            // be used, so that the width of the text does not change
             val weight by animateIntAsState(
                 targetValue = (if (selected == true) FontWeight.ExtraBold else FontWeight.Normal).weight
             )
