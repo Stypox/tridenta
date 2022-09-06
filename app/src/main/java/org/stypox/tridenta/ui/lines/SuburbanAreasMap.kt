@@ -76,7 +76,7 @@ fun SuburbanAreasMap(modifier: Modifier = Modifier, onAreaClick: (Area) -> Unit)
 
             Text(
                 text = "${areaPosition.area.value}",
-                style = MaterialTheme.typography.displayLarge.copy(
+                style = MaterialTheme.typography.headlineMedium.copy(
                     fontFamily = FontFamily.Monospace,
                     fontSize = textSize,
                     color = color

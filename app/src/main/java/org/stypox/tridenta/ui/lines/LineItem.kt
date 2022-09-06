@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
 import org.stypox.tridenta.data.StopLineType
+import org.stypox.tridenta.ui.theme.BodyText
+import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
@@ -26,7 +27,7 @@ fun LineItem(line: Line, modifier: Modifier = Modifier) {
     ) {
         LineShortName(line = line)
 
-        Text(
+        BodyText(
             text = line.longName,
             modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 0.dp)
         )
@@ -44,7 +45,7 @@ fun LineShortName(line: Line) {
         color = backgroundColor,
         shape = MaterialTheme.shapes.small,
     ) {
-        Text(
+        LabelText(
             text = line.shortName,
             color = textColorOnBackground(backgroundColor),
             modifier = Modifier.padding(8.dp, 4.dp)

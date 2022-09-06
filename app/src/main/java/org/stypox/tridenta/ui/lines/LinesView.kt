@@ -13,9 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
 import org.stypox.tridenta.data.StopLineType
+import org.stypox.tridenta.ui.theme.HeadlineText
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
@@ -110,11 +112,7 @@ private fun LinesViewHeader(
                             .clickable { setHeaderExpanded(true) }
                             .padding(16.dp, 12.dp, 16.dp, 12.dp)
                     ) {
-                        Text(
-                            text = stringResource(R.string.selected_area),
-                            style = MaterialTheme.typography.headlineMedium
-                        )
-
+                        HeadlineText(text = stringResource(R.string.selected_area))
                         AreaChip(area = selectedArea)
                     }
                 }
