@@ -1,6 +1,7 @@
 package org.stypox.tridenta.ui.theme
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -20,7 +22,8 @@ import androidx.compose.ui.unit.TextUnit
 /**
  * Displays a headline text by passing all of the provided parameters to [Text] and also passing
  * [Typography.headlineMedium] as `style`. A headline should be used sparingly for important texts
- * or numerals.
+ * or numerals. In places where `style` should derived from the [LocalTextStyle] provided by the
+ * [MaterialTheme] components, make sure you use [Text] directly.
  */
 @Composable
 fun HeadlineText(
@@ -50,7 +53,9 @@ fun HeadlineText(
 /**
  * Displays a title text by passing all of the provided parameters to [Text] and also passing
  * [Typography.titleMedium] as `style`. A title should be used for short texts and for primary
- * pieces of information (e.g. the name of an item in a list).
+ * pieces of information (e.g. the name of an item in a list). In places where `style` should
+ * derived from the [LocalTextStyle] provided by the [MaterialTheme] components, make sure you use
+ * [Text] directly.
  */
 @Composable
 fun TitleText(
@@ -80,7 +85,9 @@ fun TitleText(
 /**
  * Displays a body text by passing all of the provided parameters to [Text] and also passing
  * [Typography.bodyMedium] as `style`. A body should be used for long texts, for subtitles and for
- * secondary pieces of information (e.g. the description of an item in a list).
+ * secondary pieces of information (e.g. the description of an item in a list). In places where
+ * `style` should derived from the [LocalTextStyle] provided by the [MaterialTheme] components, make
+ * sure you use [Text] directly.
  */
 @Composable
 fun BodyText(
@@ -110,7 +117,8 @@ fun BodyText(
 /**
  * Displays a label text by passing all of the provided parameters to [Text] and also passing
  * [Typography.labelMedium] as `style`. A label should be used sparingly for small pieces of text,
- * to annotate imagery or to introduce a headline.
+ * to annotate imagery or to introduce a headline. In places where `style` should derived from the
+ * [LocalTextStyle] provided by the [MaterialTheme] components, make sure you use [Text] directly.
  */
 @Composable
 fun LabelText(
