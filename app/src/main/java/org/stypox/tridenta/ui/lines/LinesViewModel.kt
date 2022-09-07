@@ -22,6 +22,7 @@ class LinesViewModel @Inject constructor(
     application: Application,
     private val extractor: Extractor
 ) : AndroidViewModel(application) {
+
     private val mutableUiState =
         PreferenceManager.getDefaultSharedPreferences(application)
             .getInt(PreferenceKeys.LAST_SELECTED_AREA, -1) // see handling below

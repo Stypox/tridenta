@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -94,7 +93,7 @@ fun AppBarTextField(
         BasicTextField(
             value = textFieldValue,
             onValueChange = {
-                // remove newlines to avoid strange layout issues, and also because maxLines = 1
+                // remove newlines to avoid strange layout issues, and also because singleLine=true
                 val text = it.text.replace("\n", "")
                 textFieldValue = it.copy(text = text)
                 onValueChange(text)
@@ -114,7 +113,7 @@ fun AppBarTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             interactionSource = interactionSource,
-            maxLines = 1,
+            singleLine = true,
             decorationBox = { innerTextField ->
                 // places text field with placeholder and appropriate bottom padding
                 TextFieldDefaults.TextFieldDecorationBox(
