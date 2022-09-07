@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  *     Class taken from Dicio</a>
  */
 public final class StringUtils {
-    private static final Pattern WORD_DELIMITERS_PATTERN = Pattern.compile("[^\\p{L}0-9]");
+    public static final Pattern WORD_DELIMITERS_PATTERN = Pattern.compile("[^\\p{L}0-9]");
     private static final Pattern DIACRITICAL_MARKS_PATTERN =
             Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 
@@ -23,7 +23,7 @@ public final class StringUtils {
      * @return the unicode NFKD normalized value for the provided word
      * @implNote the normalization process could be slow
      */
-    public static String nfkdNormalizeWord(final String word) {
+    private static String nfkdNormalizeWord(final String word) {
         final String normalized = Normalizer.normalize(word, Normalizer.Form.NFKD);
         return DIACRITICAL_MARKS_PATTERN.matcher(normalized).replaceAll("");
     }
