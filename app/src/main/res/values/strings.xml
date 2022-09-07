@@ -16,4 +16,10 @@
     <string name="area_urban_trento">Trento</string>
     <string name="area_urban_rovereto">Rovereto</string>
     <string name="selected_area">Selected area:</string>
+    <string name="navigation_drawer">Navigation drawer</string>
+    <string name="search">Search</string>
+    <string name="stops">Stops</string>
+    <string name="back">Back</string>
+    <string name="clear">Clear</string>
+    <string name="search_stop_hint">Search a stop…</string>
 </resources>
