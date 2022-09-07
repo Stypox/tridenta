@@ -4,14 +4,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Stop
 import org.stypox.tridenta.ui.nav.SearchTopAppBar
+
+@Composable
+fun StopsView(
+    onDrawerClick: () -> Unit,
+    stopsViewModel: StopsViewModel = viewModel()
+) {
+    val stopsUiState by stopsViewModel.uiState.collectAsState()
+
+    StopsView(
+        stops = stopsUiState.filteredStops,
+        searchString = stopsUiState.searchString,
+        setSearchString = stopsViewModel::setSearchString,
+        onDrawerClick = onDrawerClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
