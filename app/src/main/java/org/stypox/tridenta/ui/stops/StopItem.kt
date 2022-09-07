@@ -24,16 +24,22 @@ import org.stypox.tridenta.data.StopLineType
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.TitleText
+import org.stypox.tridenta.util.StringUtils.WORD_DELIMITERS_PATTERN
 import org.stypox.tridenta.util.StringUtils.levenshteinDistance
 
 private const val MIN_LEVENSHTEIN_DISTANCE = 3
 
 @Composable
 fun StopItem(stop: Stop, modifier: Modifier = Modifier) {
-    val streetShown = stop.street.isNotEmpty() &&
-            levenshteinDistance(stop.street, stop.name) > MIN_LEVENSHTEIN_DISTANCE
-    val townShown = stop.town.isNotEmpty() &&
-            levenshteinDistance(stop.town, stop.name) > MIN_LEVENSHTEIN_DISTANCE &&
+    fun shouldBeShown(description: String): Boolean {
+        val cleanDescription = WORD_DELIMITERS_PATTERN.matcher(description).replaceAll("")
+        return cleanDescription.isNotEmpty() &&
+                cleanDescription != "null" &&
+                levenshteinDistance(description, stop.name) > MIN_LEVENSHTEIN_DISTANCE
+    }
+
+    val streetShown = shouldBeShown(stop.street)
+    val townShown = shouldBeShown(stop.town) &&
             (!streetShown || levenshteinDistance(stop.town, stop.street) > MIN_LEVENSHTEIN_DISTANCE)
 
     Row(
