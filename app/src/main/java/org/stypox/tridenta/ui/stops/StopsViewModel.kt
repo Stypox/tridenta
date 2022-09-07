@@ -58,6 +58,7 @@ class StopsViewModel @Inject constructor(
     }
 
     private fun updateFilteredStops() {
+        // TODO use a better filtering and sorting method, that also caches nfkd-normalized strings
         viewModelScope.launch {
             val filteredStops = withContext(Dispatchers.Default) {
                 val searchString = mutableUiState.value.searchString
