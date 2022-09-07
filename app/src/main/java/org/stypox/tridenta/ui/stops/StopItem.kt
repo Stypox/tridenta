@@ -70,6 +70,7 @@ fun StopItemPreview() {
             street = "Cembra - Via 4 Novembre - Dir.Cavalese lorem ipsum dolor sit",
             town = "Appiano sulla strada del vino",
             type = StopLineType.Suburban,
+            wheelchairAccessible = true,
             lines = listOf(
                 Line(0, Area.DEFAULT_AREA, null, "", "B109", StopLineType.Urban, listOf()),
                 Line(0, Area.DEFAULT_AREA, 0x123456, "", "8", StopLineType.Urban, listOf()),

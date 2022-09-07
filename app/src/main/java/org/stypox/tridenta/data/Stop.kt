@@ -8,5 +8,6 @@ data class Stop(
     val street: String,
     val town: String,
     val type: StopLineType,
+    val wheelchairAccessible: Boolean,
     val lines: List<Line>,
 )
