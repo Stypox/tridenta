@@ -1,6 +1,7 @@
 package org.stypox.tridenta.ui.nav
 
 import android.view.KeyEvent
+import android.view.ViewTreeObserver
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -225,16 +226,18 @@ private fun SearchTopAppBarExpanded(
             val view = LocalView.current
             DisposableEffect(view) {
                 var wasKeyboardOpen = false
-                ViewCompat.setOnApplyWindowInsetsListener(view.rootView) { _, insets ->
-                    val isKeyboardOpen = insets.isVisible(WindowInsetsCompat.Type.ime())
+                val listener = ViewTreeObserver.OnGlobalLayoutListener {
+                    val isKeyboardOpen = ViewCompat.getRootWindowInsets(view)
+                        ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
                     if (wasKeyboardOpen && !isKeyboardOpen) {
                         onSearchDone()
                     }
                     wasKeyboardOpen = isKeyboardOpen
-                    insets
                 }
+
+                view.viewTreeObserver.addOnGlobalLayoutListener(listener)
                 onDispose {
-                    ViewCompat.setOnApplyWindowInsetsListener(view.rootView, null)
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
                 }
             }
 
