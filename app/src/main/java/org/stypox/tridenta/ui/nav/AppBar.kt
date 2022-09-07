@@ -13,17 +13,17 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -79,8 +79,11 @@ fun AppBarTextField(
     }
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor, lineHeight = 50.sp))
 
-    // request focus
+    // request focus and set the correct cursor position when this composable is first initialized
     val focusRequester = FocusRequester()
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(value, TextRange(value.length)))
+    }
     SideEffect {
         focusRequester.requestFocus()
     }
@@ -89,9 +92,13 @@ fun AppBarTextField(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
     ) {
         BasicTextField(
-            value = value,
-            // remove newlines to avoid strange layout issues, and also because maxLines = 1
-            onValueChange = { onValueChange(it.replace("\n", "")) },
+            value = textFieldValue,
+            onValueChange = {
+                // remove newlines to avoid strange layout issues, and also because maxLines = 1
+                val text = it.text.replace("\n", "")
+                textFieldValue = it.copy(text = text)
+                onValueChange(text)
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .heightIn(32.dp)
