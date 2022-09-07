@@ -1,5 +1,6 @@
 package org.stypox.tridenta.ui.nav
 
+import android.view.KeyEvent
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,24 +11,34 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import org.stypox.tridenta.R
+import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
 fun AppBarTitle(text: String) {
@@ -131,4 +142,129 @@ fun AppBarTextField(
             }
         )
     }
+}
+
+
+@Composable
+fun SearchTopAppBar(
+    searchString: String,
+    setSearchString: (String) -> Unit,
+    title: String,
+    hint: String,
+    onDrawerClick: () -> Unit
+) {
+    var searchExpanded by rememberSaveable { mutableStateOf(false) }
+
+    if (searchExpanded) {
+        SearchTopAppBarExpanded(
+            searchString = searchString,
+            setSearchString = setSearchString,
+            hint = hint,
+            onSearchDone = { searchExpanded = false }
+        )
+    } else {
+        SearchTopAppBarUnexpanded(
+            title = searchString.ifEmpty { title },
+            onSearchClick = { searchExpanded = true },
+            onDrawerClick = onDrawerClick
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SearchTopAppBarPreview() {
+    var searchString by rememberSaveable { mutableStateOf("") }
+    AppTheme {
+        SearchTopAppBar(
+            searchString = searchString,
+            setSearchString = { searchString = it },
+            title = "The title",
+            hint = "The hint…",
+            onDrawerClick = { }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchTopAppBarUnexpanded(
+    title: String,
+    onSearchClick: () -> Unit,
+    onDrawerClick: () -> Unit
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            AppBarTitle(text = title)
+        },
+        navigationIcon = {
+            AppBarDrawerIcon(onDrawerClick = onDrawerClick)
+        },
+        actions = {
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(R.string.search)
+                )
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchTopAppBarExpanded(
+    searchString: String,
+    setSearchString: (String) -> Unit,
+    hint: String,
+    onSearchDone: () -> Unit
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            // close the search if the keyboard is closed
+            val view = LocalView.current
+            DisposableEffect(view) {
+                var wasKeyboardOpen = false
+                ViewCompat.setOnApplyWindowInsetsListener(view.rootView) { _, insets ->
+                    val isKeyboardOpen = insets.isVisible(WindowInsetsCompat.Type.ime())
+                    if (wasKeyboardOpen && !isKeyboardOpen) {
+                        onSearchDone()
+                    }
+                    wasKeyboardOpen = isKeyboardOpen
+                    insets
+                }
+                onDispose {
+                    ViewCompat.setOnApplyWindowInsetsListener(view.rootView, null)
+                }
+            }
+
+            AppBarTextField(
+                value = searchString,
+                onValueChange = setSearchString,
+                hint = hint,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = { onSearchDone() }
+                ),
+                modifier = Modifier.onKeyEvent {
+                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+                        onSearchDone()
+                        return@onKeyEvent true
+                    }
+                    return@onKeyEvent false
+                },
+            )
+        },
+        navigationIcon = {
+            AppBarBackIcon(onBackClick = onSearchDone)
+        },
+        actions = {
+            IconButton(onClick = { setSearchString("") }) {
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = stringResource(R.string.clear)
+                )
+            }
+        }
+    )
 }
