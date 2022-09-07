@@ -35,7 +35,7 @@ fun LineItem(line: Line, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LineShortName(line: Line) {
+fun LineShortName(line: Line, modifier: Modifier = Modifier) {
     val backgroundColor = if (line.color == null)
         Color.LightGray
     else
@@ -44,11 +44,13 @@ fun LineShortName(line: Line) {
     Surface(
         color = backgroundColor,
         shape = MaterialTheme.shapes.small,
+        modifier = modifier,
     ) {
         LabelText(
             text = line.shortName,
             color = textColorOnBackground(backgroundColor),
-            modifier = Modifier.padding(8.dp, 4.dp)
+            modifier = Modifier.padding(8.dp, 4.dp),
+            maxLines = 1,
         )
     }
 }
