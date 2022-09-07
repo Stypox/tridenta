@@ -2,10 +2,17 @@ package org.stypox.tridenta.ui.stops
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessible
+import androidx.compose.material.icons.filled.Landscape
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,32 +35,55 @@ fun StopItem(stop: Stop, modifier: Modifier = Modifier) {
     val townShown = stop.town.isNotEmpty() &&
             levenshteinDistance(stop.town, stop.name) > MIN_LEVENSHTEIN_DISTANCE &&
             (!streetShown || levenshteinDistance(stop.town, stop.street) > MIN_LEVENSHTEIN_DISTANCE)
-    val paddingModifier = modifier.padding(16.dp)
 
-    Column(
-        modifier = paddingModifier
+    Row(
+        modifier = modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TitleText(text = stop.name)
-        if (streetShown) {
-            BodyText(
-                text = stop.street,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-        if (townShown) {
-            BodyText(
-                text = stop.town,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+        Column(
+            modifier = Modifier
+                .padding(end = 4.dp)
+                .weight(1f)
+        ) {
+            TitleText(text = stop.name)
+            if (streetShown) {
+                BodyText(
+                    text = stop.street,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            if (townShown) {
+                BodyText(
+                    text = stop.town,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(top = 4.dp)
+            ) {
+                items(stop.lines) { line -> LineShortName(line) }
+            }
         }
 
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(top = 4.dp)
-        ) {
-            items(stop.lines) { line -> LineShortName(line) }
+        Column {
+            Icon(
+                imageVector = when (stop.type) {
+                    StopLineType.Urban -> Icons.Filled.LocationCity
+                    StopLineType.Suburban -> Icons.Filled.Landscape
+                },
+                contentDescription = null
+            )
+            if (stop.wheelchairAccessible) {
+                Icon(
+                    imageVector = Icons.Filled.Accessible,
+                    contentDescription = null
+                )
+            }
         }
     }
 }
