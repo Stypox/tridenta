@@ -11,7 +11,8 @@ import javax.inject.Singleton
 class Extractor @Inject constructor(private val httpClient: HttpClient) {
 
     /**
-     * Get all existing stops. The response's size will be ~2MB, so persist the returned data!
+     * Get all existing stops. The response's size will be ~2MB, so persist the returned data! The
+     * stops' lines will be sorted by short name using [shortNameComparator].
      *
      * @param limit return only this number of results. A negative value means "no limitation".
      * Providing this parameter reduces the response size, though this is useful only for testing
@@ -26,7 +27,8 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
     }
 
     /**
-     * Get all lines belonging to the provided [areas].
+     * Get all lines belonging to the provided [areas], sorted by short name using
+     * [shortNameComparator].
      *
      * @param areas the areas for which to fetch lines
      * @return a list of lines, with their [Line.lineId] and [Line.type] filled in and usable in
@@ -36,6 +38,7 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
         val params = "?areas=" + areas.map { it.value }.joinToString(",")
         return JSONArray(httpClient.fetchJson(BASE_URL + LINES_PATH + params))
             .map(::lineFromJSONObject)
+            .sortedWith(::shortNameComparator)
     }
 
     /**

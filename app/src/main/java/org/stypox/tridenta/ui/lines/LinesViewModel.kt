@@ -80,7 +80,6 @@ class LinesViewModel @Inject constructor(
         viewModelScope.launch {
             val lines = withContext(Dispatchers.IO) {
                 extractor.getLines(areas = arrayOf(mutableUiState.value.selectedArea))
-                    .sortedWith(::shortNameComparator)
             }
             mutableUiState.update { linesUiState ->
                 linesUiState.copy(lines = lines, loading = false)
