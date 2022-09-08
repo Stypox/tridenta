@@ -4,11 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AreaChart
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import org.stypox.tridenta.R
 import org.stypox.tridenta.ui.lines.LinesView
+import org.stypox.tridenta.ui.nav.Drawer
+import org.stypox.tridenta.ui.nav.DrawerItem
+import org.stypox.tridenta.ui.stops.StopsView
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @AndroidEntryPoint
@@ -22,7 +29,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LinesView()
+                    Drawer(
+                        items = listOf(
+                            DrawerItem(R.string.selected_area, Icons.Filled.AreaChart) {
+                                LinesView()
+                            },
+                            DrawerItem(R.string.stops, Icons.Filled.Stop) {
+                                StopsView(onDrawerClick = { })
+                            }
+                        ),
+                        initialSelectedIndex = 0
+                    )
                 }
             }
         }
