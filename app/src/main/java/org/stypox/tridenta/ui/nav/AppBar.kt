@@ -90,14 +90,17 @@ fun AppBarTextField(
     }
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor, lineHeight = 50.sp))
 
-    // request focus and set the correct cursor position when this composable is first initialized
+    // request focus when this composable is first initialized
     val focusRequester = FocusRequester()
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(value, TextRange(value.length)))
-    }
     SideEffect {
         focusRequester.requestFocus()
     }
+
+    // set the correct cursor position when this composable is first initialized
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(value, TextRange(value.length)))
+    }
+    textFieldValue = textFieldValue.copy(text = value) // make sure to keep the value updated
 
     CompositionLocalProvider(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
@@ -105,10 +108,9 @@ fun AppBarTextField(
         BasicTextField(
             value = textFieldValue,
             onValueChange = {
+                textFieldValue = it
                 // remove newlines to avoid strange layout issues, and also because singleLine=true
-                val text = it.text.replace("\n", "")
-                textFieldValue = it.copy(text = text)
-                onValueChange(text)
+                onValueChange(it.text.replace("\n", ""))
             },
             modifier = modifier
                 .fillMaxWidth()
