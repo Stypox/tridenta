@@ -48,6 +48,8 @@ android {
 }
 
 dependencies {
+    // TODO add desugaring
+
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
