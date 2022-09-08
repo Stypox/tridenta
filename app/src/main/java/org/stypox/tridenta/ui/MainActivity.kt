@@ -32,10 +32,11 @@ class MainActivity : ComponentActivity() {
                     Drawer(
                         items = listOf(
                             DrawerItem(R.string.selected_area, Icons.Filled.AreaChart) {
+                                    navigationIcon ->
                                 LinesView()
                             },
-                            DrawerItem(R.string.stops, Icons.Filled.Stop) {
-                                StopsView(onDrawerClick = { })
+                            DrawerItem(R.string.stops, Icons.Filled.Stop) { navigationIcon ->
+                                StopsView(navigationIcon)
                             }
                         ),
                         initialSelectedIndex = 0

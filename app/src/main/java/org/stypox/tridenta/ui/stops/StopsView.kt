@@ -15,7 +15,7 @@ import org.stypox.tridenta.ui.nav.SearchTopAppBar
 
 @Composable
 fun StopsView(
-    onDrawerClick: () -> Unit,
+    navigationIcon: @Composable () -> Unit,
     stopsViewModel: StopsViewModel = viewModel()
 ) {
     val stopsUiState by stopsViewModel.uiState.collectAsState()
@@ -24,7 +24,7 @@ fun StopsView(
         stops = stopsUiState.filteredStops,
         searchString = stopsUiState.searchString,
         setSearchString = stopsViewModel::setSearchString,
-        onDrawerClick = onDrawerClick
+        navigationIcon = navigationIcon
     )
 }
 
@@ -34,7 +34,7 @@ private fun StopsView(
     stops: List<Stop>,
     searchString: String,
     setSearchString: (String) -> Unit,
-    onDrawerClick: () -> Unit
+    navigationIcon: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -43,7 +43,7 @@ private fun StopsView(
                 setSearchString = setSearchString,
                 title = stringResource(R.string.stops),
                 hint = stringResource(R.string.search_stop_hint),
-                onDrawerClick = onDrawerClick
+                navigationIcon = navigationIcon
             )
         },
         content = { paddingValues ->

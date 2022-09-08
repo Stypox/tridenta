@@ -152,7 +152,7 @@ fun SearchTopAppBar(
     setSearchString: (String) -> Unit,
     title: String,
     hint: String,
-    onDrawerClick: () -> Unit
+    navigationIcon: @Composable () -> Unit
 ) {
     var searchExpanded by rememberSaveable { mutableStateOf(false) }
 
@@ -167,7 +167,7 @@ fun SearchTopAppBar(
         SearchTopAppBarUnexpanded(
             title = searchString.ifEmpty { title },
             onSearchClick = { searchExpanded = true },
-            onDrawerClick = onDrawerClick
+            navigationIcon = navigationIcon
         )
     }
 }
@@ -182,7 +182,7 @@ private fun SearchTopAppBarPreview() {
             setSearchString = { searchString = it },
             title = "The title",
             hint = "The hint…",
-            onDrawerClick = { }
+            navigationIcon = { }
         )
     }
 }
@@ -192,15 +192,13 @@ private fun SearchTopAppBarPreview() {
 private fun SearchTopAppBarUnexpanded(
     title: String,
     onSearchClick: () -> Unit,
-    onDrawerClick: () -> Unit
+    navigationIcon: @Composable () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
             AppBarTitle(text = title)
         },
-        navigationIcon = {
-            AppBarDrawerIcon(onDrawerClick = onDrawerClick)
-        },
+        navigationIcon = navigationIcon,
         actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(

@@ -3,12 +3,8 @@ package org.stypox.tridenta.ui.nav
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -17,7 +13,7 @@ import kotlinx.coroutines.launch
 data class DrawerItem(
     @StringRes val name: Int,
     val icon: ImageVector,
-    val content: @Composable () -> Unit,
+    val content: @Composable (@Composable () -> Unit) -> Unit,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +51,22 @@ fun Drawer(items: List<DrawerItem>, initialSelectedIndex: Int) {
                 }
             )
         },
-        content = items.getOrNull(selectedIndex)?.content ?: { Text("Error") }
+        content = items.getOrNull(selectedIndex)?.let { item ->
+            {
+                item.content {
+                    // the drawer icon can be rotated according to the current drawer position with
+                    // Modifier.rotate(drawerState.offset.value / LocalDensity.current.density)
+                    AppBarDrawerIcon {
+                        scope.launch {
+                            if (drawerState.isOpen) {
+                                drawerState.close()
+                            } else {
+                                drawerState.open()
+                            }
+                        }
+                    }
+                }
+            }
+        } ?: { Text("Error") }
     )
 }
