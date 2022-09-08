@@ -1,144 +1,145 @@
 package org.stypox.tridenta.ui.lines
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
 import org.stypox.tridenta.data.StopLineType
-import org.stypox.tridenta.ui.theme.HeadlineText
+import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
-fun LinesView(linesViewModel: LinesViewModel = viewModel()) {
+fun LinesView(
+    navigationIcon: @Composable () -> Unit,
+    linesViewModel: LinesViewModel = viewModel()
+) {
     val linesUiState by linesViewModel.uiState.collectAsState()
 
     LinesView(
         lines = linesUiState.lines,
         selectedArea = linesUiState.selectedArea,
-        headerExpanded = linesUiState.headerExpanded,
         setSelectedArea = linesViewModel::setSelectedArea,
-        setHeaderExpanded = linesViewModel::setHeaderExpanded
+        showAreaDialog = linesUiState.showAreaDialog,
+        setShowAreaDialog = linesViewModel::setShowAreaDialog,
+        navigationIcon = navigationIcon
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LinesView(
     lines: List<Line>,
     selectedArea: Area,
-    headerExpanded: Boolean,
     setSelectedArea: (Area) -> Unit,
-    setHeaderExpanded: (Boolean) -> Unit
+    showAreaDialog: Boolean,
+    setShowAreaDialog: (Boolean) -> Unit,
+    navigationIcon: @Composable () -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        item {
-            LinesViewHeader(selectedArea, headerExpanded, setSelectedArea, setHeaderExpanded)
-        }
-        items(lines) {
-            LineItem(line = it)
-        }
+    if (showAreaDialog) {
+        SelectAreaDialog(
+            selectedArea = selectedArea,
+            setSelectedArea = setSelectedArea,
+            setShowAreaDialog = setShowAreaDialog
+        )
     }
+
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(text = stringResource(R.string.selected_area))
+                        AreaChip(area = selectedArea)
+                    }
+                },
+                navigationIcon = navigationIcon,
+                actions = {
+                    IconButton(onClick = { setShowAreaDialog(true) }) {
+                        Icon(
+                            imageVector = Icons.Filled.FilterAlt,
+                            contentDescription = stringResource(R.string.select_area)
+                        )
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth()
+            ) {
+                items(lines) {
+                    LineItem(line = it)
+                }
+            }
+        }
+    )
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun LinesViewHeader(
+private fun SelectAreaDialog(
     selectedArea: Area,
-    expanded: Boolean,
     setSelectedArea: (Area) -> Unit,
-    setHeaderExpanded: (Boolean) -> Unit
+    setShowAreaDialog: (Boolean) -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.TopCenter,
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize()
-    ) {
-        if (expanded) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    AlertDialog(
+        onDismissRequest = { setShowAreaDialog(false) },
+        confirmButton = {
+            TextButton(onClick = { setShowAreaDialog(false) }) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = null,
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 SuburbanAreasMap(
                     onAreaClick = setSelectedArea,
                     modifier = Modifier
-                        .widthIn(0.dp, 300.dp)
+                        .widthIn(0.dp, 290.dp)
                         .padding(8.dp)
                 )
 
                 AreaChipGroup(
                     selectedArea = selectedArea,
                     onAreaClick = setSelectedArea,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .widthIn(0.dp, 500.dp)
+                        .padding(top = 16.dp)
                 )
             }
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            AnimatedContent(targetState = expanded) { targetState ->
-                if (targetState) {
-                    Spacer(modifier = Modifier)
-                } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .clickable { setHeaderExpanded(true) }
-                            .padding(16.dp, 12.dp, 16.dp, 12.dp)
-                    ) {
-                        HeadlineText(text = stringResource(R.string.selected_area))
-                        AreaChip(area = selectedArea)
-                    }
-                }
-            }
-
-            IconButton(
-                onClick = { setHeaderExpanded(!expanded) },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                val rotation by animateFloatAsState(
-                    targetValue = if (expanded) 0.0f else 180.0f,
-                    animationSpec = tween()
-                )
-
-                Icon(
-                    imageVector = Icons.Filled.ExpandMore,
-                    contentDescription = if (expanded) {
-                        stringResource(R.string.show_less)
-                    } else {
-                        stringResource(R.string.show_more)
-                    },
-                    modifier = Modifier.rotate(rotation)
-                )
-            }
-        }
-    }
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    )
 }
 
 @Preview
@@ -146,7 +147,7 @@ private fun LinesViewHeader(
 @Composable
 private fun LinesViewPreview() {
     val selectedArea = rememberSaveable { mutableStateOf(Area.Suburban3) }
-    val expanded = rememberSaveable { mutableStateOf(true) }
+    val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesView(
             lines = listOf(
@@ -170,12 +171,13 @@ private fun LinesViewPreview() {
                 )
             ),
             selectedArea = selectedArea.value,
-            headerExpanded = expanded.value,
             setSelectedArea = {
                 selectedArea.value = it
-                expanded.value = false
+                showAreaDialog.value = false
             },
-            setHeaderExpanded = { expanded.value = it }
+            showAreaDialog = showAreaDialog.value,
+            setShowAreaDialog = { showAreaDialog.value = it },
+            navigationIcon = { }
         )
     }
 }

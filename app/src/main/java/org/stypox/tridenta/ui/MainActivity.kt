@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                         items = listOf(
                             DrawerItem(R.string.selected_area, Icons.Filled.AreaChart) {
                                     navigationIcon ->
-                                LinesView()
+                                LinesView(navigationIcon)
                             },
                             DrawerItem(R.string.stops, Icons.Filled.Stop) { navigationIcon ->
                                 StopsView(navigationIcon)

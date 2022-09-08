@@ -87,7 +87,7 @@ fun AreaChipGroup(selectedArea: Area, onAreaClick: (Area) -> Unit, modifier: Mod
     @Composable
     fun AreaChipGroupRow(vararg areas: Area) {
         FlowRow(
-            mainAxisSpacing = 8.dp,
+            mainAxisSpacing = 4.dp,
             mainAxisAlignment = FlowMainAxisAlignment.Center,
             crossAxisSpacing = 4.dp,
         ) {
