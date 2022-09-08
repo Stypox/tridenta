@@ -43,7 +43,7 @@ fun StopItem(stop: Stop, modifier: Modifier = Modifier) {
             (!streetShown || levenshteinDistance(stop.town, stop.street) > MIN_LEVENSHTEIN_DISTANCE)
 
     Row(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {

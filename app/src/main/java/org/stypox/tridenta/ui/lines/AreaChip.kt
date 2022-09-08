@@ -76,7 +76,7 @@ fun AreaChip(
                 text = stringResource(id = area.nameRes),
                 color = iconTextColor,
                 fontWeight = FontWeight(weight),
-                modifier = Modifier.padding(4.dp, 0.dp, 0.dp, 0.dp),
+                modifier = Modifier.padding(start = 4.dp),
             )
         }
     }

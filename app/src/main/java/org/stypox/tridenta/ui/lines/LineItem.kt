@@ -22,14 +22,14 @@ import org.stypox.tridenta.ui.theme.AppTheme
 @Composable
 fun LineItem(line: Line, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         LineShortName(line = line)
 
         BodyText(
             text = line.longName,
-            modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 0.dp)
+            modifier = Modifier.padding(start = 16.dp)
         )
     }
 }

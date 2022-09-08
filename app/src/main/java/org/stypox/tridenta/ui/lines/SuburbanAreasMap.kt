@@ -93,7 +93,7 @@ fun SuburbanAreasMap(modifier: Modifier = Modifier, onAreaClick: (Area) -> Unit)
                             (space.height * areaPosition.y - zone.height / 2).toInt()
                         )
                     }
-                    .padding(this@BoxWithConstraints.maxWidth / 16, 0.dp)
+                    .padding(horizontal = this@BoxWithConstraints.maxWidth / 16)
             )
         }
     }
