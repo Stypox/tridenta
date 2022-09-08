@@ -5,8 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AreaChart
-import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
@@ -31,11 +30,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Drawer(
                         items = listOf(
-                            DrawerItem(R.string.selected_area, Icons.Filled.AreaChart) {
+                            DrawerItem(R.string.lines, Icons.Filled.DirectionsBus) {
                                     navigationIcon ->
                                 LinesView(navigationIcon)
                             },
-                            DrawerItem(R.string.stops, Icons.Filled.Stop) { navigationIcon ->
+                            DrawerItem(R.string.stops, Icons.Filled.Traffic) { navigationIcon ->
                                 StopsView(navigationIcon)
                             }
                         ),
