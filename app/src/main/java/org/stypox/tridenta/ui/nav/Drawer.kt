@@ -27,7 +27,7 @@ data class DrawerItem(
 
 @Preview
 @Composable
-fun DrawerHeader() {
+private fun DrawerHeader() {
     HeadlineText(
         text = stringResource(R.string.app_name),
         modifier = Modifier.padding(32.dp)
@@ -35,7 +35,7 @@ fun DrawerHeader() {
 }
 
 @Composable
-fun DrawerSheet(items: List<DrawerItem>, selectedIndex: Int, setSelectedIndex: (Int) -> Unit) {
+private fun DrawerSheet(items: List<DrawerItem>, selectedIndex: Int, setSelectedIndex: (Int) -> Unit) {
     ModalDrawerSheet {
         DrawerHeader()
         items.forEachIndexed { index, item ->
@@ -95,7 +95,7 @@ fun Drawer(
 
 @Preview
 @Composable
-fun DrawerPreview() {
+private fun DrawerPreview() {
     Drawer(
         items = listOf(
             DrawerItem(
