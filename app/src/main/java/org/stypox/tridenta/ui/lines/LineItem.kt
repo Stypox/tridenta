@@ -18,6 +18,8 @@ import org.stypox.tridenta.data.StopLineType
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.ui.theme.AppTheme
+import org.stypox.tridenta.util.textColorOnBackground
+import org.stypox.tridenta.util.toComposeColor
 
 @Composable
 fun LineItem(line: Line, modifier: Modifier = Modifier) {
@@ -36,10 +38,7 @@ fun LineItem(line: Line, modifier: Modifier = Modifier) {
 
 @Composable
 fun LineShortName(line: Line, modifier: Modifier = Modifier) {
-    val backgroundColor = if (line.color == null)
-        Color.LightGray
-    else
-        Color(0xff000000 + line.color)
+    val backgroundColor = line.color.toComposeColor()
 
     Surface(
         color = backgroundColor,
@@ -94,19 +93,5 @@ fun LineItemPreview() {
                 ),
             )
         }
-    }
-}
-
-/**
- * Returns one of [Color.Black] or [Color.White], such that text with such color is readable on
- * [backgroundColor].
- * @see <a href="https://stackoverflow.com/a/3943023/9481500">Stack Overflow</a>
- */
-private fun textColorOnBackground(@ColorInt backgroundColor: Color): Color {
-    return backgroundColor.run {
-        if ((red * 0.299 + green * 0.587 + blue * 0.114) > 0.5)
-            Color.Black
-        else
-            Color.White
     }
 }
