@@ -34,7 +34,7 @@ class LinesViewModel @Inject constructor(
                         // expand the header, so the user becomes aware that the header exists.
                         selectedArea = Area.values().firstOrNull { it.value == prefArea }
                             ?: Area.DEFAULT_AREA,
-                        showAreaDialog = Area.values().all { it.value != prefArea },
+                        showAreaDialog = false,
                         loading = true
                     )
                 )
