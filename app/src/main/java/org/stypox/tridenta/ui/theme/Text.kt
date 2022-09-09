@@ -19,6 +19,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 
 /**
+ * Displays a display text by passing all of the provided parameters to [Text] and also passing
+ * [Typography.displayMedium] as `style`. A display should be used rarely for really big texts made
+ * of few characters. In places where `style` should derived from the [LocalTextStyle] provided by
+ * the [MaterialTheme] components, make sure you use [Text] directly.
+ */
+@Composable
+fun DisplayText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    Text(
+        text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, onTextLayout,
+        style = MaterialTheme.typography.displayMedium
+    )
+}
+
+/**
  * Displays a headline text by passing all of the provided parameters to [Text] and also passing
  * [Typography.headlineMedium] as `style`. A headline should be used sparingly for important texts
  * or numerals. In places where `style` should derived from the [LocalTextStyle] provided by the
@@ -148,6 +179,7 @@ fun LabelText(
 @Composable
 fun TextPreview() {
     Column {
+        DisplayText("Dis\nplay")
         HeadlineText("Head\nline")
         TitleText("Title\ntitle")
         BodyText("Body\nbody")
