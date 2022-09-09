@@ -16,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import org.stypox.tridenta.data.Area
-import org.stypox.tridenta.data.Line
 import org.stypox.tridenta.data.Stop
 import org.stypox.tridenta.data.StopLineType
+import org.stypox.tridenta.sample.SampleStopProvider
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.TitleText
@@ -29,8 +29,12 @@ import org.stypox.tridenta.util.StringUtils.levenshteinDistance
 
 private const val MIN_LEVENSHTEIN_DISTANCE = 3
 
+@Preview
 @Composable
-fun StopItem(stop: Stop, modifier: Modifier = Modifier) {
+fun StopItem(
+    @PreviewParameter(SampleStopProvider::class) stop: Stop,
+    modifier: Modifier = Modifier
+) {
     fun shouldBeShown(description: String): Boolean {
         val cleanDescription = WORD_DELIMITERS_PATTERN.matcher(description).replaceAll("")
         return cleanDescription.isNotEmpty() &&
@@ -92,26 +96,4 @@ fun StopItem(stop: Stop, modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun StopItemPreview() {
-    StopItem(
-        stop = Stop(
-            stopId = 0,
-            latitude = 0.0,
-            longitude = 0.0,
-            name = "Funivia-Staz. di Monte-Sardagna",
-            street = "Cembra - Via 4 Novembre - Dir.Cavalese lorem ipsum dolor sit",
-            town = "Appiano sulla strada del vino",
-            type = StopLineType.Suburban,
-            wheelchairAccessible = true,
-            lines = listOf(
-                Line(0, Area.DEFAULT_AREA, null, "", "B109", StopLineType.Urban, listOf()),
-                Line(0, Area.DEFAULT_AREA, 0x123456, "", "8", StopLineType.Urban, listOf()),
-                Line(0, Area.DEFAULT_AREA, 0xff3456, "", "13", StopLineType.Urban, listOf()),
-            ),
-        )
-    )
 }

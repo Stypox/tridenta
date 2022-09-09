@@ -24,8 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.data.Line
-import org.stypox.tridenta.data.StopLineType
-import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
+import org.stypox.tridenta.sample.SampleLineProvider
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
@@ -150,26 +149,7 @@ private fun LinesViewPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesView(
-            lines = listOf(
-                Line(
-                    0,
-                    Area.Suburban2,
-                    null,
-                    "Trento-Vezzano-Sarche-Tione",
-                    "B201",
-                    StopLineType.Suburban,
-                    listOf()
-                ),
-                Line(
-                    0,
-                    Area.UrbanTrento,
-                    0xc52720,
-                    "Cortesano Gardolo P.Dante Villazzano 3",
-                    "3",
-                    StopLineType.Urban,
-                    listOf()
-                )
-            ),
+            lines = SampleLineProvider().values.toList(),
             selectedArea = selectedArea.value,
             setSelectedArea = {
                 selectedArea.value = it
