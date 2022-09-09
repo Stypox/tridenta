@@ -32,6 +32,7 @@ import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.ui.theme.LabelText
+import org.stypox.tridenta.util.toComposeColor
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -51,7 +52,7 @@ fun AreaChip(
     }
 
     Surface(
-        color = Color(0xff000000 + area.color),
+        color = area.color.toComposeColor(),
         // clip instead of doing shape= to ensure the touch ripple remains inside
         modifier = clickableModifier
     ) {

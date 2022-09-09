@@ -17,17 +17,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import org.stypox.tridenta.R
 import org.stypox.tridenta.data.Area
 import org.stypox.tridenta.ui.theme.AppTheme
+import org.stypox.tridenta.util.toComposeColor
 
 private data class AreaPosition(
     val area: Area,
@@ -62,8 +61,8 @@ fun SuburbanAreasMap(modifier: Modifier = Modifier, onAreaClick: (Area) -> Unit)
         )
 
         AREA_POSITIONS.forEach { areaPosition ->
-            val color = Color(
-                0xff000000 + if (isSystemInDarkTheme()) {
+            val color =
+                if (isSystemInDarkTheme()) {
                     val hsvColor = FloatArray(3)
                     colorToHSV(areaPosition.area.color, hsvColor)
                     // increase luminance (i.e. hsvColor[2]) to improve contrast
@@ -71,8 +70,7 @@ fun SuburbanAreasMap(modifier: Modifier = Modifier, onAreaClick: (Area) -> Unit)
                     HSVToColor(hsvColor)
                 } else {
                     areaPosition.area.color
-                }
-            )
+                }.toComposeColor()
 
             Text(
                 text = "${areaPosition.area.value}",

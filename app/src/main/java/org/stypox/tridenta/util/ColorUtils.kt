@@ -4,6 +4,10 @@ import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 
 
+fun Int.toComposeColor(): Color {
+    return Color(0xff000000 + this)
+}
+
 fun Int?.toComposeColor(): Color {
     return if (this == null)
         Color.LightGray
