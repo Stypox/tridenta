@@ -18,9 +18,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import org.stypox.tridenta.data.Stop
-import org.stypox.tridenta.data.StopLineType
-import org.stypox.tridenta.sample.SampleStopProvider
+import org.stypox.tridenta.enums.StopLineType
+import org.stypox.tridenta.repo.data.UiStop
+import org.stypox.tridenta.sample.SampleUiStopProvider
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.TitleText
@@ -32,7 +32,7 @@ private const val MIN_LEVENSHTEIN_DISTANCE = 3
 @Preview
 @Composable
 fun StopItem(
-    @PreviewParameter(SampleStopProvider::class) stop: Stop,
+    @PreviewParameter(SampleUiStopProvider::class) stop: UiStop,
     modifier: Modifier = Modifier
 ) {
     fun shouldBeShown(description: String): Boolean {
@@ -76,7 +76,9 @@ fun StopItem(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.padding(top = 4.dp)
             ) {
-                items(stop.lines) { line -> LineShortName(line) }
+                items(stop.lines) { line ->
+                    LineShortName(color = line.color, shortName = line.shortName)
+                }
             }
         }
 

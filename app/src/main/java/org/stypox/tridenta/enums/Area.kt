@@ -1,4 +1,4 @@
-package org.stypox.tridenta.data
+package org.stypox.tridenta.enums
 
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
@@ -30,6 +30,6 @@ enum class Area(
     UrbanRovereto(24, R.string.area_urban_rovereto, 0x000000, Icons.Filled.LocationCity);
 
     companion object {
-        val DEFAULT_AREA = Area.UrbanTrento
+        val DEFAULT_AREA = UrbanTrento
     }
 }

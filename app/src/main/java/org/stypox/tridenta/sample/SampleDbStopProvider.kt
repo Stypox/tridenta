@@ -1,14 +1,12 @@
 package org.stypox.tridenta.sample
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import org.stypox.tridenta.data.Stop
-import org.stypox.tridenta.data.StopLineType
+import org.stypox.tridenta.db.data.DbStop
+import org.stypox.tridenta.enums.StopLineType
 
-class SampleStopProvider : PreviewParameterProvider<Stop> {
-    private val sampleLines = SampleLineProvider().values
-
-    override val values: Sequence<Stop> = sequenceOf(
-        Stop(
+class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
+    override val values: Sequence<DbStop> = sequenceOf(
+        DbStop(
             stopId = 0,
             latitude = 0.0,
             longitude = 0.0,
@@ -17,9 +15,8 @@ class SampleStopProvider : PreviewParameterProvider<Stop> {
             town = "",
             type = StopLineType.Urban,
             wheelchairAccessible = false,
-            lines = listOf()
         ),
-        Stop(
+        DbStop(
             stopId = 0,
             latitude = 0.0,
             longitude = 0.0,
@@ -28,9 +25,8 @@ class SampleStopProvider : PreviewParameterProvider<Stop> {
             town = "Appiano sulla strada del vino",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
-            lines = sampleLines.toList(),
         ),
-        Stop(
+        DbStop(
             stopId = 0,
             latitude = 0.0,
             longitude = 0.0,
@@ -39,9 +35,8 @@ class SampleStopProvider : PreviewParameterProvider<Stop> {
             town = "Civezzano",
             type = StopLineType.Suburban,
             wheelchairAccessible = false,
-            lines = List(10) { sampleLines.last() },
         ),
-        Stop(
+        DbStop(
             stopId = 0,
             latitude = 0.0,
             longitude = 0.0,
@@ -50,7 +45,6 @@ class SampleStopProvider : PreviewParameterProvider<Stop> {
             town = "Trento",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
-            lines = (1 until 5).flatMap { sampleLines },
         )
     )
 }

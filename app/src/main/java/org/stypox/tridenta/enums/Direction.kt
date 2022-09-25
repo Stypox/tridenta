@@ -1,4 +1,4 @@
-package org.stypox.tridenta.data
+package org.stypox.tridenta.enums
 
 enum class Direction(val value: Int?) {
     Forward(0), // andata

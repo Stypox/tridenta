@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.stypox.tridenta.R
-import org.stypox.tridenta.data.Area
-import org.stypox.tridenta.data.Line
-import org.stypox.tridenta.sample.SampleLineProvider
+import org.stypox.tridenta.db.data.DbLine
+import org.stypox.tridenta.enums.Area
+import org.stypox.tridenta.sample.SampleDbLineProvider
 import org.stypox.tridenta.ui.theme.AppTheme
 
 @Composable
@@ -47,7 +47,7 @@ fun LinesView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LinesView(
-    lines: List<Line>,
+    lines: List<DbLine>,
     selectedArea: Area,
     setSelectedArea: (Area) -> Unit,
     showAreaDialog: Boolean,
@@ -149,7 +149,7 @@ private fun LinesViewPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesView(
-            lines = SampleLineProvider().values.toList(),
+            lines = SampleDbLineProvider().values.toList(),
             selectedArea = selectedArea.value,
             setSelectedArea = {
                 selectedArea.value = it

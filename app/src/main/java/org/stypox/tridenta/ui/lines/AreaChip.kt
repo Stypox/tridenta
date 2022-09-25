@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import org.stypox.tridenta.data.Area
+import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.toComposeColor
 

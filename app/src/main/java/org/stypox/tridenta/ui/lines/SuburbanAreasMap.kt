@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import org.stypox.tridenta.R
-import org.stypox.tridenta.data.Area
+import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.ui.theme.AppTheme
 import org.stypox.tridenta.util.toComposeColor
 

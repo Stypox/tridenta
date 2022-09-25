@@ -2,8 +2,12 @@ package org.stypox.tridenta.extractor
 
 import org.json.JSONArray
 import org.json.JSONObject
-import org.stypox.tridenta.data.*
-import java.time.LocalDateTime
+import org.stypox.tridenta.enums.*
+import org.stypox.tridenta.extractor.data.ExLine
+import org.stypox.tridenta.extractor.data.ExStop
+import org.stypox.tridenta.extractor.data.ExTrip
+import org.stypox.tridenta.extractor.data.shortNameComparator
+import java.time.ZonedDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,10 +21,10 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param limit return only this number of results. A negative value means "no limitation".
      * Providing this parameter reduces the response size, though this is useful only for testing
      * purposes, as otherwise it does not make sense to fetch only some of the stops at random.
-     * @return a list of stops, with their [Stop.stopId] and [Stop.type] filled in and usable in
+     * @return a list of stops, with their [ExStop.stopId] and [ExStop.type] filled in and usable in
      * queries to other APIs involving stops
      */
-    fun getStops(limit: Int = -1): List<Stop> {
+    fun getStops(limit: Int = -1): List<ExStop> {
         val params = if (limit < 0) "" else "?size=$limit"
         return JSONArray(httpClient.fetchJson(BASE_URL + STOPS_PATH + params))
             .map(::stopFromJSONObject)
@@ -31,10 +35,10 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * [shortNameComparator].
      *
      * @param areas the areas for which to fetch lines
-     * @return a list of lines, with their [Line.lineId] and [Line.type] filled in and usable in
+     * @return a list of lines, with their [ExLine.lineId] and [ExLine.type] filled in and usable in
      * queries to other APIs involving lines
      */
-    fun getLines(areas: Array<Area> = Area.values()): List<Line> {
+    fun getLines(areas: Array<Area> = Area.values()): List<ExLine> {
         val params = "?areas=" + areas.map { it.value }.joinToString(",")
         return JSONArray(httpClient.fetchJson(BASE_URL + LINES_PATH + params))
             .map(::lineFromJSONObject)
@@ -47,23 +51,23 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param stopId the id of the stop as returned in [getStops]
      * @param stopType the type of the stop as returned in [getStops]
      * @param referenceDateTime returned trips will take place near this time; also used to produce
-     * the dates in the trips' [StopTime]s
+     * the dates in the trips' [ExStopTime]s
      * @param limit return only this number of trips
-     * @return a list of trips with [Trip.tripId] filled in and usable to get updates via
+     * @return a list of trips with [ExTrip.tripId] filled in and usable to get updates via
      * [getTripById]
      */
     fun getTripsByStop(
         stopId: Int,
         stopType: StopLineType,
-        referenceDateTime: LocalDateTime,
+        referenceDateTime: ZonedDateTime,
         limit: Int
-    ): List<Trip> {
+    ): List<ExTrip> {
         return getTrips(
             stopType,
             referenceDateTime,
             "&stopId=$stopId&limit=$limit",
             ::tripFromJSONObject
-        )
+        ).second
     }
 
     /**
@@ -72,18 +76,19 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param lineId the id of the line as returned in [getLines]
      * @param lineType the type of the line as returned in [getLines]
      * @param referenceDateTime returned trips will take place near this time; also used to produce
-     * the dates in the trips' [StopTime]s
+     * the dates in the trips' [ExStopTime]s
      * @param limit return only this number of trips
-     * @return a list of trips (with [Trip.tripId] filled in and usable to get updates via
+     * @return a pair with the total number of trips in this specific day as first item, and as
+     * second item a list of trips (with [ExTrip.tripId] filled in and usable to get updates via
      * [getTripById]) paired with integers (representing the trip index and usable in the other
-     * [getTripsByLine] to scroll through a list of trips in a specific day)
+     * [getTripsByLine] to scroll through the list of trips of this specific day)
      */
     fun getTripsByLine(
         lineId: Int,
         lineType: StopLineType,
-        referenceDateTime: LocalDateTime,
+        referenceDateTime: ZonedDateTime,
         limit: Int,
-    ): List<Pair<Int, Trip>> {
+    ): Pair<Int, List<Pair<Int, ExTrip>>> {
         return getTrips(
             lineType,
             referenceDateTime,
@@ -100,22 +105,23 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param lineId the id of the line as returned in [getLines]
      * @param lineType the type of the line as returned in [getLines]
      * @param referenceDateTime returned trips will take place near this time; also used to produce
-     * the dates in the trips' [StopTime]s
+     * the dates in the trips' [ExStopTime]s
      * @param indexFromInclusive the index (in the day identified by [referenceDateTime]) of the
      * first trip to return, inclusive
      * @param indexToInclusive the index (in the day identified by [referenceDateTime]) of the last
      * trip to return, inclusive
-     * @return a list of trips (with [Trip.tripId] filled in and usable to get updates via
+     * @return a pair with the total number of trips in this specific day as first item, and as
+     * second item a list of trips (with [ExTrip.tripId] filled in and usable to get updates via
      * [getTripById]) paired with integers (ranging from [indexFromInclusive] to [indexToInclusive],
      * both extrema included, and representing the trip index)
      */
     fun getTripsByLine(
         lineId: Int,
         lineType: StopLineType,
-        referenceDateTime: LocalDateTime,
+        referenceDateTime: ZonedDateTime,
         indexFromInclusive: Int,
         indexToInclusive: Int
-    ): List<Pair<Int, Trip>> {
+    ): Pair<Int, List<Pair<Int, ExTrip>>> {
         return getTrips(
             lineType,
             referenceDateTime,
@@ -126,29 +132,30 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
 
     private fun <R> getTrips(
         stopLineType: StopLineType,
-        referenceDateTime: LocalDateTime,
+        referenceDateTime: ZonedDateTime,
         otherParams: String,
         transform: (JSONObject, ZonedTimeHelper) -> R
-    ): List<R> {
-        val romeReferenceDateTime = localToRomeDateTime(referenceDateTime)
-        val zonedTimeHelper = ZonedTimeHelper(localToRomeDateTime(referenceDateTime))
-
-        val params = "?type=${stopLineType.value}&refDateTime=${romeReferenceDateTime.toInstant()}"
-        return JSONArray(httpClient.fetchJson(BASE_URL + TRIPS_PATH + params + otherParams))
-            .map { it: JSONObject -> transform(it, zonedTimeHelper) }
+    ): Pair<Int, List<R>> {
+        val zonedTimeHelper = ZonedTimeHelper(referenceDateTime)
+        val params = "?type=${stopLineType.value}&refDateTime=${referenceDateTime.toInstant()}"
+        val trips = JSONArray(httpClient.fetchJson(BASE_URL + TRIPS_PATH + params + otherParams))
+        return Pair(
+            trips.optJSONObject(0)?.optInt("totaleCorseInLista", 0) ?: 0,
+            trips.map { it: JSONObject -> transform(it, zonedTimeHelper) }
+        )
     }
 
     /**
      * Get updates about the provided trip.
      *
      * @param tripId the id of the trip as returned in [getTripsByStop] or [getTripsByLine]
-     * @param referenceDateTime used to produce the dates in the trips' [StopTime]s
+     * @param referenceDateTime used to produce the dates in the trips' [ExStopTime]s
      * @return the requested trip (obviously with the latest information)
      */
-    fun getTripById(tripId: String, referenceDateTime: LocalDateTime): Trip {
+    fun getTripById(tripId: String, referenceDateTime: ZonedDateTime): ExTrip {
         return tripFromJSONObject(
             JSONObject(httpClient.fetchJson(BASE_URL + TRIP_PATH + tripId)),
-            ZonedTimeHelper(localToRomeDateTime(referenceDateTime))
+            ZonedTimeHelper(referenceDateTime)
         )
     }
 

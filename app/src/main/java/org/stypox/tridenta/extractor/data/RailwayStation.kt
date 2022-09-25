@@ -1,9 +1,9 @@
-package org.stypox.tridenta.data
+package org.stypox.tridenta.extractor.data
 
 import java.time.OffsetTime
 
 data class RailwayStation(
-    val stop: Stop,
+    val stop: ExStop,
     val url: String,
     val categories: List<String>,
     val accessibilityTopics: List<AccessibilityTopic>,

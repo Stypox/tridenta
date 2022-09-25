@@ -1,9 +1,9 @@
 package org.stypox.tridenta.ui.lines
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,21 +11,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.stypox.tridenta.data.Area
-import org.stypox.tridenta.data.shortNameComparator
-import org.stypox.tridenta.extractor.Extractor
-import org.stypox.tridenta.ui.pref.PreferenceKeys
+import org.stypox.tridenta.enums.Area
+import org.stypox.tridenta.repo.LinesRepository
+import org.stypox.tridenta.util.PreferenceKeys
 import javax.inject.Inject
 
 @HiltViewModel
 class LinesViewModel @Inject constructor(
     application: Application,
-    private val extractor: Extractor
+    private val prefs: SharedPreferences,
+    private val linesRepository: LinesRepository
 ) : AndroidViewModel(application) {
 
     private val mutableUiState =
-        PreferenceManager.getDefaultSharedPreferences(application)
-            .getInt(PreferenceKeys.LAST_SELECTED_AREA, -1) // see handling below
+        prefs.getInt(PreferenceKeys.LAST_SELECTED_AREA, -1) // see handling below
             .let { prefArea ->
                 MutableStateFlow(
                     LinesUiState(
@@ -66,10 +65,7 @@ class LinesViewModel @Inject constructor(
             reloadLines()
 
             // save the last selected area to preferences
-            PreferenceManager.getDefaultSharedPreferences(getApplication())
-                .edit()
-                .putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value)
-                .apply()
+            prefs.edit().putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value).apply()
         }
     }
 
@@ -79,7 +75,7 @@ class LinesViewModel @Inject constructor(
 
         viewModelScope.launch {
             val lines = withContext(Dispatchers.IO) {
-                extractor.getLines(areas = arrayOf(mutableUiState.value.selectedArea))
+                linesRepository.getDbLinesByArea(mutableUiState.value.selectedArea)
             }
             mutableUiState.update { linesUiState ->
                 linesUiState.copy(lines = lines, loading = false)

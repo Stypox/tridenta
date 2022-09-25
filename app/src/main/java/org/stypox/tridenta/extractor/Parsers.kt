@@ -2,11 +2,12 @@ package org.stypox.tridenta.extractor
 
 import androidx.annotation.ColorInt
 import org.json.JSONObject
-import org.stypox.tridenta.data.*
+import org.stypox.tridenta.enums.*
+import org.stypox.tridenta.extractor.data.*
 
 
-fun stopFromJSONObject(o: JSONObject): Stop {
-    return Stop(
+fun stopFromJSONObject(o: JSONObject): ExStop {
+    return ExStop(
         stopId = o.getInt("stopId"),
         latitude = o.getDouble("stopLat"),
         longitude = o.getDouble("stopLon"),
@@ -21,13 +22,13 @@ fun stopFromJSONObject(o: JSONObject): Stop {
     )
 }
 
-fun lineFromJSONObject(o: JSONObject): Line {
+fun lineFromJSONObject(o: JSONObject): ExLine {
     val newsItems = if (o.isNull("news"))
         listOf()
     else
         o.getJSONArray("news").map(::newsItemFromJSONObject)
 
-    return Line(
+    return ExLine(
         lineId = o.getInt("routeId"),
         area = areaFromInt(o.getInt("areaId")),
         color = colorFromString(o.optString("routeColor")),
@@ -38,28 +39,28 @@ fun lineFromJSONObject(o: JSONObject): Line {
     )
 }
 
-fun newsItemFromJSONObject(o: JSONObject): NewsItem {
-    return NewsItem(
+fun newsItemFromJSONObject(o: JSONObject): ExNewsItem {
+    return ExNewsItem(
         serviceType = o.getString("serviceType"),
         startDate = dateTimeFromEpochString(o.getString("startDate")),
         endDate = dateTimeFromEpochString(o.getString("endDate")),
         header = o.getString("header"),
         details = o.getString("details"),
         url = o.getString("url"),
-        affectedLineIds = o.getJSONArray("routeIds").map { i: Int -> i }
+        // o.getJSONArray("routeIds") would contain the affected line ids, but it's redundant
     )
 }
 
 fun tripWithIndexFromJSONObject(
     o: JSONObject,
     zonedTimeHelper: ZonedTimeHelper
-) : Pair<Int, Trip> {
+) : Pair<Int, ExTrip> {
     return Pair(o.getInt("indiceCorsaInLista"), tripFromJSONObject(o, zonedTimeHelper))
 }
 
-fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): Trip {
-    return Trip(
-        delay = o.optInt("delay", Trip.DELAY_UNKNOWN),
+fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): ExTrip {
+    return ExTrip(
+        delay = o.optInt("delay", ExTrip.DELAY_UNKNOWN),
         direction = directionFromInt(o.getInt("directionId")),
         lastEventReceivedAt = dateTimeFromISOString(o.optString("lastEventRecivedAt")),
         lineId = o.getInt("routeId"),
@@ -78,8 +79,8 @@ fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): Trip {
 fun stopTimeFromJsonObject(
     o: JSONObject,
     zonedTimeHelper: ZonedTimeHelper
-): StopTime {
-    return StopTime(
+): ExStopTime {
+    return ExStopTime(
         arrivalTime = zonedTimeHelper.timeFromRomeString(o.getString("arrivalTime")),
         departureTime = zonedTimeHelper.timeFromRomeString(o.getString("departureTime")),
         stopId = o.getInt("stopId"),
@@ -91,6 +92,7 @@ fun stopLineTypeFromString(s: String): StopLineType {
 }
 
 fun areaFromInt(i: Int): Area? {
+    // TODO why can i be 0? It does not make sense to have null as the area
     return if (i == 0) null else Area.values().first { area -> area.value == i }
 }
 

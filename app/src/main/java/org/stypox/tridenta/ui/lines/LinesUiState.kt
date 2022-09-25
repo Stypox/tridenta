@@ -1,10 +1,10 @@
 package org.stypox.tridenta.ui.lines
 
-import org.stypox.tridenta.data.Area
-import org.stypox.tridenta.data.Line
+import org.stypox.tridenta.db.data.DbLine
+import org.stypox.tridenta.enums.Area
 
 data class LinesUiState(
-    val lines: List<Line>,
+    val lines: List<DbLine>,
     val selectedArea: Area,
     val showAreaDialog: Boolean,
     val loading: Boolean,

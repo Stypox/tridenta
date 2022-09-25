@@ -1,28 +1,29 @@
-package org.stypox.tridenta.data
+package org.stypox.tridenta.extractor.data
 
 import androidx.annotation.ColorInt
+import org.stypox.tridenta.enums.Area
+import org.stypox.tridenta.enums.StopLineType
 import java.time.OffsetDateTime
 import java.util.regex.Pattern
 import kotlin.math.min
 
-data class Line(
+data class ExLine(
     val lineId: Int,
+    val type: StopLineType,
     val area: Area?,
     @ColorInt val color: Int?,
     val longName: String,
     val shortName: String,
-    val type: StopLineType,
-    val newsItems: List<NewsItem>,
+    val newsItems: List<ExNewsItem>,
 )
 
-data class NewsItem(
+data class ExNewsItem(
     val serviceType: String,
     val startDate: OffsetDateTime,
     val endDate: OffsetDateTime,
     val header: String,
     val details: String,
     val url: String,
-    val affectedLineIds: List<Int>,
 )
 
 private val SHORT_NAME_SPLIT_PATTERN = Pattern.compile("[^0-9]+|[0-9]+")
@@ -45,7 +46,7 @@ private fun splitShortName(shortName: String): ArrayList<Any> {
  * lexicographically except for the fact that numbers are parsed as such and then considered as a
  * whole (and not as independent chars). So e.g. 2 < 13; A51 < B401; ...
  */
-fun shortNameComparator(a: Line, b: Line): Int {
+fun shortNameComparator(a: ExLine, b: ExLine): Int {
     val aSplit = splitShortName(a.shortName)
     val bSplit = splitShortName(b.shortName)
 

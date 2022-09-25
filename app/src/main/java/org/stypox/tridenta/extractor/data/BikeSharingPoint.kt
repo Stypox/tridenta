@@ -1,4 +1,4 @@
-package org.stypox.tridenta.data
+package org.stypox.tridenta.extractor.data
 
 data class BikeSharingPoint(
     val name: String,

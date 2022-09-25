@@ -2,7 +2,7 @@ package org.stypox.tridenta
 
 import okhttp3.OkHttpClient
 import org.junit.Test
-import org.stypox.tridenta.data.StopLineType
+import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.extractor.HttpClient
 import java.time.LocalDateTime
