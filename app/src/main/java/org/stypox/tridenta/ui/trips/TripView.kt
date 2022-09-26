@@ -25,10 +25,7 @@ import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.theme.*
-import org.stypox.tridenta.util.formatDurationMinutes
-import org.stypox.tridenta.util.formatTime
-import org.stypox.tridenta.util.textColorOnBackground
-import org.stypox.tridenta.util.toComposeColor
+import org.stypox.tridenta.util.*
 
 @Composable
 fun TripView(
@@ -93,20 +90,22 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
                 overflow = TextOverflow.Ellipsis
             )
 
-            // delay
-            if (trip.lastEventReceivedAt != null) {
-                val delayText = if (trip.delay < 0)
+            // date or delay
+            val dateOrDelayText = if (trip.lastEventReceivedAt == null) {
+                formatDate(trip.stopTimes.first().arrivalTime)
+            } else {
+                if (trip.delay < 0)
                     stringResource(R.string.early, formatDurationMinutes(-trip.delay))
                 else if (trip.delay == 0)
                     stringResource(R.string.on_time)
                 else
                     stringResource(R.string.late, formatDurationMinutes(trip.delay))
-                BodyText(
-                    text = delayText,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
             }
+            BodyText(
+                text = dateOrDelayText,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
 
         // type + direction
