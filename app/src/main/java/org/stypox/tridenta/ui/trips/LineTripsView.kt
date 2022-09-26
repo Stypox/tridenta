@@ -110,7 +110,7 @@ private fun LineAppBarPreview(@PreviewParameter(SampleUiLineProvider::class) lin
 @Composable
 private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip: UiTrip) {
     LineTripsView(
-        line = SampleUiLineProvider().values.first(),
+        line = SampleUiLineProvider().values.find { uiLine -> uiLine.lineId == trip.line.lineId }!!,
         navigationIcon = { AppBarDrawerIcon {} },
         setReferenceDateTime = {},
         trip = trip,

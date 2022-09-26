@@ -40,7 +40,7 @@ class SampleDbLineProvider : PreviewParameterProvider<DbLine> {
             type = StopLineType.Urban
         ),
         DbLine(
-            lineId = 0,
+            lineId = 109,
             area = Area.Suburban1,
             color = null,
             longName = "Cavalese - Masi di Cavalese",
@@ -48,7 +48,7 @@ class SampleDbLineProvider : PreviewParameterProvider<DbLine> {
             type = StopLineType.Suburban
         ),
         DbLine(
-            lineId = 0,
+            lineId = 201,
             area = Area.Suburban2,
             color = null,
             longName = "Trento-Vezzano-Sarche-Tione",
