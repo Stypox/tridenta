@@ -10,16 +10,27 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.components.ActivityComponent
 import org.stypox.tridenta.R
 import org.stypox.tridenta.ui.lines.LinesView
 import org.stypox.tridenta.ui.nav.Drawer
 import org.stypox.tridenta.ui.nav.DrawerItem
 import org.stypox.tridenta.ui.stops.StopsView
 import org.stypox.tridenta.ui.theme.AppTheme
+import org.stypox.tridenta.ui.trips.LineTripsViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @EntryPoint
+    @InstallIn(ActivityComponent::class)
+    interface ViewModelFactoryProvider {
+        fun lineTripsViewModelFactory(): LineTripsViewModel.Factory
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
