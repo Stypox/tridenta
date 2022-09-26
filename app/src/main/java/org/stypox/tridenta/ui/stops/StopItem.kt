@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Accessible
 import androidx.compose.material.icons.filled.Landscape
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,7 @@ import org.stypox.tridenta.util.StringUtils.levenshteinDistance
 
 private const val MIN_LEVENSHTEIN_DISTANCE = 3
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun StopItem(
     @PreviewParameter(SampleUiStopProvider::class) stop: UiStop,
@@ -83,17 +84,20 @@ fun StopItem(
         }
 
         Column {
+            // TODO add content descriptions, or better long-press labels
             Icon(
                 imageVector = when (stop.type) {
                     StopLineType.Urban -> Icons.Filled.LocationCity
                     StopLineType.Suburban -> Icons.Filled.Landscape
                 },
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
             )
             if (stop.wheelchairAccessible) {
                 Icon(
                     imageVector = Icons.Filled.Accessible,
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
