@@ -27,7 +27,8 @@ import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 private fun LineTripsView(
     line: UiLine,
     navigationIcon: @Composable () -> Unit,
-    trip: UiTrip,
+    openWarnings: () -> Unit,
+    trip: UiTrip?,
     prevEnabled: Boolean,
     onPrevClicked: () -> Unit,
     nextEnabled: Boolean,
@@ -35,24 +36,36 @@ private fun LineTripsView(
 ) {
     Scaffold(
         topBar = {
-            LineAppBar(line = line, navigationIcon = navigationIcon)
+            LineAppBar(
+                line = line,
+                navigationIcon = navigationIcon,
+                openWarnings = openWarnings
+            )
         },
         content = { paddingValues ->
-            TripView(
-                trip = trip,
-                prevEnabled = prevEnabled,
-                onPrevClicked = onPrevClicked,
-                nextEnabled = nextEnabled,
-                onNextClicked = onNextClicked,
-                modifier = Modifier.padding(paddingValues)
-            )
+            if (trip == null) {
+                // TODO show loading or no-trip-found
+            } else {
+                TripView(
+                    trip = trip,
+                    prevEnabled = prevEnabled,
+                    onPrevClicked = onPrevClicked,
+                    nextEnabled = nextEnabled,
+                    onNextClicked = onNextClicked,
+                    modifier = Modifier.padding(paddingValues)
+                )
+            }
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LineAppBar(line: UiLine, navigationIcon: @Composable () -> Unit) {
+private fun LineAppBar(
+    line: UiLine,
+    navigationIcon: @Composable () -> Unit,
+    openWarnings: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Row(
@@ -66,7 +79,7 @@ private fun LineAppBar(line: UiLine, navigationIcon: @Composable () -> Unit) {
         navigationIcon = navigationIcon,
         actions = {
             if (line.newsItems.isNotEmpty()) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = openWarnings) {
                     Icon(
                         imageVector = Icons.Filled.Warning,
                         contentDescription = stringResource(R.string.news_and_warnings)
@@ -86,7 +99,7 @@ private fun LineAppBar(line: UiLine, navigationIcon: @Composable () -> Unit) {
 @Preview
 @Composable
 private fun LineAppBarPreview(@PreviewParameter(SampleUiLineProvider::class) line: UiLine) {
-    LineAppBar(line = line) { AppBarDrawerIcon {} }
+    LineAppBar(line = line, navigationIcon = { AppBarDrawerIcon {} }, openWarnings = {})
 }
 
 @Preview
@@ -95,6 +108,7 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
     LineTripsView(
         line = SampleUiLineProvider().values.first(),
         navigationIcon = { AppBarDrawerIcon {} },
+        openWarnings = {},
         trip = trip,
         prevEnabled = true,
         onPrevClicked = {},
