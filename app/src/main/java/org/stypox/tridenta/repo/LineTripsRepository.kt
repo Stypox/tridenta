@@ -20,23 +20,14 @@ class LineTripsRepository @Inject constructor(
 
     private val days = HashMap<Triple<Int, StopLineType, LocalDate>, TripsInDayMap>()
 
-    fun isLastIndex(
-        lineId: Int,
-        lineType: StopLineType,
-        referenceDateTime: ZonedDateTime,
-        index: Int
-    ): Boolean {
-        return days[Triple(lineId, lineType, referenceDateTime.toLocalDate())]
-            ?.tripsInDayCount
-            ?.let { index + 1 >= it }
-            ?: false
-    }
-
+    /**
+     * @return the triple (number of trips in the day, index of the trip, the trip)
+     */
     fun getUiTrip(
         lineId: Int,
         lineType: StopLineType,
         referenceDateTime: ZonedDateTime
-    ): Pair<Int, UiTrip> {
+    ): Triple<Int, Int, UiTrip> {
         val key = Triple(lineId, lineType, referenceDateTime.toLocalDate())
         if (days[key]?.isClosestOnServerLoaded(referenceDateTime) != true) {
             handleNewTrips(
@@ -50,8 +41,9 @@ class LineTripsRepository @Inject constructor(
             )
         }
 
-        return days[key]!!.getClosestAtHalf(referenceDateTime).let {
-            Pair(it.first, loadUiTripFromExTrip(it.second))
+        val day = days[key]!!
+        return day.getClosestAtHalf(referenceDateTime).let {
+            Triple(day.tripsInDayCount, it.first, loadUiTripFromExTrip(it.second))
         }
     }
 
