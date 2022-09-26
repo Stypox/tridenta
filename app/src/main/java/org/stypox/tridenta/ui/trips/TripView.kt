@@ -70,10 +70,10 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
             color = shortNameBackground,
             shape = MaterialTheme.shapes.medium,
         ) {
-            HeadlineText(
+            TitleText(
                 text = trip.line.shortName,
                 color = textColorOnBackground(shortNameBackground),
-                modifier = Modifier.padding(12.dp, 6.dp),
+                modifier = Modifier.padding(8.dp),
                 maxLines = 1,
             )
         }
