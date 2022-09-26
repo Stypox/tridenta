@@ -24,7 +24,14 @@
     <string name="back">Back</string>
     <string name="clear">Clear</string>
     <string name="search_stop_hint">Search a stop…</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="news_and_warnings">News and warnings</string>
     <string name="trips_for_line">Trips -</string>
+    <string name="on_time">on time</string>
+    <string name="late">%1$s late</string>
+    <string name="early">%1$s early</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="last_update">Last update: %1$s</string>
+    <string name="last_checked">Last checked: %1$s</string>
 </resources>
