@@ -6,6 +6,7 @@ import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.extractor.HttpClient
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -22,6 +23,6 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect2() {
         val extractor = Extractor(HttpClient(OkHttpClient()))
-        println(extractor.getTripsByStop(247, StopLineType.Urban, LocalDateTime.now(), 1))
+        println(extractor.getTripsByStop(247, StopLineType.Urban, ZonedDateTime.now(), 1))
     }
 }
