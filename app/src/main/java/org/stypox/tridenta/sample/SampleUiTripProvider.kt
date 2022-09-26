@@ -20,11 +20,28 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
             delay = 1,
             direction = Direction.Backward,
             lastEventReceivedAt = referenceDateTime.minusMinutes(3),
-            line = sampleDbLines[0],
+            line = sampleDbLines.first(),
             headSign = "Conci \"Villazzano 3\"",
             tripId = "0003726592022061120220911",
             type = StopLineType.Urban,
             completedStops = 2,
+            stopTimes = sampleDbStops.mapIndexed { index, dbStop ->
+                UiStopTime(
+                    arrivalTime = referenceDateTime.plusMinutes((index - 2).toLong()),
+                    departureTime = referenceDateTime.plusMinutes((index + index % 2 - 2).toLong()),
+                    stop = dbStop
+                )
+            }
+        ),
+        UiTrip(
+            delay = 0,
+            direction = Direction.Forward,
+            lastEventReceivedAt = null,
+            line = sampleDbLines.last(),
+            headSign = "Trento-Vezzano-Sarche-Tione",
+            tripId = "0003726592022061120220911",
+            type = StopLineType.Suburban,
+            completedStops = 0,
             stopTimes = sampleDbStops.mapIndexed { index, dbStop ->
                 UiStopTime(
                     arrivalTime = referenceDateTime.plusMinutes((index - 2).toLong()),
