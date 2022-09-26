@@ -137,15 +137,18 @@ private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
             ) {
-                Icon(
-                    imageVector = if (index < trip.completedStops) {
-                        Icons.Filled.CheckCircle
-                    } else {
-                        Icons.Filled.RadioButtonUnchecked
-                    },
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (trip.lastEventReceivedAt != null) {
+                    Icon(
+                        imageVector = if (index < trip.completedStops) {
+                            Icons.Filled.CheckCircle
+                        } else {
+                            Icons.Filled.RadioButtonUnchecked
+                        },
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 6.dp)
+                    )
+                }
 
                 BodyText(
                     text = stopTime.stop.name,
@@ -153,10 +156,12 @@ private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .weight(1.0f)
-                        .padding(horizontal = 6.dp)
+                        .padding(end = 6.dp)
                 )
 
-                val isLate = index >= trip.completedStops && trip.delay > 0
+                val isLate = trip.lastEventReceivedAt != null
+                        && index >= trip.completedStops
+                        && trip.delay > 0
                 val lateDecoration = if (isLate) TextDecoration.LineThrough else null
 
                 LabelText(
