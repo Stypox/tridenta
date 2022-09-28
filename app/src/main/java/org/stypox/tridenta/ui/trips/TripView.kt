@@ -3,6 +3,7 @@ package org.stypox.tridenta.ui.trips
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FloatingActionButton
@@ -10,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -139,7 +141,16 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
 
 @Composable
 private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
+    val listState = rememberLazyListState()
+    LaunchedEffect(trip.tripId) {
+        // when the user changes trip, smooth scroll to the last completed stop
+        listState.animateScrollToItem(maxOf(0, trip.completedStops - 5))
+    }
+
+    LazyColumn(
+        modifier = modifier,
+        state = listState
+    ) {
         itemsIndexed(trip.stopTimes) { index, stopTime ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
