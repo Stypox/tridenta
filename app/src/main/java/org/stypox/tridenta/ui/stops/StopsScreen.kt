@@ -11,29 +11,30 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.R
 import org.stypox.tridenta.repo.data.UiStop
+import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.nav.SearchTopAppBar
 
+@Destination
 @Composable
-fun StopsView(
-    navigationIcon: @Composable () -> Unit,
-    stopsViewModel: StopsViewModel = viewModel()
-) {
+fun StopsScreen(navigationIconWrapper: NavigationIconWrapper) {
+    val stopsViewModel: StopsViewModel = hiltViewModel()
     val stopsUiState by stopsViewModel.uiState.collectAsState()
 
-    StopsView(
+    StopsScreen(
         stops = stopsUiState.stops,
         searchString = stopsUiState.searchString,
         setSearchString = stopsViewModel::setSearchString,
-        navigationIcon = navigationIcon
+        navigationIcon = navigationIconWrapper.navigationIcon
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StopsView(
+private fun StopsScreen(
     stops: List<UiStop>,
     searchString: String,
     setSearchString: (String) -> Unit,

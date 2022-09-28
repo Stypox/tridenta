@@ -57,6 +57,13 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    applicationVariants.all { variant ->
+        kotlin.sourceSets {
+            getByName(variant.name) {
+                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -81,6 +88,10 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.0.0-beta02'
     implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
 
+    // Navigation
+    implementation "io.github.raamcosta.compose-destinations:core:$destinations_version"
+    ksp "io.github.raamcosta.compose-destinations:ksp:$destinations_version"
+
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
@@ -89,6 +100,7 @@ dependencies {
 
     // Hilt (ksp is still not supported, using kapt instead)
     implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     androidTestAnnotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"

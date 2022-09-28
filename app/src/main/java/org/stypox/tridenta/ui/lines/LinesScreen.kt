@@ -1,5 +1,6 @@
 package org.stypox.tridenta.ui.lines
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,39 +21,49 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.sample.SampleDbLineProvider
+import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
+import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
+import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.theme.AppTheme
 
+@Destination
 @Composable
-fun LinesView(
-    navigationIcon: @Composable () -> Unit,
-    linesViewModel: LinesViewModel = viewModel()
+fun LinesScreen(
+    navigationIconWrapper: NavigationIconWrapper,
+    navigator: DestinationsNavigator
 ) {
+    val linesViewModel: LinesViewModel = hiltViewModel()
     val linesUiState by linesViewModel.uiState.collectAsState()
 
-    LinesView(
+    LinesScreen(
         lines = linesUiState.lines,
         selectedArea = linesUiState.selectedArea,
         setSelectedArea = linesViewModel::setSelectedArea,
         showAreaDialog = linesUiState.showAreaDialog,
         setShowAreaDialog = linesViewModel::setShowAreaDialog,
-        navigationIcon = navigationIcon
+        navigationIcon = navigationIconWrapper.navigationIcon,
+        navigator = navigator
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LinesView(
+private fun LinesScreen(
     lines: List<DbLine>,
     selectedArea: Area,
     setSelectedArea: (Area) -> Unit,
     showAreaDialog: Boolean,
     setShowAreaDialog: (Boolean) -> Unit,
-    navigationIcon: @Composable () -> Unit
+    navigationIcon: @Composable () -> Unit,
+    navigator: DestinationsNavigator
 ) {
     if (showAreaDialog) {
         SelectAreaDialog(
@@ -92,7 +103,12 @@ private fun LinesView(
                     .fillMaxWidth()
             ) {
                 items(lines) {
-                    LineItem(line = it)
+                    LineItem(
+                        line = it,
+                        modifier = Modifier.clickable {
+                            navigator.navigate(LineTripsScreenDestination(it.lineId, it.type))
+                        }
+                    )
                 }
             }
         }
@@ -148,7 +164,7 @@ private fun LinesViewPreview() {
     val selectedArea = rememberSaveable { mutableStateOf(Area.Suburban3) }
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
-        LinesView(
+        LinesScreen(
             lines = SampleDbLineProvider().values.toList(),
             selectedArea = selectedArea.value,
             setSelectedArea = {
@@ -157,7 +173,8 @@ private fun LinesViewPreview() {
             },
             showAreaDialog = showAreaDialog.value,
             setShowAreaDialog = { showAreaDialog.value = it },
-            navigationIcon = { }
+            navigationIcon = { AppBarDrawerIcon {} },
+            navigator = EmptyDestinationsNavigator
         )
     }
 }

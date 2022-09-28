@@ -6,6 +6,7 @@ buildscript {
         lifecycle_version = '2.5.1'
         room_version = '2.4.3'
         ksp_version = '1.7.10-1.0.6'
+        destinations_version = '1.7.21-beta'
     }
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
