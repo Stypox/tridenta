@@ -27,7 +27,7 @@ class LineTripsRepository @Inject constructor(
         lineId: Int,
         lineType: StopLineType,
         referenceDateTime: ZonedDateTime
-    ): Triple<Int, Int, UiTrip> {
+    ): Triple<Int, Int, UiTrip?> {
         val key = Triple(lineId, lineType, referenceDateTime.toLocalDate())
         if (days[key]?.isClosestOnServerLoaded(referenceDateTime) != true) {
             handleNewTrips(
@@ -42,9 +42,9 @@ class LineTripsRepository @Inject constructor(
         }
 
         val day = days[key]!!
-        return day.getClosestAtHalf(referenceDateTime).let {
-            Triple(day.tripsInDayCount, it.first, loadUiTripFromExTrip(it.second))
-        }
+        return day.getClosestAtHalf(referenceDateTime)
+            ?.let { Triple(day.tripsInDayCount, it.first, loadUiTripFromExTrip(it.second)) }
+            ?: Triple(day.tripsInDayCount, 0, null)
     }
 
     fun getUiTrip(
@@ -152,7 +152,7 @@ class LineTripsRepository @Inject constructor(
         /**
          * @return the trip whose half date time is closest to the provided date time
          */
-        fun getClosestAtHalf(referenceDateTime: ZonedDateTime): Pair<Int, ExTrip> {
+        fun getClosestAtHalf(referenceDateTime: ZonedDateTime): Pair<Int, ExTrip>? {
             return this.asSequence()
                 .sortedWith(
                     Comparator.comparing<Map.Entry<Int, ExTrip>?, Long?> {
@@ -160,8 +160,8 @@ class LineTripsRepository @Inject constructor(
                                 referenceDateTime.toEpochSecond())
                     }.then(Comparator.comparing { it.key })
                 )
-                .first()
-                .toPair()
+                .firstOrNull()
+                ?.toPair()
         }
     }
 
