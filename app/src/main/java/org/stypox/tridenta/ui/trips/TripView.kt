@@ -21,6 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
@@ -35,31 +37,38 @@ import org.stypox.tridenta.util.*
 @Composable
 fun TripView(
     trip: UiTrip,
+    loading: Boolean,
+    onReload: () -> Unit,
     prevEnabled: Boolean,
     onPrevClicked: () -> Unit,
     nextEnabled: Boolean,
     onNextClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = loading),
+        onRefresh = onReload
     ) {
-        TripViewTopRow(
-            trip = trip,
-            modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 16.dp)
-        )
-        TripViewStops(
-            trip = trip,
-            modifier = Modifier.weight(1.0f)
-        )
-        TripViewBottomRow(
-            trip = trip,
-            prevEnabled = prevEnabled,
-            onPrevClicked = onPrevClicked,
-            nextEnabled = nextEnabled,
-            onNextClicked = onNextClicked,
-            modifier = Modifier
-        )
+        Column(
+            modifier = modifier
+        ) {
+            TripViewTopRow(
+                trip = trip,
+                modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 16.dp)
+            )
+            TripViewStops(
+                trip = trip,
+                modifier = Modifier.weight(1.0f)
+            )
+            TripViewBottomRow(
+                trip = trip,
+                prevEnabled = prevEnabled,
+                onPrevClicked = onPrevClicked,
+                nextEnabled = nextEnabled,
+                onNextClicked = onNextClicked,
+                modifier = Modifier
+            )
+        }
     }
 }
 
@@ -289,6 +298,8 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
         ) {
             TripView(
                 trip = trip,
+                loading = true,
+                onReload = {},
                 prevEnabled = true,
                 onPrevClicked = {},
                 nextEnabled = false,

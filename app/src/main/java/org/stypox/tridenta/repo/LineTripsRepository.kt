@@ -83,6 +83,21 @@ class LineTripsRepository @Inject constructor(
         return loadUiTripFromExTrip(days[key]!![index]!!)
     }
 
+    fun reloadUiTrip(uiTrip: UiTrip, index: Int, referenceDateTime: ZonedDateTime): UiTrip {
+        val exTrip = extractor.getTripById(uiTrip.tripId, referenceDateTime)
+        val key = Triple(uiTrip.line.lineId, uiTrip.line.type, referenceDateTime.toLocalDate())
+        days[key]?.put(index, exTrip)
+
+        // replace only info that might have changed and avoid loading line and stops data again
+        return uiTrip.copy(
+            delay = exTrip.delay,
+            direction = exTrip.direction,
+            lastEventReceivedAt = exTrip.lastEventReceivedAt,
+            headSign = exTrip.headSign,
+            completedStops = exTrip.completedStops
+        )
+    }
+
 
     private fun handleNewTrips(
         key: Triple<Int, StopLineType, LocalDate>,

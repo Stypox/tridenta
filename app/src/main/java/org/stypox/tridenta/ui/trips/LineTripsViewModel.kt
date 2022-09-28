@@ -92,6 +92,21 @@ class LineTripsViewModel @Inject constructor(
         }
     }
 
+    fun onReload() {
+        val previousTrip = uiState.value.trip ?: return
+        mutableUiState.update { it.copy(loading = true) }
+        viewModelScope.launch {
+            val trip = withContext(Dispatchers.IO) {
+                tripsRepository.reloadUiTrip(
+                    uiTrip = previousTrip,
+                    index = uiState.value.tripIndex,
+                    referenceDateTime = uiState.value.referenceDateTime
+                )
+            }
+            mutableUiState.update { it.copy(trip = trip, loading = false) }
+        }
+    }
+
     fun onPrevClicked() {
         loadIndex(uiState.value.tripIndex - 1)
     }
