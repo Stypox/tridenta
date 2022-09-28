@@ -1,5 +1,6 @@
 package org.stypox.tridenta.ui.stops
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiStop
 import org.stypox.tridenta.sample.SampleUiStopProvider
@@ -34,6 +36,7 @@ private const val MIN_LEVENSHTEIN_DISTANCE = 3
 @Composable
 fun StopItem(
     @PreviewParameter(SampleUiStopProvider::class) stop: UiStop,
+    onLineClick: ((DbLine) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     fun shouldBeShown(description: String): Boolean {
@@ -78,7 +81,11 @@ fun StopItem(
                 modifier = Modifier.padding(top = 4.dp)
             ) {
                 items(stop.lines) { line ->
-                    LineShortName(color = line.color, shortName = line.shortName)
+                    LineShortName(
+                        color = line.color,
+                        shortName = line.shortName,
+                        modifier = onLineClick?.let { Modifier.clickable { it(line) } } ?: Modifier
+                    )
                 }
             }
         }
