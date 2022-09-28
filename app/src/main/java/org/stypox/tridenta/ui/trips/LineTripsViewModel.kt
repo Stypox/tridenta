@@ -1,13 +1,11 @@
 package org.stypox.tridenta.ui.trips
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,17 +13,24 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.stypox.tridenta.repo.LineTripsRepository
-import org.stypox.tridenta.repo.data.UiLine
+import org.stypox.tridenta.repo.LinesRepository
+import org.stypox.tridenta.ui.navArgs
 import java.time.ZonedDateTime
+import javax.inject.Inject
 
-class LineTripsViewModel @AssistedInject constructor(
+@HiltViewModel
+class LineTripsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     application: Application,
-    private val tripsRepository: LineTripsRepository,
-    @Assisted private val line: UiLine
+    private val linesRepository: LinesRepository,
+    private val tripsRepository: LineTripsRepository
 ) : AndroidViewModel(application) {
+
+    private val navArgs = savedStateHandle.navArgs<LineTripsScreenNavArgs>()
 
     private val mutableUiState = MutableStateFlow(
         LineTripsUiState(
+            line = null,
             tripsInDayCount = 0,
             tripIndex = 0,
             trip = null,
@@ -38,7 +43,17 @@ class LineTripsViewModel @AssistedInject constructor(
     val uiState = mutableUiState.asStateFlow()
 
     init {
+        loadLine()
         setReferenceDateTime(ZonedDateTime.now())
+    }
+
+    private fun loadLine() {
+        viewModelScope.launch {
+            val line = withContext(Dispatchers.IO) {
+                linesRepository.getUiLine(navArgs.lineId, navArgs.lineType)
+            }
+            mutableUiState.update { it.copy(line = line) }
+        }
     }
 
     fun setReferenceDateTime(referenceDateTime: ZonedDateTime) {
@@ -57,8 +72,8 @@ class LineTripsViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val (tripsInDayCount, tripIndex, trip) = withContext(Dispatchers.IO) {
                 tripsRepository.getUiTrip(
-                    lineId = line.lineId,
-                    lineType = line.type,
+                    lineId = navArgs.lineId,
+                    lineType = navArgs.lineType,
                     referenceDateTime = referenceDateTime
                 )
             }
@@ -85,7 +100,7 @@ class LineTripsViewModel @AssistedInject constructor(
         loadIndex(uiState.value.tripIndex + 1)
     }
 
-    fun loadIndex(index: Int) {
+    private fun loadIndex(index: Int) {
         if (index < 0 || index >= uiState.value.tripsInDayCount) {
             return // this should never happen, but just in case
         }
@@ -95,8 +110,8 @@ class LineTripsViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val trip = withContext(Dispatchers.IO) {
                 tripsRepository.getUiTrip(
-                    lineId = line.lineId,
-                    lineType = line.type,
+                    lineId = navArgs.lineId,
+                    lineType = navArgs.lineType,
                     referenceDateTime = uiState.value.referenceDateTime,
                     index = index
                 )
@@ -109,21 +124,6 @@ class LineTripsViewModel @AssistedInject constructor(
                     prevEnabled = index > 0,
                     nextEnabled = index < uiState.value.tripsInDayCount - 1,
                 )
-            }
-        }
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(line: UiLine): LineTripsViewModel
-    }
-
-    companion object {
-        @Suppress("UNCHECKED_CAST")
-        fun provideFactory(factory: Factory, line: UiLine):
-                ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return factory.create(line) as T
             }
         }
     }

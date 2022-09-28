@@ -1,9 +1,11 @@
 package org.stypox.tridenta.ui.trips
 
+import org.stypox.tridenta.repo.data.UiLine
 import org.stypox.tridenta.repo.data.UiTrip
 import java.time.ZonedDateTime
 
 data class LineTripsUiState(
+    val line: UiLine?, // <- when null, nothing was loaded yet
     val tripsInDayCount: Int,
     val tripIndex: Int, // <- makes sense only if trip != null
     val trip: UiTrip?,
