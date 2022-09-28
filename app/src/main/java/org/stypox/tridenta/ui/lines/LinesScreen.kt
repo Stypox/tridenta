@@ -105,9 +105,11 @@ private fun LinesScreen(
                 items(lines) {
                     LineItem(
                         line = it,
-                        modifier = Modifier.clickable {
-                            navigator.navigate(LineTripsScreenDestination(it.lineId, it.type))
-                        }
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navigator.navigate(LineTripsScreenDestination(it.lineId, it.type))
+                            }
                     )
                 }
             }
