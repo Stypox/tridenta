@@ -15,7 +15,7 @@ fun dateTimeFromEpochString(s: String): OffsetDateTime {
 }
 
 fun dateTimeFromISOString(s: String?): OffsetDateTime? {
-    return if (s.isNullOrEmpty()) null else OffsetDateTime.parse(s)
+    return if (s.isNullOrEmpty() || s == "null") null else OffsetDateTime.parse(s)
 }
 
 fun localToRomeDateTime(localDateTime: LocalDateTime): ZonedDateTime {
@@ -27,12 +27,22 @@ fun localToRomeDateTime(localDateTime: LocalDateTime): ZonedDateTime {
 class ZonedTimeHelper(private var referenceDateTime: ZonedDateTime) {
     private var prevTime = LocalTime.of(0, 0, 0) // midnight, no time can come before this
 
-    fun timeFromRomeString(s: String): OffsetDateTime {
+    fun timeFromRomeString(s: String?): OffsetDateTime? {
+        if (s.isNullOrEmpty() || s == "null") {
+            return null
+        }
+
+        val isoString = if (s.startsWith("24:")) {
+            "00:" + s.substring(3)
+        } else {
+            s
+        }
+
         // If the time went e.g. from 23:58 to 00:01, then prevTime-time will be 23 hours,
         // and we can conclude that a day has passed. We use -2 to make sure that if the
         // difference is less than 2 hours, then probably this is an off-by-one-minute
         // error, and a day has not actually elapsed (e.g. from 18:02 to 18:01).
-        val time = LocalTime.parse(s)
+        val time = LocalTime.parse(isoString)
         if (ChronoUnit.HOURS.between(prevTime, time) <= -2) {
             referenceDateTime = referenceDateTime.plusDays(1)
         }

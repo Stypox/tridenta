@@ -24,7 +24,10 @@ import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiTripProvider
-import org.stypox.tridenta.ui.theme.*
+import org.stypox.tridenta.ui.theme.AppTheme
+import org.stypox.tridenta.ui.theme.BodyText
+import org.stypox.tridenta.ui.theme.LabelText
+import org.stypox.tridenta.ui.theme.TitleText
 import org.stypox.tridenta.util.*
 
 @Composable
@@ -92,7 +95,12 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
 
             // date or delay
             val dateOrDelayText = if (trip.lastEventReceivedAt == null) {
-                formatDate(trip.stopTimes.first().arrivalTime)
+                trip.stopTimes.asSequence()
+                    .map { it.arrivalTime }
+                    .filter { it != null }
+                    .first()
+                    ?.let { firstArrival -> formatDate(firstArrival) }
+                    ?: stringResource(R.string.no_date_time_information)
             } else {
                 if (trip.delay < 0)
                     stringResource(R.string.early, formatDurationMinutes(-trip.delay))
@@ -164,32 +172,43 @@ private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
                         && trip.delay > 0
                 val lateDecoration = if (isLate) TextDecoration.LineThrough else null
 
-                LabelText(
-                    text = formatTime(stopTime.arrivalTime),
-                    maxLines = 1,
-                    textDecoration = lateDecoration
-                )
-                if (stopTime.arrivalTime != stopTime.departureTime) {
-                    Icon(
-                        imageVector = Icons.Filled.DoubleArrow,
-                        contentDescription = null,
-                        modifier = Modifier.size(8.dp)
-                    )
+                if (stopTime.arrivalTime != null) {
                     LabelText(
-                        text = formatTime(stopTime.departureTime),
+                        text = formatTime(stopTime.arrivalTime),
                         maxLines = 1,
                         textDecoration = lateDecoration
                     )
                 }
+                if (stopTime.arrivalTime != stopTime.departureTime) {
+                    if (stopTime.arrivalTime != null) {
+                        Icon(
+                            imageVector = Icons.Filled.DoubleArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(8.dp)
+                        )
+                    }
+                    if (stopTime.departureTime != null) {
+                        LabelText(
+                            text = formatTime(stopTime.departureTime),
+                            maxLines = 1,
+                            textDecoration = lateDecoration
+                        )
+                    }
+                }
                 if (isLate) {
-                    LabelText(
-                        text = formatTime(
-                            stopTime.arrivalTime.plusMinutes(trip.delay.toLong())
-                        ),
-                        modifier = Modifier.padding(start = 5.dp),
-                        color = MaterialTheme.colorScheme.error,
-                        maxLines = 1
-                    )
+                    sequenceOf(stopTime.arrivalTime, stopTime.departureTime)
+                        .filter { it != null }
+                        .firstOrNull()
+                        ?.let { time ->
+                            LabelText(
+                                text = formatTime(
+                                    time.plusMinutes(trip.delay.toLong())
+                                ),
+                                modifier = Modifier.padding(start = 5.dp),
+                                color = MaterialTheme.colorScheme.error,
+                                maxLines = 1
+                            )
+                        }
                 }
             }
         }

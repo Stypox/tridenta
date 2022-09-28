@@ -16,20 +16,28 @@ data class ExTrip(
     val completedStops: Int,
     val stopTimes: List<ExStopTime>,
 ) {
-    fun getHalfDateTime(): OffsetDateTime {
+    fun getHalfDateTime(): OffsetDateTime? {
+        val firstArrival = getServerSortDateTime()
+        val lastDeparture = stopTimes.asSequence()
+            .map { it.departureTime }
+            .filter { it != null }
+            .lastOrNull()
+
+        if (firstArrival == null || lastDeparture == null) {
+            return null
+        }
+
         return OffsetDateTime.ofInstant(
             Instant.ofEpochSecond(
-                stopTimes.first().arrivalTime.toEpochSecond() + (
-                        stopTimes.last().departureTime.toEpochSecond() -
-                                stopTimes.first().arrivalTime.toEpochSecond()
-                        ) / 2
+                firstArrival.toEpochSecond() +
+                        (lastDeparture.toEpochSecond() - firstArrival.toEpochSecond()) / 2
             ),
-            stopTimes.first().arrivalTime.offset
+            firstArrival.offset
         )
     }
 
-    fun getServerSortDateTime(): OffsetDateTime {
-        return stopTimes.first().arrivalTime
+    fun getServerSortDateTime(): OffsetDateTime? {
+        return stopTimes.asSequence().map { it.arrivalTime }.filter { it != null }.firstOrNull()
     }
 
     companion object {
@@ -38,7 +46,7 @@ data class ExTrip(
 }
 
 data class ExStopTime(
-    val arrivalTime: OffsetDateTime,
-    val departureTime: OffsetDateTime,
+    val arrivalTime: OffsetDateTime?,
+    val departureTime: OffsetDateTime?,
     val stopId: Int,
 )

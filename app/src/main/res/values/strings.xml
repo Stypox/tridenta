@@ -32,6 +32,7 @@
     <string name="early">%1$s early</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="no_date_time_information">No date/time information</string>
     <string name="last_update">Last update: %1$s</string>
     <string name="last_checked">Last checked: %1$s</string>
     <string name="choose_date_time">Choose date and time</string>

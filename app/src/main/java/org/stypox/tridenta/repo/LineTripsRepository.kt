@@ -127,7 +127,7 @@ class LineTripsRepository @Inject constructor(
             val closestTwo = this.asSequence()
                 .sortedWith(
                     Comparator.comparing<Map.Entry<Int, ExTrip>?, Long?> {
-                        abs(it.value.getServerSortDateTime().toEpochSecond() -
+                        abs((it.value.getServerSortDateTime()?.toEpochSecond() ?: 0) -
                                 referenceDateTime.toEpochSecond())
                     }.then(Comparator.comparing { it.key })
                 )
@@ -142,9 +142,9 @@ class LineTripsRepository @Inject constructor(
 
             // if this is true, then the closest trip is ready, as the date is in between two trips
             // with subsequent indexes, so there are surely no not-loaded trips in the middle
-            return closestTwo[0].value.getServerSortDateTime().toEpochSecond() <=
+            return (closestTwo[0].value.getServerSortDateTime()?.toEpochSecond() ?: 0) <=
                     referenceDateTime.toEpochSecond() &&
-                    closestTwo[1].value.getServerSortDateTime().toEpochSecond() >=
+                    (closestTwo[1].value.getServerSortDateTime()?.toEpochSecond() ?: 0) >=
                     referenceDateTime.toEpochSecond() &&
                     closestTwo[0].key + 1 == closestTwo[1].key
         }
@@ -156,10 +156,12 @@ class LineTripsRepository @Inject constructor(
             return this.asSequence()
                 .sortedWith(
                     Comparator.comparing<Map.Entry<Int, ExTrip>?, Long?> {
-                        abs(it.value.getHalfDateTime().toEpochSecond() -
+                        abs((it.value.getHalfDateTime()?.toEpochSecond() ?: 0) -
                                 referenceDateTime.toEpochSecond())
                     }.then(Comparator.comparing { it.key })
-                ).first().toPair()
+                )
+                .first()
+                .toPair()
         }
     }
 

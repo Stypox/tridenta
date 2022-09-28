@@ -59,6 +59,11 @@ fun tripWithIndexFromJSONObject(
 }
 
 fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): ExTrip {
+    val stopTimes = o.getJSONArray("stopTimes")
+        .map { it: JSONObject -> it }
+        // make sure they are sorted by the stop index
+        .sortedBy { it.getInt("stopSequence") }
+        .map { stopTimeFromJsonObject(it, zonedTimeHelper) }
     return ExTrip(
         delay = o.optInt("delay", ExTrip.DELAY_UNKNOWN),
         direction = directionFromInt(o.getInt("directionId")),
@@ -67,12 +72,8 @@ fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): ExTrip 
         headSign = o.getString("tripHeadsign"),
         tripId = o.getString("tripId"),
         type = stopLineTypeFromString(o.getString("type")),
-        completedStops = o.getInt("stopLast"),
-        stopTimes = o.getJSONArray("stopTimes")
-            .map { it: JSONObject -> it }
-            // make sure they are sorted by the stop index
-            .sortedBy { it.getInt("stopSequence") }
-            .map { stopTimeFromJsonObject(it, zonedTimeHelper) }
+        completedStops = stopTimes.indexOfFirst { it.stopId == o.getInt("stopLast") },
+        stopTimes = stopTimes
     )
 }
 
