@@ -1,7 +1,6 @@
 package org.stypox.tridenta.ui.trips
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -134,6 +133,7 @@ class LineTripsViewModel @Inject constructor(
 
             mutableUiState.update {
                 it.copy(
+                    loading = false,
                     tripIndex = index,
                     trip = trip,
                     prevEnabled = index > 0,

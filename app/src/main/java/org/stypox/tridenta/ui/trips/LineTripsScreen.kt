@@ -71,20 +71,17 @@ private fun LineTripsScreen(
             )
         },
         content = { paddingValues ->
-            if (trip == null) {
-                // TODO show loading or no-trip-found
-            } else {
-                TripView(
-                    trip = trip,
-                    loading = loading,
-                    onReload = onReload,
-                    prevEnabled = prevEnabled,
-                    onPrevClicked = onPrevClicked,
-                    nextEnabled = nextEnabled,
-                    onNextClicked = onNextClicked,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+            TripView(
+                trip = trip,
+                setReferenceDateTime = setReferenceDateTime,
+                loading = loading,
+                onReload = onReload,
+                prevEnabled = prevEnabled,
+                onPrevClicked = onPrevClicked,
+                nextEnabled = nextEnabled,
+                onNextClicked = onNextClicked,
+                modifier = Modifier.padding(paddingValues)
+            )
         }
     )
 }
@@ -113,12 +110,6 @@ private fun LineAppBar(
         },
         navigationIcon = navigationIcon,
         actions = {
-            IconButton(onClick = { /* TODO */ }) {
-                Icon(
-                    imageVector = Icons.Filled.EditCalendar,
-                    contentDescription = stringResource(R.string.choose_date_time)
-                )
-            }
             if (line != null && line.newsItems.isNotEmpty()) {
                 IconButton(onClick = { /* TODO */ }) {
                     Icon(

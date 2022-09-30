@@ -36,4 +36,5 @@
     <string name="last_update">Last update: %1$s</string>
     <string name="last_checked">Last checked: %1$s</string>
     <string name="choose_date_time">Choose date and time</string>
+    <string name="reload">Reload</string>
 </resources>

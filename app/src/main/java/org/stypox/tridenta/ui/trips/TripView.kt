@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package org.stypox.tridenta.ui.trips
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -10,19 +15,18 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
@@ -33,10 +37,12 @@ import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.ui.theme.TitleText
 import org.stypox.tridenta.util.*
+import java.time.ZonedDateTime
 
 @Composable
 fun TripView(
-    trip: UiTrip,
+    trip: UiTrip?,
+    setReferenceDateTime: (ZonedDateTime) -> Unit,
     loading: Boolean,
     onReload: () -> Unit,
     prevEnabled: Boolean,
@@ -45,30 +51,46 @@ fun TripView(
     onNextClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = loading),
-        onRefresh = onReload
-    ) {
-        Column(
-            modifier = modifier
-        ) {
-            TripViewTopRow(
-                trip = trip,
-                modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 16.dp)
-            )
-            TripViewStops(
-                trip = trip,
-                modifier = Modifier.weight(1.0f)
-            )
-            TripViewBottomRow(
-                trip = trip,
-                prevEnabled = prevEnabled,
-                onPrevClicked = onPrevClicked,
-                nextEnabled = nextEnabled,
-                onNextClicked = onNextClicked,
+    Box(modifier = modifier.fillMaxHeight()) {
+        if (trip != null) {
+            Column(
                 modifier = Modifier
-            )
+                    .fillMaxSize()
+                    .align(Alignment.TopCenter)
+            ) {
+                TripViewTopRow(
+                    trip = trip,
+                    modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 16.dp)
+                )
+                TripViewStops(
+                    trip = trip,
+                    modifier = Modifier.weight(1.0f)
+                )
+                // TODO show info about last reload from network and last update received
+            }
+
+        } else if (loading) {
+            // TODO show loading
+        } else {
+            // TODO show error
         }
+
+        TripViewBottomRow(
+            setReferenceDateTime = setReferenceDateTime,
+            loading = loading,
+            onReload = onReload,
+            prevEnabled = prevEnabled,
+            onPrevClicked = onPrevClicked,
+            nextEnabled = nextEnabled,
+            onNextClicked = onNextClicked,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        )
+    }
+    Column(
+        modifier = modifier
+    ) {
     }
 }
 
@@ -163,7 +185,7 @@ private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
         itemsIndexed(trip.stopTimes) { index, stopTime ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp)
             ) {
                 if (trip.lastEventReceivedAt != null) {
                     Icon(
@@ -232,12 +254,18 @@ private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
                 }
             }
         }
+
+        item {
+            Spacer(modifier = Modifier.size(height = 88.dp, width = 0.dp))
+        }
     }
 }
 
 @Composable
 private fun TripViewBottomRow(
-    trip: UiTrip,
+    setReferenceDateTime: (ZonedDateTime) -> Unit,
+    loading: Boolean,
+    onReload: () -> Unit,
     prevEnabled: Boolean,
     onPrevClicked: () -> Unit,
     nextEnabled: Boolean,
@@ -247,13 +275,13 @@ private fun TripViewBottomRow(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
         FloatingActionButton(
             onClick = onPrevClicked,
-            modifier = Modifier
-                .padding(16.dp)
-                .alpha(if (prevEnabled) 1.0f else 0.3f)
+            modifier = Modifier.alpha(if (prevEnabled) 1.0f else 0.5f)
         ) {
             Icon(
                 imageVector = Icons.Filled.NavigateBefore,
@@ -261,25 +289,42 @@ private fun TripViewBottomRow(
             )
         }
 
-        Column(
-            modifier = Modifier.padding(horizontal = 12.dp)
+        FloatingActionButton(
+            onClick = { /* TODO */ }
         ) {
-            if (trip.lastEventReceivedAt != null) {
-                BodyText(
-                    text = stringResource(
-                        R.string.last_update,
-                        formatTime(trip.lastEventReceivedAt)
-                    )
+            Icon(
+                imageVector = Icons.Filled.EditCalendar,
+                contentDescription = stringResource(R.string.choose_date_time)
+            )
+        }
+
+        FloatingActionButton(
+            onClick = onReload
+        ) {
+            //AnimatedContent(targetState = loading) { loading ->
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    contentDescription = stringResource(R.string.reload),
+                    modifier = if (loading) {
+                        val rotation by rememberInfiniteTransition().animateFloat(
+                            initialValue = 0.0f,
+                            targetValue = 360.0f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(durationMillis = 1000, easing = LinearEasing),
+                                repeatMode = RepeatMode.Restart
+                            )
+                        )
+                        Modifier.rotate(rotation)
+                    } else {
+                        Modifier
+                    }
                 )
-            }
-            // TODO add time of last reload from network
+            //}
         }
 
         FloatingActionButton(
             onClick = onNextClicked,
-            modifier = Modifier
-                .padding(16.dp)
-                .alpha(if (nextEnabled) 1.0f else 0.3f)
+            modifier = Modifier.alpha(if (nextEnabled) 1.0f else 0.5f)
         ) {
             Icon(
                 imageVector = Icons.Filled.NavigateNext,
@@ -296,10 +341,12 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
+            var loading by rememberSaveable { mutableStateOf(true) }
             TripView(
                 trip = trip,
-                loading = true,
-                onReload = {},
+                setReferenceDateTime = {},
+                loading = loading,
+                onReload = { loading = !loading },
                 prevEnabled = true,
                 onPrevClicked = {},
                 nextEnabled = false,
