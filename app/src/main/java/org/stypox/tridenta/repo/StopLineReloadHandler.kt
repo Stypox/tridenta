@@ -29,7 +29,7 @@ class StopLineReloadHandler @Inject constructor(
     private val lineDao: LineDao,
 ) {
 
-    fun <R> runAndReloadIfNeeded(function: () -> R): R {
+    fun <R> runAndReloadIfNeeded(function: () -> R?): R {
         val lastReloadSeconds = prefs.getLong(PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS, 0)
         val nowSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
         val secondsSinceLastReload = nowSeconds - lastReloadSeconds
@@ -38,7 +38,7 @@ class StopLineReloadHandler @Inject constructor(
             Log.d(TAG, "Reloading lines and stops from network")
             reloadFromNetwork()
             prefs.edit().putLong(PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS, nowSeconds).commit()
-            return function()
+            return function()!!
         }
 
         // also check `secondsSinceLastReload < 0` just to be sure
@@ -50,7 +50,7 @@ class StopLineReloadHandler @Inject constructor(
 
         try {
             // data is (probably) up-to-date, so run the function directly
-            return function()
+            return function()!!
         } catch (e: Exception) {
             if (secondsSinceLastReload >= ERROR_RELOAD_INTERVAL_SECONDS) {
                 // if there was an error while running the function, try reloading only if enough
