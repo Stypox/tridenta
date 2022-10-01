@@ -115,6 +115,8 @@ private fun LineAppBar(
                     Text(text = stringResource(R.string.trips_for_line))
                     LineShortName(color = line.color, shortName = line.shortName)
                 }
+            } else {
+                // TODO show loading
             }
         },
         navigationIcon = navigationIcon,
