@@ -18,6 +18,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.repo.data.UiStop
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
+import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.nav.SearchTopAppBar
 
@@ -64,14 +65,14 @@ private fun StopsScreen(
                     .padding(paddingValues)
                     .fillMaxWidth()
             ) {
-                items(stops) {
+                items(stops) { stop ->
                     StopItem(
-                        stop = it,
+                        stop = stop,
                         onLineClick = { line ->
                             navigator.navigate(LineTripsScreenDestination(line.lineId, line.type))
                         },
                         modifier = Modifier.clickable {
-                            /* TODO */
+                            navigator.navigate(StopTripsScreenDestination(stop.stopId, stop.type))
                         }
                     )
                 }
