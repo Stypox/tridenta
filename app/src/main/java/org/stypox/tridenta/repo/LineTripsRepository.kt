@@ -1,9 +1,8 @@
 package org.stypox.tridenta.repo
 
 import org.stypox.tridenta.enums.StopLineType
-import org.stypox.tridenta.extractor.data.ExTrip
 import org.stypox.tridenta.extractor.Extractor
-import org.stypox.tridenta.repo.data.UiStopTime
+import org.stypox.tridenta.extractor.data.ExTrip
 import org.stypox.tridenta.repo.data.UiTrip
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -14,9 +13,9 @@ import kotlin.math.abs
 @Singleton
 class LineTripsRepository @Inject constructor(
     private val extractor: Extractor,
-    private val linesRepository: LinesRepository,
-    private val stopsRepository: StopsRepository
-) {
+    linesRepository: LinesRepository,
+    stopsRepository: StopsRepository
+) : TripsRepository(linesRepository, stopsRepository) {
 
     private val days = HashMap<Triple<Int, StopLineType, LocalDate>, TripsInDayMap>()
 
@@ -109,26 +108,6 @@ class LineTripsRepository @Inject constructor(
                     tripsInDay[indexTripPair.first] = indexTripPair.second
                 }
             }
-    }
-
-    private fun loadUiTripFromExTrip(exTrip: ExTrip): UiTrip {
-        return UiTrip(
-            delay = exTrip.delay,
-            direction = exTrip.direction,
-            lastEventReceivedAt = exTrip.lastEventReceivedAt,
-            line = linesRepository.getDbLine(exTrip.lineId, exTrip.type),
-            headSign = exTrip.headSign,
-            tripId = exTrip.tripId,
-            type = exTrip.type,
-            completedStops = exTrip.completedStops,
-            stopTimes = exTrip.stopTimes.map { exStopTime ->
-                UiStopTime(
-                    arrivalTime = exStopTime.arrivalTime,
-                    departureTime = exStopTime.departureTime,
-                    stop = stopsRepository.getDbStop(exStopTime.stopId, exTrip.type)
-                )
-            }
-        )
     }
 
 
