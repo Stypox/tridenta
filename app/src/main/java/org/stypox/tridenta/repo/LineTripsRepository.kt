@@ -36,7 +36,7 @@ class LineTripsRepository @Inject constructor(
                     lineId = lineId,
                     lineType = lineType,
                     referenceDateTime = referenceDateTime,
-                    limit = TRIPS_BATCH_SIZE
+                    limit = LINE_TRIPS_BATCH_SIZE
                 )
             )
         }
@@ -64,14 +64,14 @@ class LineTripsRepository @Inject constructor(
                     referenceDateTime = referenceDateTime,
                     indexFromInclusive = maxOf(
                         0,
-                        index - TRIPS_BATCH_SIZE / 2,
+                        index - LINE_TRIPS_BATCH_SIZE / 2,
                         tripsInDay?.let {
                             it.keys.asSequence().filter { i -> i < index }.maxOrNull()?.plus(1)
                         } ?: 0
                     ),
                     indexToInclusive = minOf(
                         tripsInDay?.tripsInDayCount ?: Int.MAX_VALUE,
-                        index + TRIPS_BATCH_SIZE / 2,
+                        index + LINE_TRIPS_BATCH_SIZE / 2,
                         tripsInDay?.let {
                             it.keys.asSequence().filter { i -> i > index }.minOrNull()?.minus(1)
                         } ?: Int.MAX_VALUE
@@ -182,6 +182,6 @@ class LineTripsRepository @Inject constructor(
 
     companion object {
         // how many trips to fetch at the same time
-        const val TRIPS_BATCH_SIZE = 8
+        const val LINE_TRIPS_BATCH_SIZE = 8
     }
 }
