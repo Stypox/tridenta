@@ -1,9 +1,5 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package org.stypox.tridenta.ui.trips
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -301,25 +297,23 @@ private fun TripViewBottomRow(
         FloatingActionButton(
             onClick = onReload
         ) {
-            //AnimatedContent(targetState = loading) { loading ->
-                Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = stringResource(R.string.reload),
-                    modifier = if (loading) {
-                        val rotation by rememberInfiniteTransition().animateFloat(
-                            initialValue = 0.0f,
-                            targetValue = 360.0f,
-                            animationSpec = infiniteRepeatable(
-                                animation = tween(durationMillis = 1000, easing = LinearEasing),
-                                repeatMode = RepeatMode.Restart
-                            )
+            Icon(
+                imageVector = Icons.Filled.Refresh,
+                contentDescription = stringResource(R.string.reload),
+                modifier = if (loading) {
+                    val rotation by rememberInfiniteTransition().animateFloat(
+                        initialValue = 0.0f,
+                        targetValue = 360.0f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(durationMillis = 1000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
                         )
-                        Modifier.rotate(rotation)
-                    } else {
-                        Modifier
-                    }
-                )
-            //}
+                    )
+                    Modifier.rotate(rotation)
+                } else {
+                    Modifier
+                }
+            )
         }
 
         FloatingActionButton(
