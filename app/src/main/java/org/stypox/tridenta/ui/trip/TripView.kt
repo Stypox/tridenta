@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.line_trips
+package org.stypox.tridenta.ui.trip
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -285,8 +286,9 @@ private fun TripViewBottomRow(
             )
         }
 
+        val context = LocalContext.current
         FloatingActionButton(
-            onClick = { /* TODO */ }
+            onClick = { pickDateTime(context, setReferenceDateTime) }
         ) {
             Icon(
                 imageVector = Icons.Filled.EditCalendar,
