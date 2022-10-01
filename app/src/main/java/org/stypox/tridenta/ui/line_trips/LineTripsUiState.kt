@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.trips
+package org.stypox.tridenta.ui.line_trips
 
 import org.stypox.tridenta.repo.data.UiLine
 import org.stypox.tridenta.repo.data.UiTrip

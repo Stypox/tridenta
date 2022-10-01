@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.trips
+package org.stypox.tridenta.ui.line_trips
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

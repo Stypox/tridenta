@@ -1,4 +1,4 @@
-package org.stypox.tridenta.ui.trips
+package org.stypox.tridenta.ui.line_trips
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
