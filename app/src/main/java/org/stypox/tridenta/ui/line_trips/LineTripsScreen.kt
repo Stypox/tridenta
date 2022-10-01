@@ -66,7 +66,6 @@ private fun LineTripsScreen(
         topBar = {
             LineAppBar(
                 line = line,
-                setReferenceDateTime = setReferenceDateTime,
                 navigationIcon = navigationIcon
             )
         },
@@ -90,7 +89,6 @@ private fun LineTripsScreen(
 @Composable
 private fun LineAppBar(
     line: UiLine?,
-    setReferenceDateTime: (ZonedDateTime) -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
     // TODO title's width isn't properly calculated when `navigationIcon` and `actions` have
@@ -125,7 +123,7 @@ private fun LineAppBar(
 @Preview
 @Composable
 private fun LineAppBarPreview(@PreviewParameter(SampleUiLineProvider::class) line: UiLine) {
-    LineAppBar(line = line, setReferenceDateTime = {}, navigationIcon = { AppBarDrawerIcon {} })
+    LineAppBar(line = line, navigationIcon = { AppBarDrawerIcon {} })
 }
 
 @Preview
