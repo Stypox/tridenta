@@ -129,7 +129,7 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
                     .map { it.arrivalTime }
                     .filter { it != null }
                     .first()
-                    ?.let { firstArrival -> formatDate(firstArrival) }
+                    ?.let { firstArrival -> formatDateFull(firstArrival) }
                     ?: stringResource(R.string.no_date_time_information)
             } else {
                 if (trip.delay < 0)

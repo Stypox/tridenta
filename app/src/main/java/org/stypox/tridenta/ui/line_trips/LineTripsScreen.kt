@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -91,6 +90,18 @@ private fun LineAppBar(
     line: UiLine?,
     navigationIcon: @Composable () -> Unit
 ) {
+    var showNewsItemsDialog by rememberSaveable { mutableStateOf(false) }
+    if (showNewsItemsDialog) {
+        if (line == null) {
+            showNewsItemsDialog = false
+        } else {
+            NewsItemsDialog(
+                newsItems = line.newsItems,
+                onDismiss = { showNewsItemsDialog = false }
+            )
+        }
+    }
+
     // TODO title's width isn't properly calculated when `navigationIcon` and `actions` have
     //  different widths, resulting in the overlap of the `title` and the widest of `actions` or
     //  `navigationIcon`, see https://issuetracker.google.com/issues/236994621
@@ -109,7 +120,7 @@ private fun LineAppBar(
         navigationIcon = navigationIcon,
         actions = {
             if (line != null && line.newsItems.isNotEmpty()) {
-                IconButton(onClick = { /* TODO */ }) {
+                IconButton(onClick = { showNewsItemsDialog = true }) {
                     Icon(
                         imageVector = Icons.Filled.Warning,
                         contentDescription = stringResource(R.string.news_and_warnings)

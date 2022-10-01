@@ -15,7 +15,9 @@ private val TIME_FORMAT = DateTimeFormatterBuilder()
     .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
     .toFormatter()
 
-private val DATE_FORMAT = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+private val DATE_FORMAT_FULL = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+
+private val DATE_FORMAT_SHORT = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
 @Composable
 fun formatDurationMinutes(minutes: Int): String {
@@ -26,6 +28,10 @@ fun formatTime(offsetDateTime: OffsetDateTime): String {
     return TIME_FORMAT.format(offsetDateTime)
 }
 
-fun formatDate(offsetDateTime: OffsetDateTime): String {
-    return DATE_FORMAT.format(offsetDateTime)
+fun formatDateFull(offsetDateTime: OffsetDateTime): String {
+    return DATE_FORMAT_FULL.format(offsetDateTime)
+}
+
+fun formatDateShort(offsetDateTime: OffsetDateTime): String {
+    return DATE_FORMAT_SHORT.format(offsetDateTime)
 }
