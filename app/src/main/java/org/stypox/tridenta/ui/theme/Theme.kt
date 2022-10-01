@@ -1,10 +1,15 @@
 package org.stypox.tridenta.ui.theme
 
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 
 private val LightColors = lightColorScheme(
@@ -70,20 +75,34 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
-  useDarkTheme: Boolean = isSystemInDarkTheme(),
-  useDynamicTheme: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
-  content: @Composable () -> Unit
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useDynamicTheme: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    content: @Composable () -> Unit
 ) {
-  val colorScheme =
-      if (useDynamicTheme) {
-          val context = LocalContext.current
-          if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      } else {
-          if (useDarkTheme) DarkColors else LightColors
-      }
+    val colorScheme =
+        if (useDynamicTheme) {
+            val context = LocalContext.current
+            if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        } else {
+            if (useDarkTheme) DarkColors else LightColors
+        }
 
-  MaterialTheme(
-    colorScheme = colorScheme,
-    content = content
-  )
+    val view = LocalView.current
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !view.isInEditMode) {
+        (view.context as? Activity)?.let { activity ->
+            LaunchedEffect(null) {
+                activity.window.navigationBarColor = colorScheme.background.toArgb()
+                activity.window.statusBarColor = colorScheme.background.toArgb()
+                WindowCompat.getInsetsController(activity.window, view)
+                    .isAppearanceLightStatusBars = !useDarkTheme
+                WindowCompat.getInsetsController(activity.window, view)
+                    .isAppearanceLightNavigationBars = !useDarkTheme
+            }
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        content = content
+    )
 }
