@@ -9,10 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -47,8 +44,6 @@ fun LinesScreen(
         lines = linesUiState.lines,
         selectedArea = linesUiState.selectedArea,
         setSelectedArea = linesViewModel::setSelectedArea,
-        showAreaDialog = linesUiState.showAreaDialog,
-        setShowAreaDialog = linesViewModel::setShowAreaDialog,
         navigationIcon = navigationIconWrapper.navigationIcon,
         navigator = navigator
     )
@@ -60,16 +55,15 @@ private fun LinesScreen(
     lines: List<DbLine>,
     selectedArea: Area,
     setSelectedArea: (Area) -> Unit,
-    showAreaDialog: Boolean,
-    setShowAreaDialog: (Boolean) -> Unit,
     navigationIcon: @Composable () -> Unit,
     navigator: DestinationsNavigator
 ) {
+    var showAreaDialog by rememberSaveable { mutableStateOf(false) }
     if (showAreaDialog) {
         SelectAreaDialog(
             selectedArea = selectedArea,
             setSelectedArea = setSelectedArea,
-            setShowAreaDialog = setShowAreaDialog
+            onDismiss = { showAreaDialog = false }
         )
     }
 
@@ -87,7 +81,7 @@ private fun LinesScreen(
                 },
                 navigationIcon = navigationIcon,
                 actions = {
-                    IconButton(onClick = { setShowAreaDialog(true) }) {
+                    IconButton(onClick = { showAreaDialog = true }) {
                         Icon(
                             imageVector = Icons.Filled.FilterAlt,
                             contentDescription = stringResource(R.string.select_area)
@@ -122,12 +116,12 @@ private fun LinesScreen(
 private fun SelectAreaDialog(
     selectedArea: Area,
     setSelectedArea: (Area) -> Unit,
-    setShowAreaDialog: (Boolean) -> Unit
+    onDismiss: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = { setShowAreaDialog(false) },
+        onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = { setShowAreaDialog(false) }) {
+            TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.ok))
             }
         },
@@ -137,8 +131,13 @@ private fun SelectAreaDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
+                val onAreaClick = { area: Area ->
+                    setSelectedArea(area)
+                    onDismiss()
+                }
+
                 SuburbanAreasMap(
-                    onAreaClick = setSelectedArea,
+                    onAreaClick = onAreaClick,
                     modifier = Modifier
                         .widthIn(0.dp, 290.dp)
                         .padding(8.dp)
@@ -146,7 +145,7 @@ private fun SelectAreaDialog(
 
                 AreaChipGroup(
                     selectedArea = selectedArea,
-                    onAreaClick = setSelectedArea,
+                    onAreaClick = onAreaClick,
                     modifier = Modifier
                         .widthIn(0.dp, 500.dp)
                         .padding(top = 16.dp)
@@ -173,8 +172,6 @@ private fun LinesViewPreview() {
                 selectedArea.value = it
                 showAreaDialog.value = false
             },
-            showAreaDialog = showAreaDialog.value,
-            setShowAreaDialog = { showAreaDialog.value = it },
             navigationIcon = { AppBarDrawerIcon {} },
             navigator = EmptyDestinationsNavigator
         )

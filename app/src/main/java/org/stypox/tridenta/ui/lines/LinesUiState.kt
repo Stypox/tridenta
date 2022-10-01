@@ -6,6 +6,5 @@ import org.stypox.tridenta.enums.Area
 data class LinesUiState(
     val lines: List<DbLine>,
     val selectedArea: Area,
-    val showAreaDialog: Boolean,
     val loading: Boolean,
 )

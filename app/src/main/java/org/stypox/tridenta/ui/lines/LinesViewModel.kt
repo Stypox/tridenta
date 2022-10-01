@@ -33,7 +33,6 @@ class LinesViewModel @Inject constructor(
                         // expand the header, so the user becomes aware that the header exists.
                         selectedArea = Area.values().firstOrNull { it.value == prefArea }
                             ?: Area.DEFAULT_AREA,
-                        showAreaDialog = false,
                         loading = true
                     )
                 )
@@ -44,22 +43,16 @@ class LinesViewModel @Inject constructor(
         reloadLines()
     }
 
-    fun setShowAreaDialog(headerExpanded: Boolean) {
-        mutableUiState.update { linesUiState ->
-            linesUiState.copy(showAreaDialog = headerExpanded)
-        }
-    }
-
     fun setSelectedArea(area: Area) {
         if (area == mutableUiState.value.selectedArea) {
             // close the header even if the user clicked on the same area item
             mutableUiState.update { linesUiState ->
-                linesUiState.copy(selectedArea = area, showAreaDialog = false)
+                linesUiState.copy(selectedArea = area)
             }
         } else {
             // clear current lines and close the header, since the selected area item changed
             mutableUiState.update { linesUiState ->
-                linesUiState.copy(selectedArea = area, lines = listOf(), showAreaDialog = false)
+                linesUiState.copy(selectedArea = area, lines = listOf())
             }
 
             reloadLines()
