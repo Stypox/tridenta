@@ -1,6 +1,5 @@
 package org.stypox.tridenta.ui.trip
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -13,7 +12,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -26,10 +24,7 @@ import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiTripProvider
-import org.stypox.tridenta.ui.theme.AppTheme
-import org.stypox.tridenta.ui.theme.BodyText
-import org.stypox.tridenta.ui.theme.LabelText
-import org.stypox.tridenta.ui.theme.TitleText
+import org.stypox.tridenta.ui.theme.*
 import org.stypox.tridenta.util.*
 import java.time.ZonedDateTime
 
@@ -297,23 +292,14 @@ private fun TripViewBottomRow(
         FloatingActionButton(
             onClick = onReload
         ) {
-            Icon(
-                imageVector = Icons.Filled.Refresh,
-                contentDescription = stringResource(R.string.reload),
-                modifier = if (loading) {
-                    val rotation by rememberInfiniteTransition().animateFloat(
-                        initialValue = 0.0f,
-                        targetValue = 360.0f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(durationMillis = 1000, easing = LinearEasing),
-                            repeatMode = RepeatMode.Restart
-                        )
-                    )
-                    Modifier.rotate(rotation)
-                } else {
-                    Modifier
-                }
-            )
+            if (loading) {
+                SmallCircularProgressIndicator()
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    contentDescription = stringResource(R.string.reload)
+                )
+            }
         }
 
         FloatingActionButton(
