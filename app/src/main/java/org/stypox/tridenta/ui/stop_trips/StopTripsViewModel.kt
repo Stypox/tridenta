@@ -106,7 +106,8 @@ class StopTripsViewModel @Inject constructor(
 
     private fun loadIndex(index: Int) {
         if (index < 0 || index >= (tripsAtDateTimeList?.tripCount ?: -1)) {
-            return // this should never happen, but just in case
+            mutableUiState.update { it.copy(loading = false) }
+            return // this will happen when there are no trips in a day, for example
         }
 
         mutableUiState.update { it.copy(loading = true) }
