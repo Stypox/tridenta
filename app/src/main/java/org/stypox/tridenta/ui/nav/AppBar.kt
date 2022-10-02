@@ -69,6 +69,7 @@ fun AppBarBackIcon(onBackClick: () -> Unit) {
 
 @Composable
 fun AppBarFavoriteIcon(isFavorite: Boolean, onFavoriteClicked: () -> Unit) {
+    // TODO when this is clicked, open a dialog asking to add this entry to the home screen
     IconButton(onClick = onFavoriteClicked) {
         Icon(
             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
