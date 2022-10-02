@@ -4,6 +4,7 @@ import org.stypox.tridenta.db.StopDao
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiStop
+import org.stypox.tridenta.repo.data.lineShortNameComparator
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,7 +41,9 @@ class StopsRepository @Inject constructor(
                         street = dbStop.street,
                         town = dbStop.town,
                         wheelchairAccessible = dbStop.wheelchairAccessible,
-                        lines = stopDao.getLinesForStop(dbStop.stopId, dbStop.type)
+                        lines = stopDao
+                            .getLinesForStop(dbStop.stopId, dbStop.type)
+                            .sortedWith(::lineShortNameComparator)
                     )
                 }
         }

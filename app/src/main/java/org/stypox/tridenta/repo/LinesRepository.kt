@@ -5,6 +5,7 @@ import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiLine
+import org.stypox.tridenta.repo.data.lineShortNameComparator
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +22,7 @@ class LinesRepository @Inject constructor(
 
     fun getDbLinesByArea(area: Area, forceReload: Boolean): List<DbLine> {
         return stopLineReloadHandler.reloadIfNeededAndRun(forceReload = forceReload) {
-            lineDao.getLinesByArea(area)
+            lineDao.getLinesByArea(area).sortedWith(::lineShortNameComparator)
         }
     }
 

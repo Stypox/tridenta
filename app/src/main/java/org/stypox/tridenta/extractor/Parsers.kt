@@ -16,9 +16,7 @@ fun stopFromJSONObject(o: JSONObject): ExStop {
         town = o.optString("town", ""),
         type = stopLineTypeFromString(o.getString("type")),
         wheelchairAccessible = o.optInt("wheelchairBoarding") == 1,
-        lines = o.getJSONArray("routes")
-            .map(::lineFromJSONObject)
-            .sortedWith(::shortNameComparator)
+        lines = o.getJSONArray("routes").map(::lineFromJSONObject)
     )
 }
 
