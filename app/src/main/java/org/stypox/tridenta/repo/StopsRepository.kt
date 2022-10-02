@@ -13,13 +13,13 @@ class StopsRepository @Inject constructor(
     private val stopDao: StopDao
 ) {
     fun getDbStop(stopId: Int, stopType: StopLineType): DbStop {
-        return stopLineReloadHandler.runAndReloadIfNeeded {
+        return stopLineReloadHandler.reloadIfNeededAndRun {
             stopDao.getStop(stopId, stopType)
         }
     }
 
     fun getUiStopsFiltered(searchString: String, limit: Int, offset: Int): List<UiStop> {
-        return stopLineReloadHandler.runAndReloadIfNeeded {
+        return stopLineReloadHandler.reloadIfNeededAndRun {
             if (searchString.isEmpty()) {
                 stopDao.getStops(limit, offset)
             } else {
