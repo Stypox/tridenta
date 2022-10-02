@@ -107,7 +107,9 @@ private fun LineAppBar(
     //  `navigationIcon`, see https://issuetracker.google.com/issues/236994621
     CenterAlignedTopAppBar(
         title = {
-            if (line != null) {
+            if (line == null) {
+                CircularProgressIndicator()
+            } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -115,8 +117,6 @@ private fun LineAppBar(
                     Text(text = stringResource(R.string.trips_for_line))
                     LineShortName(color = line.color, shortName = line.shortName)
                 }
-            } else {
-                // TODO show loading
             }
         },
         navigationIcon = navigationIcon,
@@ -137,6 +137,12 @@ private fun LineAppBar(
 @Composable
 private fun LineAppBarPreview(@PreviewParameter(SampleUiLineProvider::class) line: UiLine) {
     LineAppBar(line = line, navigationIcon = { AppBarDrawerIcon {} })
+}
+
+@Preview
+@Composable
+private fun LineAppBarLoadingPreview() {
+    LineAppBar(line = null, navigationIcon = { AppBarDrawerIcon {} })
 }
 
 @Preview

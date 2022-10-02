@@ -1,10 +1,7 @@
 package org.stypox.tridenta.ui.stop_trips
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -90,7 +87,9 @@ private fun StopAppBar(
 ) {
     CenterAlignedTopAppBar(
         title = {
-            if (stop != null) {
+            if (stop == null) {
+                CircularProgressIndicator()
+            } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -118,6 +117,12 @@ private fun StopAppBar(
 @Composable
 private fun StopAppBarPreview(@PreviewParameter(SampleDbStopProvider::class) stop: DbStop) {
     StopAppBar(stop = stop, navigationIcon = { AppBarDrawerIcon {} })
+}
+
+@Preview
+@Composable
+private fun StopAppBarLoadingPreview() {
+    StopAppBar(stop = null, navigationIcon = { AppBarDrawerIcon {} })
 }
 
 @Preview
