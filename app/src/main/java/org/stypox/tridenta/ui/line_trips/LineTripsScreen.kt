@@ -15,8 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.R
+import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiLine
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiLineProvider
@@ -24,6 +26,7 @@ import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
+import org.stypox.tridenta.ui.navArgs
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
 import java.time.ZonedDateTime
@@ -44,6 +47,8 @@ fun LineTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
         onPrevClicked = lineTripsViewModel::onPrevClicked,
         nextEnabled = lineTripsUiState.nextEnabled,
         onNextClicked = lineTripsViewModel::onNextClicked,
+        stopIdToHighlight = lineTripsUiState.stopIdToHighlight,
+        stopTypeToHighlight = lineTripsUiState.stopTypeToHighlight,
         navigationIcon = navigationIconWrapper.navigationIcon
     )
 }
@@ -60,6 +65,8 @@ private fun LineTripsScreen(
     onPrevClicked: () -> Unit,
     nextEnabled: Boolean,
     onNextClicked: () -> Unit,
+    stopIdToHighlight: Int?,
+    stopTypeToHighlight: StopLineType?,
     navigationIcon: @Composable () -> Unit
 ) {
     Scaffold(
@@ -79,6 +86,8 @@ private fun LineTripsScreen(
                 onPrevClicked = onPrevClicked,
                 nextEnabled = nextEnabled,
                 onNextClicked = onNextClicked,
+                stopIdToHighlight = stopIdToHighlight,
+                stopTypeToHighlight = stopTypeToHighlight,
                 modifier = Modifier.padding(paddingValues)
             )
         }
@@ -149,6 +158,7 @@ private fun LineAppBarLoadingPreview() {
 @Preview
 @Composable
 private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip: UiTrip) {
+    val stopToHighlight = trip.stopTimes.last().stop
     LineTripsScreen(
         line = SampleUiLineProvider().values.find { uiLine -> uiLine.lineId == trip.line.lineId }!!,
         setReferenceDateTime = {},
@@ -159,6 +169,8 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         onPrevClicked = {},
         nextEnabled = false,
         onNextClicked = {},
+        stopIdToHighlight = stopToHighlight.stopId,
+        stopTypeToHighlight = stopToHighlight.type,
         navigationIcon = { AppBarDrawerIcon {} }
     )
 }

@@ -36,6 +36,8 @@ class LineTripsViewModel @Inject constructor(
             prevEnabled = false,
             nextEnabled = false,
             referenceDateTime = ZonedDateTime.now(),
+            stopIdToHighlight = navArgs.stopIdToHighlight,
+            stopTypeToHighlight = navArgs.stopTypeToHighlight,
             loading = true
         )
     )

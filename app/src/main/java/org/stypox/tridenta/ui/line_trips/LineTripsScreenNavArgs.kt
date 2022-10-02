@@ -4,5 +4,7 @@ import org.stypox.tridenta.enums.StopLineType
 
 data class LineTripsScreenNavArgs(
     val lineId: Int,
-    val lineType: StopLineType
+    val lineType: StopLineType,
+    val stopIdToHighlight: Int? = null,
+    val stopTypeToHighlight: StopLineType? = null,
 )

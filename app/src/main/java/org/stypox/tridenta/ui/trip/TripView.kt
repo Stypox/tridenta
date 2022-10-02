@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
+import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.theme.*
 import org.stypox.tridenta.util.*
@@ -38,6 +40,8 @@ fun TripView(
     onPrevClicked: () -> Unit,
     nextEnabled: Boolean,
     onNextClicked: () -> Unit,
+    stopIdToHighlight: Int?,
+    stopTypeToHighlight: StopLineType?,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxHeight()) {
@@ -53,6 +57,8 @@ fun TripView(
                 )
                 TripViewStops(
                     trip = trip,
+                    stopIdToHighlight = stopIdToHighlight,
+                    stopTypeToHighlight = stopTypeToHighlight,
                     modifier = Modifier.weight(1.0f)
                 )
                 // TODO show info about last reload from network and last update received
@@ -77,10 +83,6 @@ fun TripView(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
         )
-    }
-    Column(
-        modifier = modifier
-    ) {
     }
 }
 
@@ -161,7 +163,12 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
+private fun TripViewStops(
+    trip: UiTrip,
+    stopIdToHighlight: Int?,
+    stopTypeToHighlight: StopLineType?,
+    modifier: Modifier = Modifier
+) {
     val listState = rememberLazyListState()
     LaunchedEffect(trip.tripId) {
         // when the user changes trip, smooth scroll to the last completed stop
@@ -190,13 +197,16 @@ private fun TripViewStops(trip: UiTrip, modifier: Modifier = Modifier) {
                     )
                 }
 
+                val highlight = stopTime.stop.stopId == stopIdToHighlight &&
+                        stopTime.stop.type == stopTypeToHighlight
                 BodyText(
                     text = stopTime.stop.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .weight(1.0f)
-                        .padding(end = 6.dp)
+                        .padding(end = 6.dp),
+                    fontWeight = if (highlight) FontWeight.Bold else null
                 )
 
                 val isLate = trip.lastEventReceivedAt != null
@@ -322,6 +332,7 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
             color = MaterialTheme.colorScheme.background
         ) {
             var loading by rememberSaveable { mutableStateOf(true) }
+            val stopToHighlight = SampleDbStopProvider().values.first()
             TripView(
                 trip = trip,
                 setReferenceDateTime = {},
@@ -330,7 +341,9 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
                 prevEnabled = true,
                 onPrevClicked = {},
                 nextEnabled = false,
-                onNextClicked = {}
+                onNextClicked = {},
+                stopIdToHighlight = stopToHighlight.stopId,
+                stopTypeToHighlight = stopToHighlight.type,
             )
         }
     }
@@ -352,7 +365,9 @@ private fun TripViewPreviewLoading() {
                 prevEnabled = true,
                 onPrevClicked = {},
                 nextEnabled = false,
-                onNextClicked = {}
+                onNextClicked = {},
+                stopIdToHighlight = null,
+                stopTypeToHighlight = null,
             )
         }
     }

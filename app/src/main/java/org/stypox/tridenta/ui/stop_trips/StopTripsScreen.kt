@@ -1,7 +1,10 @@
 package org.stypox.tridenta.ui.stop_trips
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -74,6 +77,8 @@ private fun StopTripsScreen(
                 onPrevClicked = onPrevClicked,
                 nextEnabled = nextEnabled,
                 onNextClicked = onNextClicked,
+                stopIdToHighlight = stop?.stopId,
+                stopTypeToHighlight = stop?.type,
                 modifier = Modifier.padding(paddingValues)
             )
         }

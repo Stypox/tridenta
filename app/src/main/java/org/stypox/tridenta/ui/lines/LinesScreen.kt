@@ -110,7 +110,10 @@ private fun LinesScreen(
                                 .fillMaxWidth()
                                 .clickable {
                                     navigator.navigate(
-                                        LineTripsScreenDestination(it.lineId, it.type)
+                                        LineTripsScreenDestination(
+                                            lineId = it.lineId,
+                                            lineType = it.type
+                                        )
                                     )
                                 }
                         )

@@ -77,12 +77,20 @@ private fun StopsScreen(
                             stop = stop,
                             onLineClick = { line ->
                                 navigator.navigate(
-                                    LineTripsScreenDestination(line.lineId, line.type)
+                                    LineTripsScreenDestination(
+                                        lineId = line.lineId,
+                                        lineType = line.type,
+                                        stopIdToHighlight = stop.stopId,
+                                        stopTypeToHighlight = stop.type
+                                    )
                                 )
                             },
                             modifier = Modifier.clickable {
                                 navigator.navigate(
-                                    StopTripsScreenDestination(stop.stopId, stop.type)
+                                    StopTripsScreenDestination(
+                                        stopId = stop.stopId,
+                                        stopType = stop.type
+                                    )
                                 )
                             }
                         )
