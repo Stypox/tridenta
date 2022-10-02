@@ -18,8 +18,13 @@ class StopsRepository @Inject constructor(
         }
     }
 
-    fun getUiStopsFiltered(searchString: String, limit: Int, offset: Int): List<UiStop> {
-        return stopLineReloadHandler.reloadIfNeededAndRun {
+    fun getUiStopsFiltered(
+        searchString: String,
+        limit: Int,
+        offset: Int,
+        forceReload: Boolean
+    ): List<UiStop> {
+        return stopLineReloadHandler.reloadIfNeededAndRun(forceReload = forceReload) {
             if (searchString.isEmpty()) {
                 stopDao.getStops(limit, offset)
             } else {

@@ -13,6 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.stypox.tridenta.R
@@ -32,6 +34,8 @@ fun StopsScreen(
     val stopsUiState by stopsViewModel.uiState.collectAsState()
 
     StopsScreen(
+        loading = stopsUiState.loading,
+        onReload = stopsViewModel::onReload,
         stops = stopsUiState.stops,
         searchString = stopsUiState.searchString,
         setSearchString = stopsViewModel::setSearchString,
@@ -43,6 +47,8 @@ fun StopsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StopsScreen(
+    loading: Boolean,
+    onReload: () -> Unit,
     stops: List<UiStop>,
     searchString: String,
     setSearchString: (String) -> Unit,
@@ -60,21 +66,27 @@ private fun StopsScreen(
             )
         },
         content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxWidth()
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = loading),
+                onRefresh = onReload,
+                modifier = Modifier.padding(paddingValues)
             ) {
-                items(stops) { stop ->
-                    StopItem(
-                        stop = stop,
-                        onLineClick = { line ->
-                            navigator.navigate(LineTripsScreenDestination(line.lineId, line.type))
-                        },
-                        modifier = Modifier.clickable {
-                            navigator.navigate(StopTripsScreenDestination(stop.stopId, stop.type))
-                        }
-                    )
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(stops) { stop ->
+                        StopItem(
+                            stop = stop,
+                            onLineClick = { line ->
+                                navigator.navigate(
+                                    LineTripsScreenDestination(line.lineId, line.type)
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                navigator.navigate(
+                                    StopTripsScreenDestination(stop.stopId, stop.type)
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }

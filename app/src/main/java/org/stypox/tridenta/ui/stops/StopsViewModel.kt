@@ -29,20 +29,32 @@ class StopsViewModel @Inject constructor(
     val uiState = mutableUiState.asStateFlow()
 
     init {
-        setSearchString("")
+        reloadStops(forceReload = false)
     }
 
     fun setSearchString(searchString: String) {
+        mutableUiState.update { it.copy(searchString = searchString) }
+        reloadStops(forceReload = false)
+    }
+
+    fun onReload() {
+        reloadStops(forceReload = true)
+    }
+
+    private fun reloadStops(forceReload: Boolean) {
         // update the search string instantly, as it is shown in the search field
-        mutableUiState.update { it.copy(searchString = searchString, loading = true) }
+        mutableUiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             val filteredStops = withContext(Dispatchers.Default) {
                 // TODO implement limit and offset
-                stopsRepository.getUiStopsFiltered(searchString, 100, 0)
+                stopsRepository.getUiStopsFiltered(
+                    mutableUiState.value.searchString,
+                    100,
+                    0,
+                    forceReload
+                )
             }
-            mutableUiState.update { stopsUiState ->
-                stopsUiState.copy(stops = filteredStops)
-            }
+            mutableUiState.update { it.copy(stops = filteredStops, loading = false) }
         }
     }
 }
