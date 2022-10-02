@@ -40,7 +40,7 @@ fun pickDateTime(context: Context, handleResult: (ZonedDateTime) -> Unit) {
                 },
                 startHour,
                 startMinute,
-                false
+                true
             )
                 .show()
         },
