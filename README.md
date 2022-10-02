@@ -1,0 +1,3 @@
+# Tridenta
+
+An Android app that loads and shows the **local transportation** data of the italian region "*Trentino*". You can view information about **stops**, **lines** and most importantly **trips**, whose **delay** can be queried in **real time**! The shown data is the same as that shown in the official "[Muoversi In Trentino](https://www.trentinotrasporti.it/en/travel-with-us/muoversi-en)" application, except that there are *fewer* errors and slowdowns. Tridenta has a **modern look** and was built using [Jetpack Compose](https://developer.android.com/jetpack/compose) and [Material 3](https://m3.material.io/).
