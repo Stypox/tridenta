@@ -27,7 +27,17 @@ interface StopDao {
     )
     fun getFilteredStops(searchString: String, limit: Int, offset: Int): List<DbStop>
 
-    @Query("SELECT * FROM DbStop LIMIT :limit OFFSET :offset")
+    @Query(
+        """
+            SELECT DbStop.*
+            FROM DbStop INNER JOIN DbStopLineJoin
+            WHERE DbStopLineJoin.stopId = DbStop.stopId
+                AND DbStopLineJoin.stopType = DbStop.type
+            GROUP BY DbStop.stopId, DbStop.type
+            ORDER BY COUNT(*) DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
     fun getStops(limit: Int, offset: Int): List<DbStop>
 
     @Query(
