@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -67,7 +64,8 @@ fun TripView(
             }
 
         } else if (loading) {
-            // TODO show loading
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
         } else {
             // TODO show error
         }
@@ -340,6 +338,28 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
             var loading by rememberSaveable { mutableStateOf(true) }
             TripView(
                 trip = trip,
+                setReferenceDateTime = {},
+                loading = loading,
+                onReload = { loading = !loading },
+                prevEnabled = true,
+                onPrevClicked = {},
+                nextEnabled = false,
+                onNextClicked = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TripViewPreviewLoading() {
+    AppTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            var loading by rememberSaveable { mutableStateOf(true) }
+            TripView(
+                trip = null,
                 setReferenceDateTime = {},
                 loading = loading,
                 onReload = { loading = !loading },
