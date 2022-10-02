@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -41,6 +43,8 @@ fun LinesScreen(
     val linesUiState by linesViewModel.uiState.collectAsState()
 
     LinesScreen(
+        loading = linesUiState.loading,
+        onReload = linesViewModel::onReload,
         lines = linesUiState.lines,
         selectedArea = linesUiState.selectedArea,
         setSelectedArea = linesViewModel::setSelectedArea,
@@ -52,6 +56,8 @@ fun LinesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LinesScreen(
+    loading: Boolean,
+    onReload: () -> Unit,
     lines: List<DbLine>,
     selectedArea: Area,
     setSelectedArea: (Area) -> Unit,
@@ -91,20 +97,24 @@ private fun LinesScreen(
             )
         },
         content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxWidth()
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = loading),
+                onRefresh = onReload,
+                modifier = Modifier.padding(paddingValues)
             ) {
-                items(lines) {
-                    LineItem(
-                        line = it,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                navigator.navigate(LineTripsScreenDestination(it.lineId, it.type))
-                            }
-                    )
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(lines) {
+                        LineItem(
+                            line = it,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navigator.navigate(
+                                        LineTripsScreenDestination(it.lineId, it.type)
+                                    )
+                                }
+                        )
+                    }
                 }
             }
         }
@@ -166,6 +176,8 @@ private fun LinesViewPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesScreen(
+            loading = true,
+            onReload = {},
             lines = SampleDbLineProvider().values.toList(),
             selectedArea = selectedArea.value,
             setSelectedArea = {

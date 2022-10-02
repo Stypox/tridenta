@@ -40,35 +40,34 @@ class LinesViewModel @Inject constructor(
     val uiState = mutableUiState.asStateFlow()
 
     init {
-        reloadLines()
+        reloadLines(forceReload = false)
     }
 
     fun setSelectedArea(area: Area) {
-        if (area == mutableUiState.value.selectedArea) {
-            // close the header even if the user clicked on the same area item
-            mutableUiState.update { linesUiState ->
-                linesUiState.copy(selectedArea = area)
-            }
-        } else {
+        if (area != mutableUiState.value.selectedArea) {
             // clear current lines and close the header, since the selected area item changed
             mutableUiState.update { linesUiState ->
                 linesUiState.copy(selectedArea = area, lines = listOf())
             }
 
-            reloadLines()
+            reloadLines(forceReload = false)
 
             // save the last selected area to preferences
             prefs.edit().putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value).apply()
         }
     }
 
-    private fun reloadLines() {
+    fun onReload() {
+        reloadLines(forceReload = true)
+    }
+
+    private fun reloadLines(forceReload: Boolean) {
         // show the loading indicator
         mutableUiState.update { linesUiState -> linesUiState.copy(loading = true) }
 
         viewModelScope.launch {
             val lines = withContext(Dispatchers.IO) {
-                linesRepository.getDbLinesByArea(mutableUiState.value.selectedArea)
+                linesRepository.getDbLinesByArea(mutableUiState.value.selectedArea, forceReload)
             }
             mutableUiState.update { linesUiState ->
                 linesUiState.copy(lines = lines, loading = false)
