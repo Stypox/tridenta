@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.StopLineType
@@ -26,7 +28,6 @@ import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
-import org.stypox.tridenta.ui.navArgs
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
 import java.time.ZonedDateTime
@@ -36,6 +37,7 @@ import java.time.ZonedDateTime
 fun LineTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
     val lineTripsViewModel: LineTripsViewModel = hiltViewModel()
     val lineTripsUiState by lineTripsViewModel.uiState.collectAsState()
+    val isFavorite by lineTripsViewModel.isFavorite.observeAsState(initial = false)
 
     LineTripsScreen(
         line = lineTripsUiState.line,
@@ -49,6 +51,8 @@ fun LineTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
         onNextClicked = lineTripsViewModel::onNextClicked,
         stopIdToHighlight = lineTripsUiState.stopIdToHighlight,
         stopTypeToHighlight = lineTripsUiState.stopTypeToHighlight,
+        isFavorite = isFavorite,
+        onFavoriteClicked = lineTripsViewModel::onFavoriteClicked,
         navigationIcon = navigationIconWrapper.navigationIcon
     )
 }
@@ -67,12 +71,16 @@ private fun LineTripsScreen(
     onNextClicked: () -> Unit,
     stopIdToHighlight: Int?,
     stopTypeToHighlight: StopLineType?,
+    isFavorite: Boolean,
+    onFavoriteClicked: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = {
             LineAppBar(
                 line = line,
+                isFavorite = isFavorite,
+                onFavoriteClicked = onFavoriteClicked,
                 navigationIcon = navigationIcon
             )
         },
@@ -98,6 +106,8 @@ private fun LineTripsScreen(
 @Composable
 private fun LineAppBar(
     line: UiLine?,
+    isFavorite: Boolean,
+    onFavoriteClicked: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
     var showNewsItemsDialog by rememberSaveable { mutableStateOf(false) }
@@ -139,6 +149,13 @@ private fun LineAppBar(
                     )
                 }
             }
+            IconButton(onClick = onFavoriteClicked) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite
+                    else Icons.Filled.FavoriteBorder,
+                    contentDescription = stringResource(R.string.favorite)
+                )
+            }
         }
     )
 }
@@ -146,13 +163,23 @@ private fun LineAppBar(
 @Preview
 @Composable
 private fun LineAppBarPreview(@PreviewParameter(SampleUiLineProvider::class) line: UiLine) {
-    LineAppBar(line = line, navigationIcon = { AppBarDrawerIcon {} })
+    LineAppBar(
+        line = line,
+        isFavorite = true,
+        onFavoriteClicked = {},
+        navigationIcon = { AppBarDrawerIcon {} }
+    )
 }
 
 @Preview
 @Composable
 private fun LineAppBarLoadingPreview() {
-    LineAppBar(line = null, navigationIcon = { AppBarDrawerIcon {} })
+    LineAppBar(
+        line = null,
+        isFavorite = false,
+        onFavoriteClicked = {},
+        navigationIcon = { AppBarDrawerIcon {} }
+    )
 }
 
 @Preview
@@ -171,6 +198,8 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         onNextClicked = {},
         stopIdToHighlight = stopToHighlight.stopId,
         stopTypeToHighlight = stopToHighlight.type,
+        isFavorite = true,
+        onFavoriteClicked = {},
         navigationIcon = { AppBarDrawerIcon {} }
     )
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.stypox.tridenta.db.HistoryDao
 import org.stypox.tridenta.repo.LineTripsRepository
 import org.stypox.tridenta.repo.LinesRepository
 import org.stypox.tridenta.ui.navArgs
@@ -22,7 +23,8 @@ class LineTripsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     application: Application,
     private val linesRepository: LinesRepository,
-    private val tripsRepository: LineTripsRepository
+    private val tripsRepository: LineTripsRepository,
+    private val historyDao: HistoryDao
 ) : AndroidViewModel(application) {
 
     private val navArgs = savedStateHandle.navArgs<LineTripsScreenNavArgs>()
@@ -42,6 +44,12 @@ class LineTripsViewModel @Inject constructor(
         )
     )
     val uiState = mutableUiState.asStateFlow()
+
+    val isFavorite = historyDao.isFavorite(
+        isLine = true,
+        id = navArgs.lineId,
+        type = navArgs.lineType
+    )
 
     init {
         loadLine()
@@ -141,6 +149,19 @@ class LineTripsViewModel @Inject constructor(
                     trip = trip,
                     prevEnabled = index > 0,
                     nextEnabled = index < uiState.value.tripsInDayCount - 1,
+                )
+            }
+        }
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                historyDao.setFavorite(
+                    isLine = true,
+                    id = navArgs.lineId,
+                    type = navArgs.lineType,
+                    isFavorite = isFavorite.value?.not() ?: true
                 )
             }
         }
