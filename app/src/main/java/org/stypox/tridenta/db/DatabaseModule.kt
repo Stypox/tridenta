@@ -23,12 +23,17 @@ class DatabaseModule {
     }
 
     @Provides
+    fun providesStopDao(appDatabase: AppDatabase): StopDao {
+        return appDatabase.stopDao()
+    }
+
+    @Provides
     fun providesLineDao(appDatabase: AppDatabase): LineDao {
         return appDatabase.lineDao()
     }
 
     @Provides
-    fun providesStopDao(appDatabase: AppDatabase): StopDao {
-        return appDatabase.stopDao()
+    fun providesHistoryDao(appDatabase: AppDatabase): HistoryDao {
+        return appDatabase.historyDao()
     }
 }

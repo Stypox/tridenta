@@ -3,17 +3,15 @@ package org.stypox.tridenta.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import org.stypox.tridenta.db.data.DbLine
-import org.stypox.tridenta.db.data.DbNewsItem
-import org.stypox.tridenta.db.data.DbStop
-import org.stypox.tridenta.db.data.DbStopLineJoin
+import org.stypox.tridenta.db.data.*
 
 @Database(
     entities = [
         DbLine::class,
         DbNewsItem::class,
         DbStop::class,
-        DbStopLineJoin::class
+        DbStopLineJoin::class,
+        HistoryEntry::class,
     ],
     version = 1,
     exportSchema = false
@@ -22,5 +20,6 @@ import org.stypox.tridenta.db.data.DbStopLineJoin
 abstract class AppDatabase : RoomDatabase() {
     abstract fun lineDao(): LineDao
     abstract fun stopDao(): StopDao
+    abstract fun historyDao(): HistoryDao
 }
 
