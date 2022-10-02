@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -222,7 +223,8 @@ private fun TripViewStops(
                     modifier = Modifier
                         .weight(1.0f)
                         .padding(end = 6.dp),
-                    fontWeight = if (highlight) FontWeight.Bold else null
+                    fontWeight = if (highlight) FontWeight.Bold else null,
+                    color = if (highlight) MaterialTheme.colorScheme.primary else Color.Unspecified
                 )
 
                 val isLate = trip.lastEventReceivedAt != null
