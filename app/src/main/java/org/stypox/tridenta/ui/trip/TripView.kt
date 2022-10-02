@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,7 +69,22 @@ fun TripView(
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
         } else {
-            // TODO show error
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                HeadlineText(
+                    text = stringResource(R.string.no_trip_found),
+                    textAlign = TextAlign.Center
+                )
+                BodyText(
+                    text = stringResource(R.string.no_trip_found_description),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
         TripViewBottomRow(
