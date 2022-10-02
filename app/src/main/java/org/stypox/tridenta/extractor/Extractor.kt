@@ -51,7 +51,7 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param stopId the id of the stop as returned in [getStops]
      * @param stopType the type of the stop as returned in [getStops]
      * @param referenceDateTime returned trips will take place near this time; also used to produce
-     * the dates in the trips' [ExStopTime]s
+     * the dates in the trips' [org.stypox.tridenta.extractor.data.ExStopTime]s
      * @param limit return only this number of trips
      * @return a list of trips with [ExTrip.tripId] filled in and usable to get updates via
      * [getTripById]
@@ -76,7 +76,7 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param lineId the id of the line as returned in [getLines]
      * @param lineType the type of the line as returned in [getLines]
      * @param referenceDateTime returned trips will take place near this time; also used to produce
-     * the dates in the trips' [ExStopTime]s
+     * the dates in the trips' [org.stypox.tridenta.extractor.data.ExStopTime]s
      * @param limit return only this number of trips
      * @return a pair with the total number of trips in this specific day as first item, and as
      * second item a list of trips (with [ExTrip.tripId] filled in and usable to get updates via
@@ -105,7 +105,7 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * @param lineId the id of the line as returned in [getLines]
      * @param lineType the type of the line as returned in [getLines]
      * @param referenceDateTime returned trips will take place near this time; also used to produce
-     * the dates in the trips' [ExStopTime]s
+     * the dates in the trips' [org.stypox.tridenta.extractor.data.ExStopTime]s
      * @param indexFromInclusive the index (in the day identified by [referenceDateTime]) of the
      * first trip to return, inclusive
      * @param indexToInclusive the index (in the day identified by [referenceDateTime]) of the last
@@ -149,7 +149,8 @@ class Extractor @Inject constructor(private val httpClient: HttpClient) {
      * Get updates about the provided trip.
      *
      * @param tripId the id of the trip as returned in [getTripsByStop] or [getTripsByLine]
-     * @param referenceDateTime used to produce the dates in the trips' [ExStopTime]s
+     * @param referenceDateTime used to produce the dates in the trips'
+     * [org.stypox.tridenta.extractor.data.ExStopTime]s
      * @return the requested trip (obviously with the latest information)
      */
     fun getTripById(tripId: String, referenceDateTime: ZonedDateTime): ExTrip {
