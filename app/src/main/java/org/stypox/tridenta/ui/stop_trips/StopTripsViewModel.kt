@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.stypox.tridenta.db.HistoryDao
 import org.stypox.tridenta.repo.StopTripsRepository
 import org.stypox.tridenta.repo.StopsRepository
 import org.stypox.tridenta.ui.navArgs
@@ -22,7 +23,8 @@ class StopTripsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     application: Application,
     private val stopsRepository: StopsRepository,
-    private val tripsRepository: StopTripsRepository
+    private val tripsRepository: StopTripsRepository,
+    private val historyDao: HistoryDao
 ) : AndroidViewModel(application) {
 
     private val navArgs = savedStateHandle.navArgs<StopTripsScreenNavArgs>()
@@ -41,6 +43,12 @@ class StopTripsViewModel @Inject constructor(
     val uiState = mutableUiState.asStateFlow()
     
     private var tripsAtDateTimeList: StopTripsRepository.TripsAtDateTimeList? = null
+
+    val isFavorite = historyDao.isFavorite(
+        isLine = false,
+        id = navArgs.stopId,
+        type = navArgs.stopType
+    )
 
     init {
         loadStop()
@@ -124,6 +132,19 @@ class StopTripsViewModel @Inject constructor(
                     trip = trip,
                     prevEnabled = index > 0,
                     nextEnabled = index < (tripsAtDateTimeList?.tripCount ?: -1) - 1,
+                )
+            }
+        }
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                historyDao.setFavorite(
+                    isLine = false,
+                    id = navArgs.stopId,
+                    type = navArgs.stopType,
+                    isFavorite = isFavorite.value?.not() ?: true
                 )
             }
         }

@@ -1,6 +1,8 @@
 package org.stypox.tridenta.ui.stop_trips
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -8,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,6 +24,7 @@ import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
+import org.stypox.tridenta.ui.nav.AppBarFavoriteIcon
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
@@ -31,6 +35,7 @@ import java.time.ZonedDateTime
 fun StopTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
     val stopTripsViewModel: StopTripsViewModel = hiltViewModel()
     val stopTripsUiState by stopTripsViewModel.uiState.collectAsState()
+    val isFavorite by stopTripsViewModel.isFavorite.observeAsState(initial = false)
 
     StopTripsScreen(
         stop = stopTripsUiState.stop,
@@ -42,6 +47,8 @@ fun StopTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
         onPrevClicked = stopTripsViewModel::onPrevClicked,
         nextEnabled = stopTripsUiState.nextEnabled,
         onNextClicked = stopTripsViewModel::onNextClicked,
+        isFavorite = isFavorite,
+        onFavoriteClicked = stopTripsViewModel::onFavoriteClicked,
         navigationIcon = navigationIconWrapper.navigationIcon
     )
 }
@@ -58,12 +65,16 @@ private fun StopTripsScreen(
     onPrevClicked: () -> Unit,
     nextEnabled: Boolean,
     onNextClicked: () -> Unit,
+    isFavorite: Boolean,
+    onFavoriteClicked: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = {
             StopAppBar(
                 stop = stop,
+                isFavorite = isFavorite,
+                onFavoriteClicked = onFavoriteClicked,
                 navigationIcon = navigationIcon
             )
         },
@@ -89,6 +100,8 @@ private fun StopTripsScreen(
 @Composable
 private fun StopAppBar(
     stop: DbStop?,
+    isFavorite: Boolean,
+    onFavoriteClicked: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
     CenterAlignedTopAppBar(
@@ -111,10 +124,10 @@ private fun StopAppBar(
         navigationIcon = navigationIcon,
         actions = {
             // TODO title's width isn't properly calculated when `navigationIcon` and `actions` have
-            //  different widths, resulting in `title` and `navigationIcon` overlapping. Remove this
-            //  else when the upstream issue gets fixed:
+            //  different widths, resulting in `title` and `navigationIcon` overlapping. Fortunately
+            //  the favorite icon here compensates that, otherwise 48dp of Spacer would be needed.
             //  https://issuetracker.google.com/issues/236994621
-            Spacer(modifier = Modifier.width(48.dp))
+            AppBarFavoriteIcon(isFavorite = isFavorite, onFavoriteClicked = onFavoriteClicked)
         }
     )
 }
@@ -122,13 +135,23 @@ private fun StopAppBar(
 @Preview
 @Composable
 private fun StopAppBarPreview(@PreviewParameter(SampleDbStopProvider::class) stop: DbStop) {
-    StopAppBar(stop = stop, navigationIcon = { AppBarDrawerIcon {} })
+    StopAppBar(
+        stop = stop,
+        isFavorite = false,
+        onFavoriteClicked = {},
+        navigationIcon = { AppBarDrawerIcon {} }
+    )
 }
 
 @Preview
 @Composable
 private fun StopAppBarLoadingPreview() {
-    StopAppBar(stop = null, navigationIcon = { AppBarDrawerIcon {} })
+    StopAppBar(
+        stop = null,
+        isFavorite = true,
+        onFavoriteClicked = {},
+        navigationIcon = { AppBarDrawerIcon {} }
+    )
 }
 
 @Preview
@@ -144,6 +167,8 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         onPrevClicked = {},
         nextEnabled = false,
         onNextClicked = {},
+        isFavorite = false,
+        onFavoriteClicked = {},
         navigationIcon = { AppBarDrawerIcon {} }
     )
 }

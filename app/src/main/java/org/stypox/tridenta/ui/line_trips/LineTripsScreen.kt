@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,6 +25,7 @@ import org.stypox.tridenta.sample.SampleUiLineProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
+import org.stypox.tridenta.ui.nav.AppBarFavoriteIcon
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
@@ -149,13 +148,7 @@ private fun LineAppBar(
                     )
                 }
             }
-            IconButton(onClick = onFavoriteClicked) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite
-                    else Icons.Filled.FavoriteBorder,
-                    contentDescription = stringResource(R.string.favorite)
-                )
-            }
+            AppBarFavoriteIcon(isFavorite = isFavorite, onFavoriteClicked = onFavoriteClicked)
         }
     )
 }
@@ -192,9 +185,9 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         trip = trip,
         loading = false,
         onReload = {},
-        prevEnabled = true,
+        prevEnabled = false,
         onPrevClicked = {},
-        nextEnabled = false,
+        nextEnabled = true,
         onNextClicked = {},
         stopIdToHighlight = stopToHighlight.stopId,
         stopTypeToHighlight = stopToHighlight.type,

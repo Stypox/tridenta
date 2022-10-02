@@ -11,10 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
@@ -66,6 +63,16 @@ fun AppBarBackIcon(onBackClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             contentDescription = stringResource(R.string.back)
+        )
+    }
+}
+
+@Composable
+fun AppBarFavoriteIcon(isFavorite: Boolean, onFavoriteClicked: () -> Unit) {
+    IconButton(onClick = onFavoriteClicked) {
+        Icon(
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            contentDescription = stringResource(R.string.favorite)
         )
     }
 }
