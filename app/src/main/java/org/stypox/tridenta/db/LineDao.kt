@@ -9,10 +9,7 @@ import org.stypox.tridenta.enums.StopLineType
 @Dao
 interface LineDao {
     @Query("SELECT * FROM DbLine WHERE lineId = :lineId AND type = :lineType")
-    fun getLine(lineId: Int, lineType: StopLineType): DbLine
-
-    @Query("SELECT * FROM DbLine WHERE lineId = :lineId")
-    fun getLines(lineId: Int): List<DbLine>
+    fun getLine(lineId: Int, lineType: StopLineType): DbLine?
 
     @Query("SELECT * FROM DbLine WHERE area = :area")
     fun getLinesByArea(area: Area): List<DbLine>

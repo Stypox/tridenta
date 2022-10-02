@@ -9,7 +9,7 @@ import org.stypox.tridenta.enums.StopLineType
 @Dao
 interface StopDao {
     @Query("SELECT * FROM DbStop WHERE stopId = :stopId AND type = :stopType")
-    fun getStop(stopId: Int, stopType: StopLineType): DbStop
+    fun getStop(stopId: Int, stopType: StopLineType): DbStop?
 
     // TODO use a better filtering and sorting method, that also caches nfkd-normalized strings
     @RewriteQueriesToDropUnusedColumns // only DbStop.* columns are needed

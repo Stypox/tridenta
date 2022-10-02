@@ -16,7 +16,16 @@ class StopsRepository @Inject constructor(
     fun getDbStop(stopId: Int, stopType: StopLineType): DbStop {
         return stopLineReloadHandler.reloadIfNeededAndRun {
             stopDao.getStop(stopId, stopType)
-        }
+        } ?: DbStop(
+            stopId = stopId,
+            type = stopType,
+            latitude = 0.0,
+            longitude = 0.0,
+            name = "Error",
+            street = "",
+            town = "",
+            wheelchairAccessible = false,
+        )
     }
 
     fun getUiStopsFiltered(

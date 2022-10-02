@@ -29,7 +29,7 @@ class StopLineReloadHandler @Inject constructor(
     private val lineDao: LineDao,
 ) {
 
-    fun <R> reloadAndRun(function: () -> R?): R {
+    private fun <R> reloadAndRun(function: () -> R): R {
         Log.d(TAG, "Reloading lines and stops from network")
         reloadFromNetwork()
 
@@ -40,10 +40,10 @@ class StopLineReloadHandler @Inject constructor(
             )
             .commit()
 
-        return function()!!
+        return function()
     }
 
-    fun <R> reloadIfNeededAndRun(forceReload: Boolean = false, function: () -> R?): R {
+    fun <R> reloadIfNeededAndRun(forceReload: Boolean = false, function: () -> R): R {
         if (forceReload) {
             return reloadAndRun(function)
         }
@@ -62,7 +62,7 @@ class StopLineReloadHandler @Inject constructor(
         try {
             // data is (probably) up-to-date, so run the function directly
             return function()!! // throw an NPE if the function returns null!
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             if (secondsSinceLastReload >= ERROR_RELOAD_INTERVAL_SECONDS) {
                 // if there was an error while running the function, try reloading only if enough
                 // time has passed since the last reload
