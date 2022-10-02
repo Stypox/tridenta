@@ -19,6 +19,7 @@ import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
+import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
 import java.time.ZonedDateTime
 
@@ -88,7 +89,7 @@ private fun StopAppBar(
     CenterAlignedTopAppBar(
         title = {
             if (stop == null) {
-                CircularProgressIndicator()
+                SmallCircularProgressIndicator()
             } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
