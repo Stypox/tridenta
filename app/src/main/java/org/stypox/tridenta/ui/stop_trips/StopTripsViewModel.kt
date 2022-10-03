@@ -58,7 +58,10 @@ class StopTripsViewModel @Inject constructor(
     private fun loadStop() {
         viewModelScope.launch {
             val stop = withContext(Dispatchers.IO) {
-                stopsRepository.getDbStop(navArgs.stopId, navArgs.stopType)
+                stopsRepository.getDbStop(navArgs.stopId, navArgs.stopType).also {
+                    // register a view for this stop (assuming loadStop is called once)
+                    historyDao.registerAccessed(false, navArgs.stopId, navArgs.stopType)
+                }
             }
             mutableUiState.update { it.copy(stop = stop) }
         }

@@ -59,7 +59,10 @@ class LineTripsViewModel @Inject constructor(
     private fun loadLine() {
         viewModelScope.launch {
             val line = withContext(Dispatchers.IO) {
-                linesRepository.getUiLine(navArgs.lineId, navArgs.lineType)
+                linesRepository.getUiLine(navArgs.lineId, navArgs.lineType).also {
+                    // register a view for this line (assuming loadLine is called once)
+                    historyDao.registerAccessed(true, navArgs.lineId, navArgs.lineType)
+                }
             }
             mutableUiState.update { it.copy(line = line) }
         }
