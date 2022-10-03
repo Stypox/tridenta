@@ -2,6 +2,7 @@
 
 package org.stypox.tridenta.ui.nav
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -38,6 +39,11 @@ fun Navigation(
     val navController = engine.rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    // when the drawer is open, back presses should be consumed and used to close the drawer
+    BackHandler(enabled = drawerState.isOpen) {
+        scope.launch { drawerState.close() }
+    }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -69,7 +75,7 @@ fun Navigation(
                     })
                 }
             )
-        }
+        },
     )
 }
 
@@ -79,7 +85,9 @@ private fun NavigationPreview() {
     Navigation(drawerState = rememberDrawerState(initialValue = DrawerValue.Open)) { _, _ ->
         HeadlineText(
             text = "Drawer content",
-            modifier = Modifier.align(CenterHorizontally).padding(32.dp)
+            modifier = Modifier
+                .align(CenterHorizontally)
+                .padding(32.dp)
         )
     }
 }
