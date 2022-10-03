@@ -5,6 +5,7 @@ package org.stypox.tridenta.ui.nav
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,7 +48,6 @@ fun Navigation(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            // TODO maybe switch to dismissible
             ModalDrawerSheet {
                 drawerContent(navBackStackEntry?.destination) { direction ->
                     navController.navigate(direction)
