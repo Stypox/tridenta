@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,9 +18,9 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.rememberNavHostEngine
+import com.ramcosta.composedestinations.spec.Direction
 import kotlinx.coroutines.launch
 import org.stypox.tridenta.ui.NavGraphs
-import org.stypox.tridenta.ui.destinations.DirectionDestination
 import org.stypox.tridenta.ui.destinations.LinesScreenDestination
 import org.stypox.tridenta.ui.theme.HeadlineText
 
@@ -32,7 +31,7 @@ import org.stypox.tridenta.ui.theme.HeadlineText
 @Composable
 fun Navigation(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    drawerContent: @Composable ColumnScope.(NavDestination?, (DirectionDestination) -> Unit) -> Unit
+    drawerContent: @Composable ColumnScope.(NavDestination?, (Direction) -> Unit) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val engine = rememberNavHostEngine()
@@ -44,8 +43,8 @@ fun Navigation(
         drawerContent = {
             // TODO maybe switch to dismissible
             ModalDrawerSheet {
-                drawerContent(navBackStackEntry?.destination) { directionDestination ->
-                    navController.navigate(directionDestination)
+                drawerContent(navBackStackEntry?.destination) { direction ->
+                    navController.navigate(direction)
                     scope.launch { drawerState.close() }
                 }
             }

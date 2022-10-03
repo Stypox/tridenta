@@ -41,4 +41,6 @@
     <string name="no_trip_found">No trip found</string>
     <string name="no_trip_found_description">You may want to select a different date using the calendar button</string>
     <string name="favorite">Favorite</string>
+    <string name="favorites">Favorites</string>
+    <string name="history">History</string>
 </resources>

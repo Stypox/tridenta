@@ -26,10 +26,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation { currentDestination, setDestination ->
+                    Navigation { currentDestination, setDirection ->
                         DrawerSheetContent(
                             currentDestination = currentDestination,
-                            setDestination = setDestination
+                            setDirection = setDirection
                         )
                     }
                 }
