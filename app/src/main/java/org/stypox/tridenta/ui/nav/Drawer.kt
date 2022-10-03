@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Traffic
@@ -76,6 +75,7 @@ private fun DrawerHeader(modifier: Modifier = Modifier) {
                 text = stringResource(R.string.app_name),
                 modifier = Modifier.padding(32.dp)
             )
+            // TODO the icon looks bad, add info/settings button instead
             Icon(
                 painter = painterResource(R.mipmap.ic_launcher_foreground),
                 contentDescription = stringResource(R.string.app_name),
