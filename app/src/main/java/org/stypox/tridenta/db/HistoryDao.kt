@@ -45,7 +45,7 @@ interface HistoryDao {
         """
             SELECT *
             FROM HistoryEntry
-            WHERE HistoryEntry.isFavorite = 0
+            WHERE HistoryEntry.isFavorite <> 0
             ORDER BY HistoryEntry.timesAccessed DESC
         """
     )
@@ -59,7 +59,7 @@ interface HistoryDao {
         """
             SELECT *
             FROM HistoryEntry
-            WHERE HistoryEntry.isFavorite <> 0
+            WHERE HistoryEntry.isFavorite = 0
             ORDER BY HistoryEntry.lastAccessed DESC
             LIMIT :limit OFFSET :offset
         """
