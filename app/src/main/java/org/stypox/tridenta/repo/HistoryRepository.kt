@@ -1,7 +1,13 @@
 package org.stypox.tridenta.repo
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.stypox.tridenta.db.HistoryDao
 import org.stypox.tridenta.db.LineDao
 import org.stypox.tridenta.db.StopDao
@@ -21,9 +27,12 @@ class HistoryRepository @Inject constructor(
      * - [org.stypox.tridenta.db.data.DbStop] for favorite stops
      * - [org.stypox.tridenta.db.data.HistoryEntry] for unmatched entries
      */
-    fun getFavorites(): LiveData<List<Any>> {
+    fun getFavorites(coroutineScope: CoroutineScope): LiveData<List<Any>> {
         // no limit or offset here, we want to show all favorites directly
-        return historyEntriesToObjects(historyDao.getFavoritesSortedByTimesAccessed())
+        return historyEntriesToObjects(
+            coroutineScope,
+            historyDao.getFavoritesSortedByTimesAccessed()
+        )
     }
 
     /**
@@ -32,23 +41,31 @@ class HistoryRepository @Inject constructor(
      * - [org.stypox.tridenta.db.data.DbStop] for history stops
      * - [org.stypox.tridenta.db.data.HistoryEntry] for unmatched entries
      */
-    fun getHistory(): LiveData<List<Any>> {
+    fun getHistory(coroutineScope: CoroutineScope): LiveData<List<Any>> {
         // TODO implement limit and offset
         return historyEntriesToObjects(
+            coroutineScope,
             historyDao.getHistorySortedByLastAccessed(limit = 10, offset = 0)
         )
     }
 
     private fun historyEntriesToObjects(
+        coroutineScope: CoroutineScope,
         liveHistoryEntries: LiveData<List<HistoryEntry>>
     ): LiveData<List<Any>>{
-        return Transformations.map(liveHistoryEntries) { historyEntries ->
-            historyEntries.map { historyEntry ->
-                if (historyEntry.isLine) {
-                    lineDao.getLine(historyEntry.id, historyEntry.type)
-                } else {
-                    stopDao.getStop(historyEntry.id, historyEntry.type)
-                } ?: historyEntry
+        return MediatorLiveData<List<Any>>().apply {
+            addSource(liveHistoryEntries) { historyEntries ->
+                coroutineScope.launch {
+                    value = withContext(Dispatchers.IO) {
+                        historyEntries.map { historyEntry ->
+                            if (historyEntry.isLine) {
+                                lineDao.getLine(historyEntry.id, historyEntry.type)
+                            } else {
+                                stopDao.getStop(historyEntry.id, historyEntry.type)
+                            } ?: historyEntry
+                        }
+                    }
+                }
             }
         }
     }
