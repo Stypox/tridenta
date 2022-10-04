@@ -5,7 +5,6 @@ package org.stypox.tridenta.ui.nav
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.annotation.FULL_ROUTE_PLACEHOLDER
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.rememberNavHostEngine
@@ -25,6 +25,9 @@ import kotlinx.coroutines.launch
 import org.stypox.tridenta.ui.NavGraphs
 import org.stypox.tridenta.ui.destinations.LinesScreenDestination
 import org.stypox.tridenta.ui.theme.HeadlineText
+
+const val DEEP_LINK_PREFIX = "tridenta://"
+const val DEEP_LINK_URL_PATTERN = DEEP_LINK_PREFIX + FULL_ROUTE_PLACEHOLDER
 
 /**
  * @param drawerContent a composable that will be shown as the drawer content. The two parameters

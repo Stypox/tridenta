@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.repo.data.UiTrip
@@ -25,12 +26,16 @@ import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.AppBarFavoriteIcon
+import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
 import java.time.ZonedDateTime
 
-@Destination(navArgsDelegate = StopTripsScreenNavArgs::class)
+@Destination(
+    navArgsDelegate = StopTripsScreenNavArgs::class,
+    deepLinks = [DeepLink(uriPattern = DEEP_LINK_URL_PATTERN)]
+)
 @Composable
 fun StopTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
     val stopTripsViewModel: StopTripsViewModel = hiltViewModel()

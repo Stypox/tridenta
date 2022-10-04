@@ -15,16 +15,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.repo.data.UiStop
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
+import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.nav.SearchTopAppBar
 
-@Destination
+@Destination(
+    deepLinks = [DeepLink(uriPattern = DEEP_LINK_URL_PATTERN)]
+)
 @Composable
 fun StopsScreen(
     navigationIconWrapper: NavigationIconWrapper,

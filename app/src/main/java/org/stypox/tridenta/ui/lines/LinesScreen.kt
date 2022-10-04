@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -29,10 +30,13 @@ import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.sample.SampleDbLineProvider
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
+import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.theme.AppTheme
 
-@Destination
+@Destination(
+    deepLinks = [DeepLink(uriPattern = DEEP_LINK_URL_PATTERN)]
+)
 @Composable
 fun LinesScreen(
     navigationIconWrapper: NavigationIconWrapper,
