@@ -2,7 +2,7 @@
     <shortcut
         android:shortcutId="lines"
         android:enabled="true"
-        android:icon="@drawable/ic_directions_bus"
+        android:icon="@drawable/shortcut_lines"
         android:shortcutShortLabel="@string/lines">
         <intent
             android:action="android.intent.action.VIEW"
@@ -13,7 +13,7 @@
     <shortcut
         android:shortcutId="stops"
         android:enabled="true"
-        android:icon="@drawable/ic_traffic"
+        android:icon="@drawable/shortcut_stops"
         android:shortcutShortLabel="@string/stops">
         <intent
             android:action="android.intent.action.VIEW"
