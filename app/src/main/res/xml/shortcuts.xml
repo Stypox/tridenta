@@ -1,0 +1,24 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="lines"
+        android:enabled="true"
+        android:icon="@drawable/ic_directions_bus"
+        android:shortcutShortLabel="@string/lines">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="org.stypox.tridenta"
+            android:targetClass="org.stypox.tridenta.ui.MainActivity"
+            android:data="tridenta://lines_screen" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="stops"
+        android:enabled="true"
+        android:icon="@drawable/ic_traffic"
+        android:shortcutShortLabel="@string/stops">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="org.stypox.tridenta"
+            android:targetClass="org.stypox.tridenta.ui.MainActivity"
+            android:data="tridenta://stops_screen" />
+    </shortcut>
+</shortcuts>
