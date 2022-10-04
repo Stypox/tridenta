@@ -132,6 +132,10 @@ private fun LazyListScope.drawerSectionView(
     setDirection: (Direction) -> Unit,
     section: DrawerSection
 ) {
+    if (section.items?.isEmpty() == true) {
+        return // if the items are loaded and there are no items in this section, do not show it
+    }
+
     if (section.name != null && section.icon != null) {
         item {
             Row(
