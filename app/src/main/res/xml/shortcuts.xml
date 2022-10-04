@@ -1,4 +1,6 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Update STATIC_SHORTCUT_COUNT in DrawerViewModel.kt if adding new shortcuts! -->
+
     <shortcut
         android:shortcutId="lines"
         android:enabled="true"
@@ -10,6 +12,7 @@
             android:targetClass="org.stypox.tridenta.ui.MainActivity"
             android:data="tridenta://lines_screen" />
     </shortcut>
+
     <shortcut
         android:shortcutId="stops"
         android:enabled="true"

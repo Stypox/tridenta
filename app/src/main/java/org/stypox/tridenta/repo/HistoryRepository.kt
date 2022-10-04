@@ -47,6 +47,19 @@ class HistoryRepository @Inject constructor(
         )
     }
 
+    /**
+     * @return a list with elements among these types:
+     * - [org.stypox.tridenta.db.data.DbLine] for history lines
+     * - [org.stypox.tridenta.db.data.DbStop] for history stops
+     * - [org.stypox.tridenta.db.data.HistoryEntry] for unmatched entries
+     */
+    fun getEntriesForShortcuts(coroutineScope: CoroutineScope, limit: Int): LiveData<List<Any>> {
+        return historyEntriesToObjects(
+            coroutineScope,
+            historyDao.getEntriesForShortcuts(limit = limit)
+        )
+    }
+
     private fun historyEntriesToObjects(
         coroutineScope: CoroutineScope,
         liveHistoryEntries: LiveData<List<HistoryEntry>>

@@ -1,11 +1,7 @@
 package org.stypox.tridenta.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import org.stypox.tridenta.db.data.HistoryEntry
 import org.stypox.tridenta.enums.StopLineType
 import java.time.OffsetDateTime
@@ -65,6 +61,16 @@ interface HistoryDao {
         """
     )
     fun getHistorySortedByLastAccessed(limit: Int, offset: Int): LiveData<List<HistoryEntry>>
+
+    @Query(
+        """
+            SELECT *
+            FROM HistoryEntry
+            ORDER BY (HistoryEntry.isFavorite <> 0) DESC, HistoryEntry.lastAccessed DESC
+            LIMIT :limit OFFSET 0
+        """
+    )
+    fun getEntriesForShortcuts(limit: Int): LiveData<List<HistoryEntry>>
 
     @Transaction
     fun registerAccessed(isLine: Boolean, id: Int, type: StopLineType) {
