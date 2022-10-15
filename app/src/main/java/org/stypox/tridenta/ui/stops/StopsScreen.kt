@@ -1,6 +1,7 @@
 package org.stypox.tridenta.ui.stops
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -73,7 +74,9 @@ private fun StopsScreen(
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isRefreshing = loading),
                 onRefresh = onReload,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxHeight()
             ) {
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(stops) { stop ->
