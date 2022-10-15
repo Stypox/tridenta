@@ -33,7 +33,7 @@
     <string name="next">Next</string>
     <string name="no_date_time_information">No date/time information</string>
     <string name="last_update">Last update: %1$s</string>
-    <string name="last_checked">Last checked: %1$s</string>
+    <string name="no_update">No update received yet</string>
     <string name="choose_date_time">Choose date and time</string>
     <string name="reload">Reload</string>
     <string name="short_minute_format">%1$d min</string>

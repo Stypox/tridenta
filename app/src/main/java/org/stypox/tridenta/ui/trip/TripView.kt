@@ -63,7 +63,6 @@ fun TripView(
                     stopTypeToHighlight = stopTypeToHighlight,
                     modifier = Modifier.weight(1.0f)
                 )
-                // TODO show info about last reload from network and last update received
             }
 
         } else if (loading) {
@@ -194,7 +193,8 @@ private fun TripViewStops(
 
     LazyColumn(
         modifier = modifier,
-        state = listState
+        state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         itemsIndexed(trip.stopTimes) { index, stopTime ->
             Row(
@@ -274,7 +274,18 @@ private fun TripViewStops(
         }
 
         item {
-            Spacer(modifier = Modifier.size(height = 88.dp, width = 0.dp))
+            LabelText(
+                text = if (trip.lastEventReceivedAt == null) {
+                    stringResource(R.string.no_update)
+                } else {
+                    stringResource(R.string.last_update, formatTime(trip.lastEventReceivedAt))
+                },
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.size(height = 84.dp, width = 0.dp))
         }
     }
 }

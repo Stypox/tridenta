@@ -15,7 +15,7 @@ fun dateTimeFromEpochString(s: String): OffsetDateTime {
 }
 
 fun dateTimeFromISOString(s: String?): OffsetDateTime? {
-    return if (s.isNullOrEmpty() || s == "null") null else OffsetDateTime.parse(s)
+    return if (s.isNullOrEmpty() || s == "null") null else OffsetDateTime.parse(s).plusHours(2)
 }
 
 fun localToRomeDateTime(localDateTime: LocalDateTime): ZonedDateTime {
