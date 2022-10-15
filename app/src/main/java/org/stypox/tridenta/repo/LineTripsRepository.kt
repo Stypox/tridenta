@@ -41,7 +41,7 @@ class LineTripsRepository @Inject constructor(
         }
 
         val day = days[key]!!
-        return day.getClosestAtHalf(referenceDateTime)
+        return day.getTripToShowInitially(referenceDateTime)
             ?.let { Triple(day.tripsInDayCount, it.first, loadUiTripFromExTrip(it.second)) }
             ?: Triple(day.tripsInDayCount, 0, null)
     }
@@ -144,14 +144,21 @@ class LineTripsRepository @Inject constructor(
         }
 
         /**
-         * @return the trip whose half date time is closest to the provided date time
+         * @return the most suitable trip to show initially based on the provided date time
          */
-        fun getClosestAtHalf(referenceDateTime: ZonedDateTime): Pair<Int, ExTrip>? {
+        fun getTripToShowInitially(referenceDateTime: ZonedDateTime): Pair<Int, ExTrip>? {
             return this.asSequence()
                 .sortedWith(
                     Comparator.comparing<Map.Entry<Int, ExTrip>?, Long?> {
-                        abs((it.value.getHalfDateTime()?.toEpochSecond() ?: 0) -
-                                referenceDateTime.toEpochSecond())
+                        ((it.value.getLastStopDateTime()?.toEpochSecond() ?: 0) -
+                                referenceDateTime.toEpochSecond()).let { secondsInThePast ->
+                            if (secondsInThePast < -120 /* two minutes in the past */) {
+                                // make sure trips completed some time ago are not shown initially
+                                1000000000 - secondsInThePast
+                            } else {
+                                secondsInThePast
+                            }
+                        }
                     }.then(Comparator.comparing { it.key })
                 )
                 .firstOrNull()

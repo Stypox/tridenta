@@ -2,7 +2,6 @@ package org.stypox.tridenta.extractor.data
 
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
-import java.time.Instant
 import java.time.OffsetDateTime
 
 data class ExTrip(
@@ -16,24 +15,8 @@ data class ExTrip(
     val completedStops: Int,
     val stopTimes: List<ExStopTime>,
 ) {
-    fun getHalfDateTime(): OffsetDateTime? {
-        val firstArrival = getServerSortDateTime()
-        val lastDeparture = stopTimes.asSequence()
-            .map { it.departureTime }
-            .filter { it != null }
-            .lastOrNull()
-
-        if (firstArrival == null || lastDeparture == null) {
-            return null
-        }
-
-        return OffsetDateTime.ofInstant(
-            Instant.ofEpochSecond(
-                firstArrival.toEpochSecond() +
-                        (lastDeparture.toEpochSecond() - firstArrival.toEpochSecond()) / 2
-            ),
-            firstArrival.offset
-        )
+    fun getLastStopDateTime(): OffsetDateTime? {
+        return stopTimes.asSequence().map { it.arrivalTime }.filter { it != null }.lastOrNull()
     }
 
     fun getServerSortDateTime(): OffsetDateTime? {
