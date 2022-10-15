@@ -67,8 +67,9 @@ android {
 }
 
 dependencies {
-    // do not update desugaring to 1.2.x until the Android Gradle Plugin is updated to 7.3.x
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.8'
+    // do not update desugaring to 2.x.x until the Android Gradle Plugin is updated to 7.4.x,
+    // which in turn requires Android Studio to be updated to Electric Eel (currently beta)
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 
     // Core
     implementation 'androidx.core:core-ktx:1.9.0'
