@@ -132,7 +132,10 @@ private fun StopAppBar(
             //  different widths, resulting in `title` and `navigationIcon` overlapping. Fortunately
             //  the favorite icon here compensates that, otherwise 48dp of Spacer would be needed.
             //  https://issuetracker.google.com/issues/236994621
-            AppBarFavoriteIcon(isFavorite = isFavorite, onFavoriteClicked = onFavoriteClicked)
+            AppBarFavoriteIcon(
+                isFavorite = isFavorite,
+                onFavoriteClicked = onFavoriteClicked
+            )
         }
     )
 }

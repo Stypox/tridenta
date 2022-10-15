@@ -70,7 +70,7 @@ fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): ExTrip 
         headSign = o.getString("tripHeadsign"),
         tripId = o.getString("tripId"),
         type = stopLineTypeFromString(o.getString("type")),
-        completedStops = stopTimes.indexOfFirst { it.stopId == o.getInt("stopLast") },
+        completedStops = stopTimes.indexOfFirst { it.stopId == o.getInt("stopLast") } + 1,
         stopTimes = stopTimes
     )
 }
