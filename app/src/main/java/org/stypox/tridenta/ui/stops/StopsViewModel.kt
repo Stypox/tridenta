@@ -46,7 +46,8 @@ class StopsViewModel @Inject constructor(
         mutableUiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             val filteredStops = withContext(Dispatchers.Default) {
-                // TODO implement limit and offset
+                // TODO implement proper paging if needed
+                //  https://developer.android.com/jetpack/compose/lists#large-datasets
                 stopsRepository.getUiStopsFiltered(
                     mutableUiState.value.searchString,
                     100,
