@@ -26,7 +26,7 @@ class DrawerViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     val favorites = historyRepository.getFavorites(viewModelScope)
-    val history = historyRepository.getHistory(viewModelScope)
+    val history = historyRepository.getHistory(viewModelScope, limit = MAX_HISTORY_ENTRIES_TO_SHOW)
 
     private val context: Context
         get() = getApplication<Application>().baseContext
@@ -71,6 +71,7 @@ class DrawerViewModel @Inject constructor(
     }
 
     companion object {
+        const val MAX_HISTORY_ENTRIES_TO_SHOW = 16
         const val STATIC_SHORTCUT_COUNT = 2
     }
 }

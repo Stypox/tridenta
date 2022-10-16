@@ -57,17 +57,17 @@ interface HistoryDao {
             FROM HistoryEntry
             WHERE HistoryEntry.isFavorite = 0
             ORDER BY HistoryEntry.lastAccessed DESC
-            LIMIT :limit OFFSET :offset
+            LIMIT :limit
         """
     )
-    fun getHistorySortedByLastAccessed(limit: Int, offset: Int): LiveData<List<HistoryEntry>>
+    fun getHistorySortedByLastAccessed(limit: Int): LiveData<List<HistoryEntry>>
 
     @Query(
         """
             SELECT *
             FROM HistoryEntry
             ORDER BY (HistoryEntry.isFavorite <> 0) DESC, HistoryEntry.lastAccessed DESC
-            LIMIT :limit OFFSET 0
+            LIMIT :limit
         """
     )
     fun getEntriesForShortcuts(limit: Int): LiveData<List<HistoryEntry>>

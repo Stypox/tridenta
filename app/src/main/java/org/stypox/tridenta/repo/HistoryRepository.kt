@@ -20,7 +20,7 @@ class HistoryRepository @Inject constructor(
     private val lineDao: LineDao
 ) {
     /**
-     * @return a list with elements among these types:
+     * @return a list of favorite elements among these types:
      * - [org.stypox.tridenta.db.data.DbLine] for favorite lines
      * - [org.stypox.tridenta.db.data.DbStop] for favorite stops
      * - [org.stypox.tridenta.db.data.HistoryEntry] for unmatched entries
@@ -34,21 +34,20 @@ class HistoryRepository @Inject constructor(
     }
 
     /**
-     * @return a list with elements among these types:
+     * @return a list of only the latest few history elements among these types:
      * - [org.stypox.tridenta.db.data.DbLine] for history lines
      * - [org.stypox.tridenta.db.data.DbStop] for history stops
      * - [org.stypox.tridenta.db.data.HistoryEntry] for unmatched entries
      */
-    fun getHistory(coroutineScope: CoroutineScope): LiveData<List<Any>> {
-        // TODO implement limit and offset
+    fun getHistory(coroutineScope: CoroutineScope, limit: Int): LiveData<List<Any>> {
         return historyEntriesToObjects(
             coroutineScope,
-            historyDao.getHistorySortedByLastAccessed(limit = 10, offset = 0)
+            historyDao.getHistorySortedByLastAccessed(limit = limit)
         )
     }
 
     /**
-     * @return a list with elements among these types:
+     * @return a list of favorite and history elements among these types:
      * - [org.stypox.tridenta.db.data.DbLine] for history lines
      * - [org.stypox.tridenta.db.data.DbStop] for history stops
      * - [org.stypox.tridenta.db.data.HistoryEntry] for unmatched entries
