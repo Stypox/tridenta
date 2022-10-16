@@ -88,8 +88,9 @@ class StopTripsViewModel @Inject constructor(
                     referenceDateTime = referenceDateTime
                 )
             }
-            // load the first trip, which should be the next one arriving at the stop
-            loadIndex(0)
+            // show the first trip, which should be the next one arriving at the stop
+            // `thenReload` is false since the trip is surely up-to-date, as it was just fetched
+            loadIndex(0, false)
         }
     }
 
@@ -109,14 +110,14 @@ class StopTripsViewModel @Inject constructor(
     }
 
     fun onPrevClicked() {
-        loadIndex(uiState.value.tripIndex - 1)
+        loadIndex(uiState.value.tripIndex - 1, true)
     }
 
     fun onNextClicked() {
-        loadIndex(uiState.value.tripIndex + 1)
+        loadIndex(uiState.value.tripIndex + 1, true)
     }
 
-    private fun loadIndex(index: Int) {
+    private fun loadIndex(index: Int, thenReload: Boolean) {
         if (index < 0 || index >= (tripsAtDateTimeList?.tripCount ?: -1)) {
             mutableUiState.update { it.copy(loading = false) }
             return // this will happen when there are no trips in a day, for example
@@ -137,6 +138,11 @@ class StopTripsViewModel @Inject constructor(
                     prevEnabled = index > 0,
                     nextEnabled = index < (tripsAtDateTimeList?.tripCount ?: -1) - 1,
                 )
+            }
+
+            if (thenReload) {
+                // after showing the (possibly) outdated trip fast, reload it to show latest updates
+                onReload()
             }
         }
     }

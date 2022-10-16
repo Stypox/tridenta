@@ -136,7 +136,7 @@ class LineTripsViewModel @Inject constructor(
         mutableUiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
-            val trip = withContext(Dispatchers.IO) {
+            val (trip, loadedFromNetwork) = withContext(Dispatchers.IO) {
                 tripsRepository.getUiTrip(
                     lineId = navArgs.lineId,
                     lineType = navArgs.lineType,
@@ -145,6 +145,7 @@ class LineTripsViewModel @Inject constructor(
                 )
             }
 
+            // show the trip even if loadedFromNetwork is false (in which case it could be outdated)
             mutableUiState.update {
                 it.copy(
                     loading = false,
@@ -153,6 +154,11 @@ class LineTripsViewModel @Inject constructor(
                     prevEnabled = index > 0,
                     nextEnabled = index < uiState.value.tripsInDayCount - 1,
                 )
+            }
+
+            if (!loadedFromNetwork) {
+                // after showing the (possibly) outdated trip fast, reload it to show latest updates
+                onReload()
             }
         }
     }

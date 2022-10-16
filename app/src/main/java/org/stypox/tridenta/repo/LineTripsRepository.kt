@@ -46,15 +46,20 @@ class LineTripsRepository @Inject constructor(
             ?: Triple(day.tripsInDayCount, 0, null)
     }
 
+    /**
+     * Returns a pair with the ui trip and whether the trip was loaded from network
+     */
     fun getUiTrip(
         lineId: Int,
         lineType: StopLineType,
         referenceDateTime: ZonedDateTime,
         index: Int
-    ): UiTrip {
+    ): Pair<UiTrip, Boolean> {
         val key = Triple(lineId, lineType, referenceDateTime.toLocalDate())
         val tripsInDay = days[key]
-        if (tripsInDay?.containsKey(index) != true) {
+        val loadFromNetwork = tripsInDay?.containsKey(index) != true
+
+        if (loadFromNetwork) {
             handleNewTrips(
                 key = key,
                 trips = extractor.getTripsByLine(
@@ -79,7 +84,7 @@ class LineTripsRepository @Inject constructor(
             )
         }
 
-        return loadUiTripFromExTrip(days[key]!![index]!!)
+        return Pair(loadUiTripFromExTrip(days[key]!![index]!!), loadFromNetwork)
     }
 
     fun reloadUiTrip(uiTrip: UiTrip, index: Int, referenceDateTime: ZonedDateTime): UiTrip {
