@@ -98,11 +98,12 @@ class StopTripsViewModel @Inject constructor(
         mutableUiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             val trip = withContext(Dispatchers.IO) {
-                tripsRepository.reloadUiTrip(
+                tripsAtDateTimeList?.reloadUiTrip(
                     uiTrip = previousTrip,
+                    index = uiState.value.tripIndex,
                     referenceDateTime = uiState.value.referenceDateTime
                 )
-            }
+            } ?: return@launch
             mutableUiState.update { it.copy(trip = trip, loading = false) }
         }
     }

@@ -26,28 +26,17 @@ class StopTripsRepository @Inject constructor(
                 stopType = stopType,
                 referenceDateTime = referenceDateTime,
                 limit = STOP_TRIPS_BATCH_SIZE
-            ),
+            ).toMutableList(),
+            extractor = extractor,
             linesRepository = linesRepository,
             stopsRepository = stopsRepository
         )
     }
 
-    fun reloadUiTrip(uiTrip: UiTrip, referenceDateTime: ZonedDateTime): UiTrip {
-        val exTrip = extractor.getTripById(uiTrip.tripId, referenceDateTime)
 
-        // replace only info that might have changed and avoid loading line and stops data again
-        return uiTrip.copy(
-            delay = exTrip.delay,
-            direction = exTrip.direction,
-            lastEventReceivedAt = exTrip.lastEventReceivedAt,
-            headSign = exTrip.headSign,
-            completedStops = exTrip.completedStops
-        )
-    }
-    
-    
     class TripsAtDateTimeList(
-        private val exTrips: List<ExTrip>,
+        private val exTrips: MutableList<ExTrip>,
+        private val extractor: Extractor,
         linesRepository: LinesRepository,
         stopsRepository: StopsRepository
     ) : TripsRepository(linesRepository, stopsRepository) {
@@ -56,6 +45,20 @@ class StopTripsRepository @Inject constructor(
         
         fun getUiTripAtIndex(index: Int): UiTrip {
             return loadUiTripFromExTrip(exTrips[index])
+        }
+
+        fun reloadUiTrip(uiTrip: UiTrip, index: Int, referenceDateTime: ZonedDateTime): UiTrip {
+            val exTrip = extractor.getTripById(uiTrip.tripId, referenceDateTime)
+            exTrips[index] = exTrip
+
+            // replace only info that might have changed and avoid loading line and stops data again
+            return uiTrip.copy(
+                delay = exTrip.delay,
+                direction = exTrip.direction,
+                lastEventReceivedAt = exTrip.lastEventReceivedAt,
+                headSign = exTrip.headSign,
+                completedStops = exTrip.completedStops
+            )
         }
     }
 
