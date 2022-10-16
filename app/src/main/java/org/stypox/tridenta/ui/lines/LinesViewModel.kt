@@ -29,8 +29,7 @@ class LinesViewModel @Inject constructor(
                 MutableStateFlow(
                     LinesUiState(
                         lines = listOf(),
-                        // If the preferences do not contain a selected area, use DEFAULT_AREA and
-                        // expand the header, so the user becomes aware that the header exists.
+                        // if the preferences do not contain a selected area, use DEFAULT_AREA
                         selectedArea = Area.values().firstOrNull { it.value == prefArea }
                             ?: Area.DEFAULT_AREA,
                         loading = true

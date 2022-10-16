@@ -119,11 +119,12 @@ fun AreaChipGroup(selectedArea: Area, onAreaClick: (Area) -> Unit, modifier: Mod
             Area.UrbanPergine,
             Area.UrbanAltoGarda,
             Area.UrbanRovereto,
-            Area.UrbanTrento
+            Area.UrbanTrento,
         )
         AreaChipGroupRow(
             Area.Railway,
             Area.Funicular,
+            Area.All,
         )
     }
 }

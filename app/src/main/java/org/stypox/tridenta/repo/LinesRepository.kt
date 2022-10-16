@@ -20,7 +20,7 @@ class LinesRepository @Inject constructor(
         } ?: DbLine(
             lineId = lineId,
             type = lineType,
-            area = Area.UrbanTrento,
+            area = Area.All, // i.e. "undefined area"
             color = null,
             longName = "Error",
             shortName = "???"
@@ -29,7 +29,12 @@ class LinesRepository @Inject constructor(
 
     fun getDbLinesByArea(area: Area, forceReload: Boolean): List<DbLine> {
         return stopLineReloadHandler.reloadIfNeededAndRun(forceReload = forceReload) {
-            lineDao.getLinesByArea(area).sortedWith(::lineShortNameComparator)
+            if (area == Area.All) {
+                lineDao.getAllLines()
+            } else {
+                lineDao.getLinesByArea(area)
+            }
+                .sortedWith(::lineShortNameComparator)
         }
     }
 

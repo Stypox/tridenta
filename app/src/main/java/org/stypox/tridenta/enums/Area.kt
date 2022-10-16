@@ -3,10 +3,7 @@ package org.stypox.tridenta.enums
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChairAlt
-import androidx.compose.material.icons.filled.Landscape
-import androidx.compose.material.icons.filled.LocationCity
-import androidx.compose.material.icons.filled.Train
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.stypox.tridenta.R
 
@@ -16,6 +13,7 @@ enum class Area(
     @ColorInt val color: Int,
     val icon: ImageVector,
 ) {
+    All(0, R.string.all, 0x7f7f7f, Icons.Filled.Bookmarks), // <- also use as "undefined"
     Suburban1(1, R.string.area_suburban1, 0xc71585, Icons.Filled.Landscape),
     Suburban2(2, R.string.area_suburban2, 0xb8860b, Icons.Filled.Landscape),
     Suburban3(3, R.string.area_suburban3, 0x191970, Icons.Filled.Landscape),
@@ -30,6 +28,6 @@ enum class Area(
     UrbanRovereto(24, R.string.area_urban_rovereto, 0x000000, Icons.Filled.LocationCity);
 
     companion object {
-        val DEFAULT_AREA = UrbanTrento
+        val DEFAULT_AREA = All
     }
 }

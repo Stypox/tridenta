@@ -11,8 +11,14 @@ interface LineDao {
     @Query("SELECT * FROM DbLine WHERE lineId = :lineId AND type = :lineType")
     fun getLine(lineId: Int, lineType: StopLineType): DbLine?
 
+    /**
+     * If [Area.All] is passed, this will not work as expected. Use [getAllLines] instead.
+     */
     @Query("SELECT * FROM DbLine WHERE area = :area")
     fun getLinesByArea(area: Area): List<DbLine>
+
+    @Query("SELECT * FROM DbLine")
+    fun getAllLines(): List<DbLine>
 
     @Query("SELECT * FROM DbNewsItem WHERE lineId = :lineId AND lineType = :lineType")
     fun getNewsForLine(lineId: Int, lineType: StopLineType): List<DbNewsItem>
