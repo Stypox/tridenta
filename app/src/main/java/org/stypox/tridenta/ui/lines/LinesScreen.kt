@@ -82,7 +82,10 @@ private fun LinesScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(text = stringResource(R.string.selected_area))
-                        AreaChip(area = selectedArea)
+                        AreaChip(
+                            area = selectedArea,
+                            onClick = { showAreaDialog = true }
+                        )
                     }
                 },
                 navigationIcon = navigationIcon,
