@@ -27,9 +27,9 @@ import com.ramcosta.composedestinations.spec.Direction
 import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
-import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.ui.destinations.*
 import org.stypox.tridenta.ui.lines.LineShortName
+import org.stypox.tridenta.ui.theme.StopLineTypeIcon
 import org.stypox.tridenta.ui.theme.AppTheme
 import org.stypox.tridenta.ui.theme.HeadlineText
 import org.stypox.tridenta.ui.theme.LabelText
@@ -234,16 +234,7 @@ private fun getHistoryDrawerSection(
 
                 is DbStop -> DrawerItem(
                     name = item.name,
-                    icon = {
-                        // TODO add content description
-                        Icon(
-                            imageVector = when (item.type) {
-                                StopLineType.Urban -> Icons.Filled.LocationCity
-                                StopLineType.Suburban -> Icons.Filled.Landscape
-                            },
-                            contentDescription = null
-                        )
-                    },
+                    icon = { StopLineTypeIcon(stopLineType = item.type) },
                     destination = StopTripsScreenDestination(item.stopId, item.type)
                 )
 

@@ -43,4 +43,10 @@
     <string name="favorite">Favorite</string>
     <string name="favorites">Favorites</string>
     <string name="history">History</string>
+    <string name="urban">Urban</string>
+    <string name="suburban">Suburban</string>
+    <string name="accessible">Accessible</string>
+    <string name="forward">Forward</string>
+    <string name="backward">Backward</string>
+    <string name="forward_and_backward">Forward and backward</string>
 </resources>

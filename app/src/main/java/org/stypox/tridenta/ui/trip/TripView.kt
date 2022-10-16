@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import org.stypox.tridenta.R
-import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
@@ -159,21 +158,8 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
 
         // type + direction
         Column {
-            Icon(
-                imageVector = when (trip.type) {
-                    StopLineType.Urban -> Icons.Filled.LocationCity
-                    StopLineType.Suburban -> Icons.Filled.Landscape
-                },
-                contentDescription = null
-            )
-            Icon(
-                imageVector = when (trip.direction) {
-                    Direction.Forward -> Icons.Filled.TurnSharpRight
-                    Direction.Backward -> Icons.Filled.UTurnLeft
-                    Direction.ForwardAndBackward -> Icons.Filled.Loop
-                },
-                contentDescription = null
-            )
+            StopLineTypeIcon(stopLineType = trip.type)
+            DirectionIcon(direction = trip.direction)
         }
     }
 }

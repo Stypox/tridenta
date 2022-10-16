@@ -9,23 +9,22 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessible
-import androidx.compose.material.icons.filled.Landscape
-import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbLine
-import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiStop
 import org.stypox.tridenta.sample.SampleUiStopProvider
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.theme.BodyText
+import org.stypox.tridenta.ui.theme.StopLineTypeIcon
 import org.stypox.tridenta.ui.theme.TitleText
 import org.stypox.tridenta.util.StringUtils.WORD_DELIMITERS_PATTERN
 import org.stypox.tridenta.util.StringUtils.levenshteinDistance
@@ -91,20 +90,11 @@ fun StopItem(
         }
 
         Column {
-            // TODO add content descriptions, or better long-press labels
-            Icon(
-                imageVector = when (stop.type) {
-                    StopLineType.Urban -> Icons.Filled.LocationCity
-                    StopLineType.Suburban -> Icons.Filled.Landscape
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground
-            )
+            StopLineTypeIcon(stopLineType = stop.type)
             if (stop.wheelchairAccessible) {
                 Icon(
                     imageVector = Icons.Filled.Accessible,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
+                    contentDescription = stringResource(R.string.accessible)
                 )
             }
         }
