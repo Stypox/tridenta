@@ -144,12 +144,12 @@ class StopLineReloadHandler @Inject constructor(
             // and finally insert stop line joins, which depend on stops and lines
             stopDao.insertDbStopLineJoins(
                 exStops.flatMap { exStop ->
-                    exStop.lines.map { exLine ->
+                    exStop.lines.map { (lineId, lineType) ->
                         DbStopLineJoin(
                             stopId = exStop.stopId,
                             stopType = exStop.type,
-                            lineId = exLine.lineId,
-                            lineType = exLine.type
+                            lineId = lineId,
+                            lineType = lineType
                         )
                     }
                 }

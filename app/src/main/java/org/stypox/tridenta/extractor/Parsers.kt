@@ -16,8 +16,12 @@ fun stopFromJSONObject(o: JSONObject): ExStop {
         town = o.optString("town", ""),
         type = stopLineTypeFromString(o.getString("type")),
         wheelchairAccessible = o.optInt("wheelchairBoarding") == 1,
-        lines = o.getJSONArray("routes").map(::lineFromJSONObject)
+        lines = o.getJSONArray("routes").map(::lineIdTypeFromJSONObject)
     )
+}
+
+fun lineIdTypeFromJSONObject(o: JSONObject): Pair<Int, StopLineType> {
+    return Pair(o.getInt("routeId"), stopLineTypeFromString(o.getString("type")))
 }
 
 fun lineFromJSONObject(o: JSONObject): ExLine {
@@ -90,9 +94,9 @@ fun stopLineTypeFromString(s: String): StopLineType {
     return StopLineType.values().first { type -> type.value == s }
 }
 
-fun areaFromInt(i: Int): Area? {
-    // TODO why can i be 0? It does not make sense to have null as the area
-    return if (i == 0) null else Area.values().first { area -> area.value == i }
+fun areaFromInt(i: Int): Area {
+    return Area.values().firstOrNull { area -> area.value == i }
+        ?: throw java.lang.RuntimeException("Invalid $i")
 }
 
 fun directionFromInt(i: Int): Direction {

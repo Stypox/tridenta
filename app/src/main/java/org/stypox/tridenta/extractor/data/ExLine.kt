@@ -10,7 +10,7 @@ import kotlin.math.min
 data class ExLine(
     val lineId: Int,
     val type: StopLineType,
-    val area: Area?,
+    val area: Area,
     @ColorInt val color: Int?,
     val longName: String,
     val shortName: String,

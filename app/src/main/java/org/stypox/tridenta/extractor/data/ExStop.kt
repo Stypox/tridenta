@@ -11,5 +11,5 @@ data class ExStop(
     val street: String,
     val town: String,
     val wheelchairAccessible: Boolean,
-    val lines: List<ExLine>,
+    val lines: List<Pair<Int, StopLineType>>,
 )

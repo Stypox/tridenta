@@ -20,7 +20,7 @@ class LinesRepository @Inject constructor(
         } ?: DbLine(
             lineId = lineId,
             type = lineType,
-            area = null,
+            area = Area.UrbanTrento,
             color = null,
             longName = "Error",
             shortName = "???"

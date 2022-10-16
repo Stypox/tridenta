@@ -16,7 +16,7 @@ data class DbLine(
     // some testing exposed that a line is always identified by the (lineId, type) tuple
     val lineId: Int,
     val type: StopLineType,
-    val area: Area?,
+    val area: Area,
     @ColorInt val color: Int?,
     val longName: String,
     val shortName: String,
