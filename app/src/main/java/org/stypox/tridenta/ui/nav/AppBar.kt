@@ -2,6 +2,8 @@ package org.stypox.tridenta.ui.nav
 
 import android.view.KeyEvent
 import android.view.ViewTreeObserver
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -69,8 +72,16 @@ fun AppBarBackIcon(onBackClick: () -> Unit) {
 
 @Composable
 fun AppBarFavoriteIcon(isFavorite: Boolean, onFavoriteClicked: () -> Unit) {
-    // TODO when this is clicked, open a dialog asking to add this entry to the home screen
-    IconButton(onClick = onFavoriteClicked) {
+    val context = LocalContext.current
+    IconButton(
+        onClick = {
+            if (!isFavorite) {
+                // about to turn favorite: show an informative toast about launcher shortcuts
+                Toast.makeText(context, R.string.add_shortcut_info, LENGTH_LONG).show()
+            }
+            onFavoriteClicked()
+        }
+    ) {
         Icon(
             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
             contentDescription = stringResource(R.string.favorite)

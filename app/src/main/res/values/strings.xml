@@ -50,4 +50,5 @@
     <string name="backward">Backward</string>
     <string name="forward_and_backward">Forward and backward</string>
     <string name="no_browser_available">No browser available, url copied to clipboard</string>
+    <string name="add_shortcut_info">You can add a shortcut to this screen from your launcher!</string>
 </resources>
