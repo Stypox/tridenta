@@ -46,8 +46,8 @@ fun newsItemFromJSONObject(o: JSONObject): ExNewsItem {
         serviceType = o.getString("serviceType"),
         startDate = dateTimeFromEpochString(o.getString("startDate")),
         endDate = dateTimeFromEpochString(o.getString("endDate")),
-        header = o.getString("header"),
-        details = o.getString("details"),
+        header = o.getString("header").trim(),
+        details = o.getString("details").trim(),
         url = o.getString("url"),
         // o.getJSONArray("routeIds") would contain the affected line ids, but it's redundant
     )
