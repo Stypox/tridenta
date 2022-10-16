@@ -1,5 +1,7 @@
 package org.stypox.tridenta.ui.line_trips
 
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -9,8 +11,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -48,11 +53,18 @@ fun NewsItemView(
         shape = MaterialTheme.shapes.medium
     ) {
         val uriHandler = LocalUriHandler.current
+        val context = LocalContext.current
+        val clipboardManager = LocalClipboardManager.current
         Column(
             modifier = Modifier
                 .clickable {
                     onDismiss()
-                    uriHandler.openUri(newsItem.url)
+                    try {
+                        uriHandler.openUri(newsItem.url)
+                    } catch (e: Throwable) {
+                        Toast.makeText(context, R.string.no_browser_available, LENGTH_LONG).show()
+                        clipboardManager.setText(AnnotatedString(newsItem.url))
+                    }
                 }
                 .padding(16.dp)
         ) {
