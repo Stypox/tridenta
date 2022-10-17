@@ -1,12 +1,13 @@
 package org.stypox.tridenta.repo
 
 import android.content.SharedPreferences
-import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
-import org.stypox.tridenta.db.*
+import org.stypox.tridenta.db.AppDatabase
+import org.stypox.tridenta.db.LineDao
+import org.stypox.tridenta.db.StopDao
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbNewsItem
 import org.stypox.tridenta.db.data.DbStop
@@ -14,6 +15,9 @@ import org.stypox.tridenta.db.data.DbStopLineJoin
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.extractor.data.ExLine
 import org.stypox.tridenta.extractor.data.ExStop
+import org.stypox.tridenta.log.logError
+import org.stypox.tridenta.log.logInfo
+import org.stypox.tridenta.log.logWarning
 import org.stypox.tridenta.util.PreferenceKeys
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -30,7 +34,6 @@ class StopLineReloadHandler @Inject constructor(
 ) {
 
     private fun <R> reloadAndRun(function: () -> R): R {
-        Log.d(TAG, "Reloading lines and stops from network")
         reloadFromNetwork()
 
         prefs.edit()
@@ -45,6 +48,7 @@ class StopLineReloadHandler @Inject constructor(
 
     fun <R> reloadIfNeededAndRun(forceReload: Boolean = false, function: () -> R): R {
         if (forceReload) {
+            logInfo("Reloading lines and stops as requested by the user")
             return reloadAndRun(function)
         }
 
@@ -56,6 +60,7 @@ class StopLineReloadHandler @Inject constructor(
         if (secondsSinceLastReload < 0 ||
             secondsSinceLastReload >= NORMAL_RELOAD_INTERVAL_SECONDS) {
             // some time has passed, so reload data to make sure it is up to date
+            logInfo("Reloading lines and stops because some time has passed since the last reload")
             return reloadAndRun(function)
         }
 
@@ -66,8 +71,10 @@ class StopLineReloadHandler @Inject constructor(
             if (secondsSinceLastReload >= ERROR_RELOAD_INTERVAL_SECONDS) {
                 // if there was an error while running the function, try reloading only if enough
                 // time has passed since the last reload
+                logWarning("Reloading lines and stops because of error while operating on them", e)
                 return reloadAndRun(function)
             }
+            logError("Crash while operating on lines or stops even if data is up-to-date", e)
             throw e
         }
     }
@@ -160,6 +167,5 @@ class StopLineReloadHandler @Inject constructor(
     companion object {
         private const val NORMAL_RELOAD_INTERVAL_SECONDS = 604800L // one week
         private const val ERROR_RELOAD_INTERVAL_SECONDS = 86400L // one day
-        private val TAG = StopLineReloadHandler::class.simpleName!!
     }
 }

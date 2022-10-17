@@ -36,4 +36,9 @@ class DatabaseModule {
     fun providesHistoryDao(appDatabase: AppDatabase): HistoryDao {
         return appDatabase.historyDao()
     }
+
+    @Provides
+    fun providesLogDao(appDatabase: AppDatabase): LogDao {
+        return appDatabase.logDao()
+    }
 }

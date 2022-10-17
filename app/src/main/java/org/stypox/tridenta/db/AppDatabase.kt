@@ -12,6 +12,7 @@ import org.stypox.tridenta.db.data.*
         DbStop::class,
         DbStopLineJoin::class,
         HistoryEntry::class,
+        LogEntry::class,
     ],
     version = 1,
     exportSchema = false
@@ -21,5 +22,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun lineDao(): LineDao
     abstract fun stopDao(): StopDao
     abstract fun historyDao(): HistoryDao
+    abstract fun logDao(): LogDao
 }
 
