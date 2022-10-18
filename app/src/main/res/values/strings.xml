@@ -53,4 +53,6 @@
     <string name="add_shortcut_info">You can add a shortcut to this screen from your launcher!</string>
     <string name="all">All</string>
     <string name="logs">Logs</string>
+    <string name="share">Share</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
 </resources>
