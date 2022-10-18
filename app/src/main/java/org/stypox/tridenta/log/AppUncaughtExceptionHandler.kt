@@ -20,12 +20,14 @@ class AppUncaughtExceptionHandler private constructor(
                 .logDao()
 
             logToDatabaseBlocking(logDao, LogLevel.Error, "App crash on $t", e)
+            Log.i(TAG, "Error saved to database")
 
-        } catch (e: Throwable) {
+        } catch (t: Throwable) {
             // if exceptions are not caught, the app would hang indefinitely
-            Log.e("ExceptionHandler", "Could not save error to database", e)
+            Log.e(TAG, "Could not save error to database", t)
         }
 
+        // pass the exception to the previously set UncaughtExceptionHandler
         previousHandler?.uncaughtException(t, e)
     }
 
@@ -38,5 +40,7 @@ class AppUncaughtExceptionHandler private constructor(
                 )
             }
         }
+
+        private const val TAG = "AppUncaughtExcHnd"
     }
 }
