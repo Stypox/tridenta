@@ -116,10 +116,18 @@ fun AppBarTextField(
     }
 
     // set the correct cursor position when this composable is first initialized
-    var textFieldValue by remember {
+    var textFieldValueState by remember {
         mutableStateOf(TextFieldValue(value, TextRange(value.length)))
     }
-    textFieldValue = textFieldValue.copy(text = value) // make sure to keep the value updated
+    val textFieldValue = textFieldValueState.copy(text = value) // keep the value updated
+
+    // copied from the BasicTextField implementation that takes a String
+    SideEffect {
+        if (textFieldValue.selection != textFieldValueState.selection ||
+            textFieldValue.composition != textFieldValueState.composition) {
+            textFieldValueState = textFieldValue
+        }
+    }
 
     CompositionLocalProvider(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
@@ -127,7 +135,7 @@ fun AppBarTextField(
         BasicTextField(
             value = textFieldValue,
             onValueChange = {
-                textFieldValue = it
+                textFieldValueState = it
                 // remove newlines to avoid strange layout issues, and also because singleLine=true
                 onValueChange(it.text.replace("\n", ""))
             },
