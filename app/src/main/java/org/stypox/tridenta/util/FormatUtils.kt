@@ -19,6 +19,8 @@ private val DATE_FORMAT_FULL = DateTimeFormatter.ofLocalizedDate(FormatStyle.FUL
 
 private val DATE_FORMAT_SHORT = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
+private val DATE_TIME_FORMAT_SHORT = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+
 @Composable
 fun formatDurationMinutes(minutes: Int): String {
     return stringResource(R.string.short_minute_format, minutes)
@@ -34,4 +36,8 @@ fun formatDateFull(offsetDateTime: OffsetDateTime): String {
 
 fun formatDateShort(offsetDateTime: OffsetDateTime): String {
     return DATE_FORMAT_SHORT.format(offsetDateTime)
+}
+
+fun formatDateTimeShort(offsetDateTime: OffsetDateTime): String {
+    return DATE_TIME_FORMAT_SHORT.format(offsetDateTime)
 }
