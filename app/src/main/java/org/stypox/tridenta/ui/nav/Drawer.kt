@@ -14,9 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,11 +27,7 @@ import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.ui.destinations.*
 import org.stypox.tridenta.ui.lines.LineShortName
-import org.stypox.tridenta.ui.theme.StopLineTypeIcon
-import org.stypox.tridenta.ui.theme.AppTheme
-import org.stypox.tridenta.ui.theme.HeadlineText
-import org.stypox.tridenta.ui.theme.LabelText
-import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
+import org.stypox.tridenta.ui.theme.*
 
 data class DrawerItem(
     val name: String,
@@ -83,6 +77,7 @@ fun DrawerSheetContent(
     sections: List<DrawerSection>
 ) {
     DrawerHeader(
+        setDirection = setDirection,
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -103,7 +98,7 @@ fun DrawerSheetContent(
 }
 
 @Composable
-private fun DrawerHeader(modifier: Modifier = Modifier) {
+private fun DrawerHeader(setDirection: (Direction) -> Unit, modifier: Modifier = Modifier) {
     Surface(
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.primary,
@@ -115,14 +110,18 @@ private fun DrawerHeader(modifier: Modifier = Modifier) {
         ) {
             HeadlineText(
                 text = stringResource(R.string.app_name),
-                modifier = Modifier.padding(32.dp)
+                modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp)
             )
-            // TODO the icon looks bad, add info/settings button instead
-            Icon(
-                painter = painterResource(R.mipmap.ic_launcher_foreground),
-                contentDescription = stringResource(R.string.app_name),
-                tint = Color.Unspecified
-            )
+            IconButton(
+                onClick = { setDirection(LogsScreenDestination) },
+                modifier = Modifier.padding(20.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.BugReport,
+                    contentDescription = stringResource(R.string.logs),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
     }
 }
@@ -257,6 +256,6 @@ private fun getHistoryDrawerSection(
 @Composable
 private fun DrawerHeaderPreview() {
     AppTheme {
-        DrawerHeader()
+        DrawerHeader({})
     }
 }

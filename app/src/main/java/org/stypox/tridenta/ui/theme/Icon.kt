@@ -3,11 +3,13 @@ package org.stypox.tridenta.ui.theme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
+import org.stypox.tridenta.log.LogLevel
 
 @Composable
 fun StopLineTypeIcon(stopLineType: StopLineType) {
@@ -40,5 +42,22 @@ fun DirectionIcon(direction: Direction) {
                 Direction.ForwardAndBackward -> R.string.forward_and_backward
             }
         )
+    )
+}
+
+@Composable
+fun LogLevelIcon(logLevel: LogLevel) {
+    Icon(
+        imageVector = when (logLevel) {
+            LogLevel.Info -> Icons.Filled.Info
+            LogLevel.Warning -> Icons.Filled.Warning
+            LogLevel.Error -> Icons.Filled.Error
+        },
+        contentDescription = null,
+        tint = when (logLevel) {
+            LogLevel.Info -> MaterialTheme.colorScheme.onBackground
+            LogLevel.Warning -> MaterialTheme.colorScheme.onBackground
+            LogLevel.Error -> MaterialTheme.colorScheme.error
+        },
     )
 }

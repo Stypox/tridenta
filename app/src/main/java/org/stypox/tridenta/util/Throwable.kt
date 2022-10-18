@@ -7,5 +7,5 @@ fun Throwable.getStackTraceString(): String {
     val stringWriter = StringWriter()
     val printWriter = PrintWriter(stringWriter)
     this.printStackTrace(printWriter)
-    return stringWriter.toString()
+    return stringWriter.toString().trim()
 }
