@@ -2,6 +2,7 @@ package org.stypox.tridenta.db
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,11 +16,7 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun providesAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        return Room.databaseBuilder(
-            appContext,
-            AppDatabase::class.java,
-            "db"
-        ).build()
+        return appDatabaseBuilder(appContext).build()
     }
 
     @Provides
@@ -40,5 +37,15 @@ class DatabaseModule {
     @Provides
     fun providesLogDao(appDatabase: AppDatabase): LogDao {
         return appDatabase.logDao()
+    }
+
+    companion object {
+        fun appDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
+            return Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "db"
+            )
+        }
     }
 }

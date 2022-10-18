@@ -1,7 +1,10 @@
 package org.stypox.tridenta.log
 
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.stypox.tridenta.db.LogDao
 import org.stypox.tridenta.db.data.LogEntry
 import java.io.PrintWriter
@@ -17,34 +20,51 @@ private const val RETAIN_LOGS_DAYS = 14L
 fun setupLogger(newLogDao: LogDao?, newScope: CoroutineScope?) {
     logDao = WeakReference(newLogDao)
     scope = WeakReference(newScope)
-    newScope?.launch {
+}
+
+fun clearOldLogs() {
+    scope.get()?.launch {
         withContext(Dispatchers.IO) {
-            newLogDao?.clearOldLogs(OffsetDateTime.now().minusDays(RETAIN_LOGS_DAYS))
+            logDao.get()?.clearOldLogs(OffsetDateTime.now().minusDays(RETAIN_LOGS_DAYS))
         }
     }
+}
+
+fun logToDatabaseBlocking(
+    theLogDao: LogDao,
+    logLevel: LogLevel,
+    text: String,
+    throwable: Throwable? = null
+) {
+    theLogDao.insertLog(
+        LogEntry(
+            logLevel = logLevel,
+            text = text,
+            stackTrace = throwable?.let {
+                val stringWriter = StringWriter()
+                val printWriter = PrintWriter(stringWriter)
+                it.printStackTrace(printWriter)
+                stringWriter.toString()
+            },
+            dateTime = OffsetDateTime.now(),
+        )
+    )
 }
 
 private fun log(logLevel: LogLevel, text: String, throwable: Throwable? = null) {
     // log to the database, if the scope and the DAO are in place
     scope.get()?.launch {
         withContext(Dispatchers.IO) {
-            logDao.get()?.insertLog(
-                LogEntry(
-                    logLevel = logLevel,
-                    text = text,
-                    stackTrace = throwable?.let {
-                        val stringWriter = StringWriter()
-                        val printWriter = PrintWriter(stringWriter)
-                        it.printStackTrace(printWriter)
-                        stringWriter.toString()
-                    },
-                    dateTime = OffsetDateTime.now(),
-                )
-            )
+            logDao.get()?.let { logToDatabaseBlocking(it, logLevel, text, throwable) }
         }
     }
 
-    // also log with Android logger normally
+    // if the scope or the dao are not in place, then something could be wrong
+    if (scope.get() == null || logDao.get() == null) {
+        Log.w("TridentaLogger", "Scope or DAO not in place, cannot store log to database")
+    }
+
+    // also always send logs to logcat
     if (throwable == null) {
         val androidLogFunction: (String, String) -> Unit = when (logLevel) {
             LogLevel.Info -> Log::i
