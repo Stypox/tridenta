@@ -7,8 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.stypox.tridenta.db.LogDao
 import org.stypox.tridenta.db.data.LogEntry
-import java.io.PrintWriter
-import java.io.StringWriter
+import org.stypox.tridenta.util.getStackTraceString
 import java.lang.ref.WeakReference
 import java.time.OffsetDateTime
 
@@ -40,12 +39,7 @@ fun logToDatabaseBlocking(
         LogEntry(
             logLevel = logLevel,
             text = text,
-            stackTrace = throwable?.let {
-                val stringWriter = StringWriter()
-                val printWriter = PrintWriter(stringWriter)
-                it.printStackTrace(printWriter)
-                stringWriter.toString()
-            },
+            stackTrace = throwable?.getStackTraceString(),
             dateTime = OffsetDateTime.now(),
         )
     )
