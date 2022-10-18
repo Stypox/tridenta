@@ -1,5 +1,7 @@
 package org.stypox.tridenta.ui.nav
 
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.ViewTreeObserver
 import android.widget.Toast
@@ -247,6 +249,20 @@ private fun SearchTopAppBarExpanded(
     hint: String,
     onSearchDone: () -> Unit
 ) {
+    fun onBack() {
+        // clear the search filter (will not work properly, but prevents the old value from
+        // appearing for the one frame before the runnable posted below is called)
+        setSearchString("")
+        // then close the search bar
+        onSearchDone()
+        // wait for the search bar to lose focus and so send the last onValueChange event (with the
+        // previous value, not with "", that's why we need to clear the search string again)
+        Handler(Looper.getMainLooper()).post {
+            // on the next frame clear the search filter (now it will work)
+            setSearchString("")
+        }
+    }
+
     CenterAlignedTopAppBar(
         title = {
             // close the search if the keyboard is closed
@@ -257,7 +273,7 @@ private fun SearchTopAppBarExpanded(
                     val isKeyboardOpen = ViewCompat.getRootWindowInsets(view)
                         ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
                     if (wasKeyboardOpen && !isKeyboardOpen) {
-                        onSearchDone()
+                        onBack()
                     }
                     wasKeyboardOpen = isKeyboardOpen
                 }
@@ -285,9 +301,7 @@ private fun SearchTopAppBarExpanded(
                 },
             )
         },
-        navigationIcon = {
-            AppBarBackIcon(onBackClick = onSearchDone)
-        },
+        navigationIcon = { AppBarBackIcon { onBack() } },
         actions = {
             IconButton(onClick = { setSearchString("") }) {
                 Icon(
