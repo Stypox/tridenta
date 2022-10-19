@@ -112,15 +112,25 @@ private fun DrawerHeader(setDirection: (Direction) -> Unit, modifier: Modifier =
                 text = stringResource(R.string.app_name),
                 modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp)
             )
-            IconButton(
-                onClick = { setDirection(LogsScreenDestination) },
+
+            Row(
                 modifier = Modifier.padding(20.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Filled.BugReport,
-                    contentDescription = stringResource(R.string.logs),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                IconButton(onClick = { setDirection(LogsScreenDestination) }) {
+                    Icon(
+                        imageVector = Icons.Filled.BugReport,
+                        contentDescription = stringResource(R.string.logs),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+
+                IconButton(onClick = { setDirection(AboutScreenDestination) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = stringResource(R.string.about),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
         }
     }

@@ -73,6 +73,16 @@ fun AppBarBackIcon(onBackClick: () -> Unit) {
 }
 
 @Composable
+fun AppBarOpenIcon(onShareClick: () -> Unit) {
+    IconButton(onClick = onShareClick) {
+        Icon(
+            imageVector = Icons.Filled.OpenInBrowser,
+            contentDescription = stringResource(R.string.open)
+        )
+    }
+}
+
+@Composable
 fun AppBarFavoriteIcon(isFavorite: Boolean, onFavoriteClicked: () -> Unit) {
     val context = LocalContext.current
     IconButton(
