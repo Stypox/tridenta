@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.Direction
@@ -46,7 +47,7 @@ fun DirectionIcon(direction: Direction) {
 }
 
 @Composable
-fun LogLevelIcon(logLevel: LogLevel) {
+fun LogLevelIcon(logLevel: LogLevel, modifier: Modifier = Modifier) {
     Icon(
         imageVector = when (logLevel) {
             LogLevel.Info -> Icons.Filled.Info
@@ -59,5 +60,6 @@ fun LogLevelIcon(logLevel: LogLevel) {
             LogLevel.Warning -> MaterialTheme.colorScheme.onBackground
             LogLevel.Error -> MaterialTheme.colorScheme.error
         },
+        modifier = modifier
     )
 }

@@ -33,17 +33,21 @@ import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.ui.theme.LogLevelIcon
 import org.stypox.tridenta.util.formatDateTimeShort
 
+private val ICON_SIZE = 24.dp
+
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
 fun LogItem(@PreviewParameter(SampleLogEntryProvider::class) logEntry: LogEntry) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.animateContentSize()
+        modifier = Modifier
+            .animateContentSize()
+            .clickable { expanded = !expanded }
     ) {
         val modifier = Modifier
-            .clickable { expanded = !expanded }
             .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp)
         if (expanded) {
             LogItemExpanded(logEntry = logEntry, modifier = modifier)
         } else {
@@ -60,9 +64,12 @@ private fun LogItemUnexpanded(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier = modifier
     ) {
-        LogLevelIcon(logLevel = logEntry.logLevel)
+        LogLevelIcon(
+            logLevel = logEntry.logLevel,
+            modifier = Modifier.size(ICON_SIZE)
+        )
         Text(
             text = logEntry.text,
             maxLines = 1,
@@ -83,18 +90,20 @@ private fun LogItemExpanded(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            LogLevelIcon(logLevel = logEntry.logLevel)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            LogLevelIcon(
+                logLevel = logEntry.logLevel,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .size(ICON_SIZE)
+            )
+
             LabelText(
                 text = formatDateTimeShort(logEntry.dateTime),
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.align(Alignment.Center)
             )
 
             val clipboardManager = LocalClipboardManager.current
@@ -103,7 +112,10 @@ private fun LogItemExpanded(
                     clipboardManager.setText(
                         AnnotatedString("${logEntry.text}\n\n-----\n\n${logEntry.stackTrace}")
                     )
-                }
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(ICON_SIZE)
             ) {
                 Icon(
                     imageVector = Icons.Filled.ContentCopy,
