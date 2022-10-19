@@ -6,15 +6,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -22,6 +20,7 @@ import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.LogEntry
+import org.stypox.tridenta.sample.SampleLogEntryProvider
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 
@@ -71,5 +70,15 @@ private fun LogsScreen(
                 }
             }
         }
+    )
+}
+
+@Preview(backgroundColor = 0xffffff, showBackground = true)
+@Composable
+private fun LogsScreenPreview() {
+    LogsScreen(
+        loading = false,
+        logs = SampleLogEntryProvider().values.toList(),
+        navigationIcon = { }
     )
 }
