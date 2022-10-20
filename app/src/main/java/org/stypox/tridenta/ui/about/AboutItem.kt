@@ -34,7 +34,10 @@ fun AboutItem(
     description: String,
     buttonTextAndUri: Pair<String, String>?,
 ) {
-    Card(modifier = Modifier.padding(8.dp)) {
+    Card(
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier.padding(8.dp)
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.height(IntrinsicSize.Min)
