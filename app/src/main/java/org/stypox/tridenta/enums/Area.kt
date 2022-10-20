@@ -13,7 +13,7 @@ enum class Area(
     @ColorInt val color: Int,
     val icon: ImageVector,
 ) {
-    All(0, R.string.all, 0x7f7f7f, Icons.Filled.Bookmarks), // <- also use as "undefined"
+    All(0, R.string.all_lines, 0x7f7f7f, Icons.Filled.Bookmarks), // <- also use as "undefined"
     Suburban1(1, R.string.area_suburban1, 0xc71585, Icons.Filled.Landscape),
     Suburban2(2, R.string.area_suburban2, 0xb8860b, Icons.Filled.Landscape),
     Suburban3(3, R.string.area_suburban3, 0x191970, Icons.Filled.Landscape),

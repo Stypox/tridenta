@@ -49,7 +49,7 @@
     <string name="forward_and_backward">Forward and backward</string>
     <string name="no_browser_available">No browser available, url copied to clipboard</string>
     <string name="add_shortcut_info">You can add a shortcut to this screen from your launcher!</string>
-    <string name="all">All</string>
+    <string name="all_lines">All</string>
     <string name="logs">Logs</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="about">About</string>

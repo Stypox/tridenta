@@ -38,7 +38,7 @@
     <string name="forward_and_backward">Andata e ritorno</string>
     <string name="no_browser_available">Browser non disponibile</string>
     <string name="add_shortcut_info">Puoi aggiungere una scorciatoia a questa pagina dal tuo lanciatore di app!</string>
-    <string name="all">Tutte</string>
+    <string name="all_lines">Tutte</string>
     <string name="logs">Registro eventi</string>
     <string name="copy_to_clipboard">Copia negli appunti</string>
     <string name="about">Informazioni</string>
