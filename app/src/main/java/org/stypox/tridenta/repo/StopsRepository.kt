@@ -52,7 +52,8 @@ class StopsRepository @Inject constructor(
                         wheelchairAccessible = dbStop.wheelchairAccessible,
                         lines = stopDao
                             .getLinesForStop(dbStop.stopId, dbStop.type)
-                            .sortedWith(::lineShortNameComparator)
+                            .sortedWith(::lineShortNameComparator),
+                        isFavorite = dbStop.isFavorite,
                     )
                 }
         }

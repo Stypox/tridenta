@@ -17,7 +17,8 @@ class SampleUiStopProvider : PreviewParameterProvider<UiStop> {
             street = dbStop.street,
             town = dbStop.town,
             wheelchairAccessible = dbStop.wheelchairAccessible,
-            lines = sampleDbLines.subList(0, index % sampleDbLines.size)
+            lines = sampleDbLines.subList(0, index % sampleDbLines.size),
+            isFavorite = dbStop.isFavorite,
         )
     }
 }

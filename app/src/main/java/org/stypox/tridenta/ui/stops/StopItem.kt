@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessible
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -91,7 +92,15 @@ fun StopItem(
         }
 
         Column {
+            if (stop.isFavorite) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = stringResource(R.string.favorite)
+                )
+            }
+
             StopLineTypeIcon(stopLineType = stop.type)
+
             if (stop.wheelchairAccessible) {
                 Icon(
                     imageVector = Icons.Filled.Accessible,

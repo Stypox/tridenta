@@ -13,5 +13,6 @@ data class UiStop(
     val street: String,
     val town: String,
     val wheelchairAccessible: Boolean,
-    val lines: List<DbLine>
+    val lines: List<DbLine>,
+    val isFavorite: Boolean,
 )
