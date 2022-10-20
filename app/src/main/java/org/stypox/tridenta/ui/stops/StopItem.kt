@@ -83,6 +83,7 @@ fun StopItem(
                     LineShortName(
                         color = line.color,
                         shortName = line.shortName,
+                        isFavorite = line.isFavorite,
                         modifier = onLineClick?.let { Modifier.clickable { it(line) } } ?: Modifier
                     )
                 }

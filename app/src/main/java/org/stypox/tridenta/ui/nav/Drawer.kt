@@ -235,7 +235,8 @@ private fun getHistoryDrawerSection(
                     icon = {
                         LineShortName(
                             color = item.color,
-                            shortName = item.shortName
+                            shortName = item.shortName,
+                            isFavorite = false,
                         )
                     },
                     destination = LineTripsScreenDestination(item.lineId, item.type)

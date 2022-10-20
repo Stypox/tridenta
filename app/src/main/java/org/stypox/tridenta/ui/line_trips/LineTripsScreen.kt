@@ -139,7 +139,11 @@ private fun LineAppBar(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(text = stringResource(R.string.trips_for_line))
-                    LineShortName(color = line.color, shortName = line.shortName)
+                    LineShortName(
+                        color = line.color,
+                        shortName = line.shortName,
+                        isFavorite = false
+                    )
                 }
             }
         },

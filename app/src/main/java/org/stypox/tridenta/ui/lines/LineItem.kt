@@ -3,6 +3,10 @@ package org.stypox.tridenta.ui.lines
 import androidx.annotation.ColorInt
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -24,7 +28,7 @@ fun LineItem(line: DbLine, showAreaChip: Boolean, modifier: Modifier = Modifier)
         modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        LineShortName(color = line.color, shortName = line.shortName)
+        LineShortName(color = line.color, shortName = line.shortName, isFavorite = line.isFavorite)
 
         BodyText(
             text = line.longName,
@@ -55,19 +59,45 @@ private fun LineItemNoAreaPreview(@PreviewParameter(SampleDbLineProvider::class)
 }
 
 @Composable
-fun LineShortName(@ColorInt color: Int?, shortName: String, modifier: Modifier = Modifier) {
+fun LineShortName(
+    @ColorInt color: Int?,
+    shortName: String,
+    isFavorite: Boolean,
+    modifier: Modifier = Modifier
+) {
     val backgroundColor = color.toComposeColor()
+    val textColor = textColorOnBackground(backgroundColor)
 
-    Surface(
+        Surface(
         color = backgroundColor,
         shape = MaterialTheme.shapes.small,
         modifier = modifier,
     ) {
-        LabelText(
-            text = shortName,
-            color = textColorOnBackground(backgroundColor),
-            modifier = Modifier.padding(8.dp, 4.dp),
-            maxLines = 1,
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        ) {
+
+            LabelText(
+                text = shortName,
+                color = textColor,
+                maxLines = 1,
+            )
+
+            if (isFavorite) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 2.dp).size(12.dp),
+                    tint = textColor,
+                )
+            }
+        }
     }
+}
+
+@Preview
+@Composable
+private fun LineShortNamePreview(@PreviewParameter(SampleDbLineProvider::class) line: DbLine) {
+    LineShortName(color = line.color, shortName = line.shortName, isFavorite = line.isFavorite)
 }
