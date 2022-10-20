@@ -99,7 +99,7 @@ private fun AboutScreen(navigationIcon: @Composable () -> Unit = { }) {
                     description = stringResource(R.string.mindshub_description),
                     buttonTextAndUri = Pair(
                         stringResource(R.string.find_out_more),
-                        FDROID_URI
+                        MINDSHUB_URI
                     )
                 )
             }
