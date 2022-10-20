@@ -4,6 +4,7 @@ import androidx.room.*
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.db.data.DbStopLineJoin
+import org.stypox.tridenta.db.views.DbLineAndFavorite
 import org.stypox.tridenta.enums.StopLineType
 
 @Dao
@@ -40,17 +41,23 @@ interface StopDao {
     )
     fun getStops(limit: Int, offset: Int): List<DbStop>
 
+
     @Query(
         """
-            SELECT DbLine.*
-            FROM DbStopLineJoin INNER JOIN DbLine
+            SELECT DbLineAndFavorite.*
+            FROM DbStopLineJoin INNER JOIN DbLineAndFavorite
             WHERE DbStopLineJoin.stopId = :stopId
                 AND DbStopLineJoin.stopType = :stopType
-                AND DbStopLineJoin.lineId = DbLine.lineId
-                AND DbStopLineJoin.lineType = DbLine.type
+                AND DbStopLineJoin.lineId = DbLineAndFavorite.lineId
+                AND DbStopLineJoin.lineType = DbLineAndFavorite.type
         """
     )
-    fun getLinesForStop(stopId: Int, stopType: StopLineType): List<DbLine>
+    fun getLinesForStopImpl(stopId: Int, stopType: StopLineType): List<DbLineAndFavorite>
+
+    fun getLinesForStop(stopId: Int, stopType: StopLineType): List<DbLine> {
+        return getLinesForStopImpl(stopId, stopType).map(DbLineAndFavorite::dbLine)
+    }
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertDbStops(stops: Collection<DbStop>)
