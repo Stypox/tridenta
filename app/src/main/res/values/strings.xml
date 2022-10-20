@@ -65,6 +65,8 @@
     <string name="author_view_profile">View profile</string>
     <string name="fdroid">The F-Droid app store</string>
     <string name="fdroid_description">Tridenta is on F-Droid, a collection of Free and Open Source Android apps that respect the user</string>
-    <string name="fdroid_find_out">Find out more</string>
+    <string name="find_out_more">Find out more</string>
     <string name="open">Open</string>
+    <string name="mindshub">MindsHub association</string>
+    <string name="mindshub_description">MindsHub is a non profit association settled in Trentino, providing a space for enthusiasts to work on informatics, mechanics, electronics and 3d printing</string>
 </resources>

@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.R
@@ -88,7 +87,18 @@ private fun AboutScreen(navigationIcon: @Composable () -> Unit = { }) {
                     title = stringResource(R.string.fdroid),
                     description = stringResource(R.string.fdroid_description),
                     buttonTextAndUri = Pair(
-                        stringResource(R.string.fdroid_find_out),
+                        stringResource(R.string.find_out_more),
+                        FDROID_URI
+                    )
+                )
+
+                AboutItem(
+                    icon = R.drawable.mindshub,
+                    clipIcon = false,
+                    title = stringResource(R.string.mindshub),
+                    description = stringResource(R.string.mindshub_description),
+                    buttonTextAndUri = Pair(
+                        stringResource(R.string.find_out_more),
                         FDROID_URI
                     )
                 )
@@ -101,3 +111,4 @@ private const val GITHUB_STYPOX_URI = "https://github.com/Stypox"
 private const val GITHUB_REPO_URI = "$GITHUB_STYPOX_URI/tridenta"
 private const val GITHUB_ISSUE_URI = "$GITHUB_REPO_URI/issues"
 private const val FDROID_URI = "https://f-droid.org"
+private const val MINDSHUB_URI = "https://mindshub.it"
