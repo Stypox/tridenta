@@ -16,6 +16,7 @@ data class UiLine(
     val longName: String,
     val shortName: String,
     val newsItems: List<DbNewsItem>,
+    val isFavorite: Boolean,
 )
 
 private val SHORT_NAME_SPLIT_PATTERN = Pattern.compile("[^0-9]+|[0-9]+")

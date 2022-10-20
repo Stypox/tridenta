@@ -49,7 +49,8 @@ class LinesRepository @Inject constructor(
                 color = dbLine.color,
                 longName = dbLine.longName,
                 shortName = dbLine.shortName,
-                newsItems = newsItems
+                newsItems = newsItems,
+                isFavorite = dbLine.isFavorite,
             )
         }
     }

@@ -15,7 +15,8 @@ class SampleUiLineProvider : PreviewParameterProvider<UiLine> {
             color = dbLine.color,
             longName = dbLine.longName,
             shortName = dbLine.shortName,
-            newsItems = sampleDbNewsItems.subList(0, index % sampleDbNewsItems.size)
+            newsItems = sampleDbNewsItems.subList(0, index % sampleDbNewsItems.size),
+            isFavorite = dbLine.isFavorite,
         )
     }
 }
