@@ -16,7 +16,7 @@ import org.stypox.tridenta.db.data.DbLine
 )
 data class DbLineAndFavorite(
     @Embedded private val dbLineWithoutFavorite: DbLine,
-    val isFavorite: Boolean
+    private val isFavorite: Boolean
 ) {
     // Room does not support better ways to do fill in @Ignored fields, unfortunately
     val dbLine: DbLine get() = dbLineWithoutFavorite.copy(isFavorite = isFavorite)

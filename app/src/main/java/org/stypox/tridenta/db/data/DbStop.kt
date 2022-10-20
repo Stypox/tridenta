@@ -17,7 +17,19 @@ data class DbStop(
     val street: String,
     val town: String,
     val wheelchairAccessible: Boolean,
-)
+    @Ignore val isFavorite: Boolean,
+) {
+    constructor(
+        stopId: Int,
+        type: StopLineType,
+        latitude: Double,
+        longitude: Double,
+        name: String,
+        street: String,
+        town: String,
+        wheelchairAccessible: Boolean,
+    ) : this(stopId, type, latitude, longitude, name, street, town, wheelchairAccessible, false)
+}
 
 @Entity(
     primaryKeys = ["stopId", "stopType", "lineId", "lineType"],

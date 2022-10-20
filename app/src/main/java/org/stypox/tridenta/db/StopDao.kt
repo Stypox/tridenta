@@ -5,41 +5,56 @@ import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.db.data.DbStopLineJoin
 import org.stypox.tridenta.db.views.DbLineAndFavorite
+import org.stypox.tridenta.db.views.DbStopAndFavorite
 import org.stypox.tridenta.enums.StopLineType
 
 @Dao
 interface StopDao {
-    @Query("SELECT * FROM DbStop WHERE stopId = :stopId AND type = :stopType")
-    fun getStop(stopId: Int, stopType: StopLineType): DbStop?
+    @Query("SELECT * FROM DbStopAndFavorite WHERE stopId = :stopId AND type = :stopType")
+    fun getStopImpl(stopId: Int, stopType: StopLineType): DbStopAndFavorite?
+
+    fun getStop(stopId: Int, stopType: StopLineType): DbStop? {
+        return getStopImpl(stopId, stopType)?.dbStop
+    }
+
 
     // TODO use a better filtering and sorting method, that also caches nfkd-normalized strings
     @RewriteQueriesToDropUnusedColumns // only DbStop.* columns are needed
     @Query(
         """
-            SELECT DbStop.*,
+            SELECT DbStopAndFavorite.*,
                     name LIKE '%' || :searchString || '%' AS stringInName,
                     street LIKE '%' || :searchString || '%' AS stringInStreet,
                     town LIKE '%' || :searchString || '%' AS stringInTown
-            FROM DbStop
+            FROM DbStopAndFavorite
             WHERE stringInName OR stringInStreet OR stringInTown
             ORDER BY stringInName * -2 + stringInStreet * -1 + stringInTown * -1
             LIMIT :limit OFFSET :offset
         """
     )
-    fun getFilteredStops(searchString: String, limit: Int, offset: Int): List<DbStop>
+    fun getFilteredStopsImpl(searchString: String, limit: Int, offset: Int): List<DbStopAndFavorite>
+
+    fun getFilteredStops(searchString: String, limit: Int, offset: Int): List<DbStop> {
+        return getFilteredStopsImpl(searchString, limit, offset).map(DbStopAndFavorite::dbStop)
+    }
+
 
     @Query(
         """
-            SELECT DbStop.*
-            FROM DbStop INNER JOIN DbStopLineJoin
-            WHERE DbStopLineJoin.stopId = DbStop.stopId
-                AND DbStopLineJoin.stopType = DbStop.type
-            GROUP BY DbStop.stopId, DbStop.type
+            SELECT DbStopAndFavorite.*
+            FROM DbStopAndFavorite INNER JOIN DbStopLineJoin
+            WHERE DbStopLineJoin.stopId = DbStopAndFavorite.stopId
+                AND DbStopLineJoin.stopType = DbStopAndFavorite.type
+            GROUP BY DbStopAndFavorite.stopId, DbStopAndFavorite.type
             ORDER BY COUNT(*) DESC
             LIMIT :limit OFFSET :offset
         """
     )
-    fun getStops(limit: Int, offset: Int): List<DbStop>
+    fun getStopsImpl(limit: Int, offset: Int): List<DbStopAndFavorite>
+
+    fun getStops(limit: Int, offset: Int): List<DbStop> {
+        return getStopsImpl(limit, offset).map(DbStopAndFavorite::dbStop)
+    }
 
 
     @Query(

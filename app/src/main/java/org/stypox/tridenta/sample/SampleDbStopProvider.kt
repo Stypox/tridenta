@@ -15,6 +15,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "",
             type = StopLineType.Urban,
             wheelchairAccessible = false,
+            isFavorite = false,
         ),
         DbStop(
             stopId = 0,
@@ -25,6 +26,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Appiano sulla strada del vino",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
+            isFavorite = true,
         ),
         DbStop(
             stopId = 0,
@@ -35,6 +37,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Civezzano",
             type = StopLineType.Suburban,
             wheelchairAccessible = false,
+            isFavorite = true,
         ),
         DbStop(
             stopId = 0,
@@ -45,6 +48,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Trento",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
+            isFavorite = false,
         )
     )
 }
