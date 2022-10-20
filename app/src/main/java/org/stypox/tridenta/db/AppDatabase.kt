@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import org.stypox.tridenta.db.data.*
+import org.stypox.tridenta.db.views.DbLineAndFavorite
 
 @Database(
     entities = [
@@ -13,6 +14,9 @@ import org.stypox.tridenta.db.data.*
         DbStopLineJoin::class,
         HistoryEntry::class,
         LogEntry::class,
+    ],
+    views = [
+        DbLineAndFavorite::class,
     ],
     version = 1,
     exportSchema = false
