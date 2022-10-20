@@ -23,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.key.onKeyEvent
@@ -113,7 +114,8 @@ fun AppBarTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val textStyle = LocalTextStyle.current
-    val colors = TextFieldDefaults.textFieldColors()
+    // make sure there is no background color in the decoration box
+    val colors = TextFieldDefaults.textFieldColors(containerColor = Color.Unspecified)
 
     // If color is not provided via the text style, use content color as a default
     val textColor = textStyle.color.takeOrElse {
