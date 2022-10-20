@@ -8,10 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.DoubleArrow
-import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -102,13 +99,28 @@ private fun TripViewStopItem(
             modifier = Modifier.padding(end = 6.dp)
         )
 
+        if (stopTime.stop.isFavorite) {
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 6.dp)
+            )
+        }
+
         BodyText(
             text = stopTime.stop.name,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .weight(1.0f)
-                .padding(end = 6.dp),
+                .run {
+                    if (stopTime.arrivalTime == null && stopTime.departureTime == null) {
+                        this // do not apply end padding if there is nothing after
+                    } else {
+                        padding(end = 6.dp)
+                    }
+                },
             fontWeight = if (highlight) FontWeight.Bold else null,
             color = if (highlight) MaterialTheme.colorScheme.primary else Color.Unspecified
         )
