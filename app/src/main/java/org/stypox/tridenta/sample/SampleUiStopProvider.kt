@@ -9,16 +9,8 @@ class SampleUiStopProvider : PreviewParameterProvider<UiStop> {
 
     override val values: Sequence<UiStop> = sampleDbStops.mapIndexed { index, dbStop ->
         UiStop(
-            stopId = dbStop.stopId,
-            type = dbStop.type,
-            latitude = dbStop.latitude,
-            longitude = dbStop.longitude,
-            name = dbStop.name,
-            street = dbStop.street,
-            town = dbStop.town,
-            wheelchairAccessible = dbStop.wheelchairAccessible,
+            dbStop = dbStop,
             lines = sampleDbLines.subList(0, index % sampleDbLines.size),
-            isFavorite = dbStop.isFavorite,
         )
     }
 }

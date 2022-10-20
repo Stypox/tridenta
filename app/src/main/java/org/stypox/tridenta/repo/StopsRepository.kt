@@ -42,18 +42,10 @@ class StopsRepository @Inject constructor(
             }
                 .map { dbStop ->
                     UiStop(
-                        stopId = dbStop.stopId,
-                        type = dbStop.type,
-                        latitude = dbStop.latitude,
-                        longitude = dbStop.longitude,
-                        name = dbStop.name,
-                        street = dbStop.street,
-                        town = dbStop.town,
-                        wheelchairAccessible = dbStop.wheelchairAccessible,
+                        dbStop = dbStop,
                         lines = stopDao
                             .getLinesForStop(dbStop.stopId, dbStop.type)
                             .sortedWith(::lineShortNameComparator),
-                        isFavorite = dbStop.isFavorite,
                     )
                 }
         }
