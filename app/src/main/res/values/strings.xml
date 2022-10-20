@@ -1,20 +1,18 @@
 <resources>
-    <string name="app_name">Tridenta</string>
-    <string name="show_more">Show more</string>
-    <string name="show_less">Show less</string>
+    <string name="app_name" translatable="false">Tridenta</string>
     <string name="map_of_trentino">Map of Trentino</string>
-    <string name="area_suburban1">1</string>
-    <string name="area_suburban2">2</string>
-    <string name="area_suburban3">3</string>
-    <string name="area_suburban4">4</string>
-    <string name="area_suburban5">5</string>
-    <string name="area_suburban6">6</string>
+    <string name="area_suburban1" translatable="false">1</string>
+    <string name="area_suburban2" translatable="false">2</string>
+    <string name="area_suburban3" translatable="false">3</string>
+    <string name="area_suburban4" translatable="false">4</string>
+    <string name="area_suburban5" translatable="false">5</string>
+    <string name="area_suburban6" translatable="false">6</string>
     <string name="area_railway">Railway</string>
     <string name="area_funicular">Funicular</string>
-    <string name="area_urban_pergine">Pergine</string>
-    <string name="area_urban_alto_garda">Alto Garda</string>
-    <string name="area_urban_trento">Trento</string>
-    <string name="area_urban_rovereto">Rovereto</string>
+    <string name="area_urban_pergine" translatable="false">Pergine</string>
+    <string name="area_urban_alto_garda" translatable="false">Alto Garda</string>
+    <string name="area_urban_trento" translatable="false">Trento</string>
+    <string name="area_urban_rovereto" translatable="false">Rovereto</string>
     <string name="lines">Lines</string>
     <string name="select_area">Select area</string>
     <string name="selected_area">Selected area -</string>
@@ -37,7 +35,7 @@
     <string name="choose_date_time">Choose date and time</string>
     <string name="reload">Reload</string>
     <string name="short_minute_format">%1$d min</string>
-    <string name="service_type_date_range">%1$s • %2$s-%3$s</string>
+    <string name="service_type_date_range" translatable="false">%1$s • %2$s-%3$s</string>
     <string name="no_trip_found">No trip found</string>
     <string name="no_trip_found_description">You may want to select a different date using the calendar button</string>
     <string name="favorite">Favorite</string>
@@ -58,7 +56,6 @@
     <string name="view_on_github">View on GitHub</string>
     <string name="app_description">A fast, modern and free app for public transport in Trentino</string>
     <string name="found_a_bug">Found a bug?</string>
-    <string name="found_a_bug_description">Feel free to report broken things or request new features, making sure to attach logs</string>
     <string name="found_a_bug_open_issue">Open an issue</string>
     <string name="author">About the author</string>
     <string name="author_description">Stypox is a passionate Free Software contributor</string>
@@ -69,4 +66,5 @@
     <string name="open">Open</string>
     <string name="mindshub">MindsHub association</string>
     <string name="mindshub_description">MindsHub is a non profit association settled in Trentino, providing a space for enthusiasts to work on informatics, mechanics, electronics and 3d printing</string>
+    <string name="found_a_bug_description">Feel free to report broken things or request new features, making sure to attach logs</string>
 </resources>
