@@ -12,9 +12,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.sample.SampleDbLineProvider
 import org.stypox.tridenta.ui.theme.BodyText
@@ -87,7 +89,7 @@ fun LineShortName(
             if (isFavorite) {
                 Icon(
                     imageVector = Icons.Filled.Favorite,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.favorite),
                     modifier = Modifier.padding(start = 2.dp).size(12.dp),
                     tint = textColor,
                 )

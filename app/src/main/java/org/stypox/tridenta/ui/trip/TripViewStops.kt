@@ -102,7 +102,7 @@ private fun TripViewStopItem(
         if (stopTime.stop.isFavorite) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.favorite),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(end = 6.dp)
             )
