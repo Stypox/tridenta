@@ -65,6 +65,6 @@
     <string name="find_out_more">Find out more</string>
     <string name="open">Open</string>
     <string name="mindshub">MindsHub association</string>
-    <string name="mindshub_description">MindsHub is a non profit association settled in Trentino, providing a space for enthusiasts to work on informatics, mechanics, electronics and 3d printing</string>
+    <string name="mindshub_description">MindsHub is a non profit association settled in Trentino, providing a space for enthusiasts to collaborate on informatics, mechanics, electronics and 3d printing</string>
     <string name="found_a_bug_description">Feel free to report broken things or request new features, making sure to attach logs</string>
 </resources>
