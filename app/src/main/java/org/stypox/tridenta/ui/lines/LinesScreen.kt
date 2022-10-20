@@ -111,16 +111,15 @@ private fun LinesScreen(
                     items(lines) {
                         LineItem(
                             line = it,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigator.navigate(
-                                        LineTripsScreenDestination(
-                                            lineId = it.lineId,
-                                            lineType = it.type
-                                        )
+                            showAreaChip = selectedArea == Area.All,
+                            modifier = Modifier.clickable {
+                                navigator.navigate(
+                                    LineTripsScreenDestination(
+                                        lineId = it.lineId,
+                                        lineType = it.type
                                     )
-                                }
+                                )
+                            }
                         )
                     }
                 }
@@ -130,9 +129,29 @@ private fun LinesScreen(
 }
 
 @Preview
-@Preview(heightDp = 500) // smaller height to ensure scrolling works
 @Composable
-private fun LinesViewPreview() {
+private fun LinesViewAllPreview() {
+    val selectedArea = rememberSaveable { mutableStateOf(Area.All) }
+    val showAreaDialog = rememberSaveable { mutableStateOf(true) }
+    AppTheme {
+        LinesScreen(
+            loading = true,
+            onReload = {},
+            lines = SampleDbLineProvider().values.toList(),
+            selectedArea = selectedArea.value,
+            setSelectedArea = {
+                selectedArea.value = it
+                showAreaDialog.value = false
+            },
+            navigationIcon = { AppBarDrawerIcon {} },
+            navigator = EmptyDestinationsNavigator
+        )
+    }
+}
+
+@Preview(heightDp = 300) // smaller height to ensure scrolling works
+@Composable
+private fun LinesViewSmallHeightPreview() {
     val selectedArea = rememberSaveable { mutableStateOf(Area.Suburban3) }
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {

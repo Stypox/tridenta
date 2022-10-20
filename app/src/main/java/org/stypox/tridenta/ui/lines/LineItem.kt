@@ -18,12 +18,8 @@ import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.textColorOnBackground
 import org.stypox.tridenta.util.toComposeColor
 
-@Preview
 @Composable
-fun LineItem(
-    @PreviewParameter(SampleDbLineProvider::class) line: DbLine,
-    modifier: Modifier = Modifier
-) {
+fun LineItem(line: DbLine, showAreaChip: Boolean, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -32,9 +28,30 @@ fun LineItem(
 
         BodyText(
             text = line.longName,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .weight(1.0f)
         )
+
+        if (showAreaChip) {
+            AreaChip(
+                area = line.area,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+private fun LineItemWithAreaPreview(@PreviewParameter(SampleDbLineProvider::class) line: DbLine) {
+    LineItem(line = line, showAreaChip = true)
+}
+
+@Preview
+@Composable
+private fun LineItemNoAreaPreview(@PreviewParameter(SampleDbLineProvider::class) line: DbLine) {
+    LineItem(line = line, showAreaChip = false)
 }
 
 @Composable
