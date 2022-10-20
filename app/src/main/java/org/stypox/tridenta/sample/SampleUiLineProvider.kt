@@ -9,14 +9,8 @@ class SampleUiLineProvider : PreviewParameterProvider<UiLine> {
 
     override val values: Sequence<UiLine> = sampleDbLines.mapIndexed { index, dbLine ->
         UiLine(
-            lineId = dbLine.lineId,
-            type = dbLine.type,
-            area = dbLine.area,
-            color = dbLine.color,
-            longName = dbLine.longName,
-            shortName = dbLine.shortName,
+            dbLine = dbLine,
             newsItems = sampleDbNewsItems.subList(0, index % sampleDbNewsItems.size),
-            isFavorite = dbLine.isFavorite,
         )
     }
 }

@@ -40,17 +40,9 @@ class LinesRepository @Inject constructor(
 
     fun getUiLine(lineId: Int, lineType: StopLineType): UiLine? {
         return stopLineReloadHandler.reloadIfNeededAndRun {
-            val dbLine = lineDao.getLine(lineId, lineType) ?: return@reloadIfNeededAndRun null
-            val newsItems = lineDao.getNewsForLine(lineId, lineType)
             UiLine(
-                lineId = dbLine.lineId,
-                type = dbLine.type,
-                area = dbLine.area,
-                color = dbLine.color,
-                longName = dbLine.longName,
-                shortName = dbLine.shortName,
-                newsItems = newsItems,
-                isFavorite = dbLine.isFavorite,
+                dbLine = lineDao.getLine(lineId, lineType) ?: return@reloadIfNeededAndRun null,
+                newsItems = lineDao.getNewsForLine(lineId, lineType),
             )
         }
     }
