@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.stypox.tridenta.log.logError
 import org.stypox.tridenta.repo.StopsRepository
 import javax.inject.Inject
 
@@ -23,7 +24,8 @@ class StopsViewModel @Inject constructor(
         StopsUiState(
             searchString = "",
             stops = listOf(),
-            loading = true
+            loading = true,
+            error = false,
         )
     )
     val uiState = mutableUiState.asStateFlow()
@@ -33,6 +35,7 @@ class StopsViewModel @Inject constructor(
     }
 
     fun setSearchString(searchString: String) {
+        // update the search string instantly, as it is shown in the search field
         mutableUiState.update { it.copy(searchString = searchString) }
         reloadStops(forceReload = false)
     }
@@ -42,20 +45,37 @@ class StopsViewModel @Inject constructor(
     }
 
     private fun reloadStops(forceReload: Boolean) {
-        // update the search string instantly, as it is shown in the search field
-        mutableUiState.update { it.copy(loading = true) }
+        // show the loading indicator
+        mutableUiState.update { it.copy(loading = true, error = false) }
+
         viewModelScope.launch {
             val filteredStops = withContext(Dispatchers.Default) {
-                // TODO implement proper paging if needed
-                //  https://developer.android.com/jetpack/compose/lists#large-datasets
-                stopsRepository.getUiStopsFiltered(
-                    mutableUiState.value.searchString,
-                    100,
-                    0,
-                    forceReload
+                try {
+                    // TODO implement proper paging if needed
+                    //  https://developer.android.com/jetpack/compose/lists#large-datasets
+                    stopsRepository.getUiStopsFiltered(
+                        mutableUiState.value.searchString,
+                        100,
+                        0,
+                        forceReload
+                    )
+                } catch (e: Throwable) {
+                    logError(
+                        "Could not load stops with search string " +
+                            uiState.value.searchString,
+                        e
+                    )
+                    null
+                }
+            }
+
+            mutableUiState.update {
+                it.copy(
+                    stops = filteredStops ?: listOf(),
+                    loading = false,
+                    error = filteredStops == null,
                 )
             }
-            mutableUiState.update { it.copy(stops = filteredStops, loading = false) }
         }
     }
 }
