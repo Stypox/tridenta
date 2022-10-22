@@ -167,6 +167,12 @@ class LineTripsViewModel @Inject constructor(
             if (trip == null) {
                 // keep previous trip intact, we don't want to hide information that we do have!
                 mutableUiState.update { it.copy(loading = false, error = true) }
+            } else if (
+                previousTrip.lastEventReceivedAt != null &&
+                trip.lastEventReceivedAt == null
+            ) {
+                // keep previous trip intact, since the just loaded trip has no live information
+                mutableUiState.update { it.copy(loading = false, error = false) }
             } else {
                 mutableUiState.update { it.copy(trip = trip, loading = false, error = false) }
             }
