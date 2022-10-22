@@ -6,23 +6,26 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.repo.data.UiStop
+import org.stypox.tridenta.sample.SampleUiStopProvider
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.error.ErrorPanel
+import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.nav.SearchTopAppBar
@@ -122,5 +125,23 @@ private fun StopsScreen(
                 }
             }
         }
+    )
+}
+
+@Preview
+@Composable
+private fun StopsScreenPreview() {
+    var showSearchString by rememberSaveable { mutableStateOf(true) }
+    StopsScreen(
+        error = false,
+        loading = false,
+        onReload = {},
+        stops = SampleUiStopProvider().values.toList(),
+        searchString = if (showSearchString) "Search string" else "",
+        setSearchString = {},
+        navigationIcon = {
+            AppBarDrawerIcon { showSearchString = !showSearchString }
+        },
+        navigator = EmptyDestinationsNavigator,
     )
 }
