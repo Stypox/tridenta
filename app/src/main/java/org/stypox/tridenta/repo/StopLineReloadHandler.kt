@@ -66,7 +66,15 @@ class StopLineReloadHandler @Inject constructor(
 
         try {
             // data is (probably) up-to-date, so run the function directly
-            return function()!! // throw an NPE if the function returns null!
+            return function().run {
+                if (this == null && secondsSinceLastReload >= ERROR_RELOAD_INTERVAL_SECONDS) {
+                    // if the function returned null, try to reload (without throwing errors)
+                    logWarning("Reloading lines and stops because null was returned")
+                    reloadAndRun(function)
+                } else {
+                    this
+                }
+            }
         } catch (e: Throwable) {
             if (secondsSinceLastReload >= ERROR_RELOAD_INTERVAL_SECONDS) {
                 // if there was an error while running the function, try reloading only if enough
@@ -74,6 +82,7 @@ class StopLineReloadHandler @Inject constructor(
                 logWarning("Reloading lines and stops because of error while operating on them", e)
                 return reloadAndRun(function)
             }
+
             logError("Crash while operating on lines or stops even if data is up-to-date", e)
             throw e
         }
