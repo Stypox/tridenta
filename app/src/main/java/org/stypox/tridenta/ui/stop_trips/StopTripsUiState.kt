@@ -11,5 +11,6 @@ data class StopTripsUiState(
     val prevEnabled: Boolean,
     val nextEnabled: Boolean,
     val referenceDateTime: ZonedDateTime, // <- reuse only when trip != null
-    val loading: Boolean
+    val loading: Boolean,
+    val error: Boolean,
 )
