@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.stypox.tridenta.db.HistoryDao
+import org.stypox.tridenta.log.logError
 import org.stypox.tridenta.repo.LineTripsRepository
 import org.stypox.tridenta.repo.LinesRepository
 import org.stypox.tridenta.ui.navArgs
@@ -40,7 +41,8 @@ class LineTripsViewModel @Inject constructor(
             referenceDateTime = ZonedDateTime.now(),
             stopIdToHighlight = navArgs.stopIdToHighlight,
             stopTypeToHighlight = navArgs.stopTypeToHighlight,
-            loading = true
+            loading = true,
+            error = false,
         )
     )
     val uiState = mutableUiState.asStateFlow()
@@ -59,9 +61,21 @@ class LineTripsViewModel @Inject constructor(
     private fun loadLine() {
         viewModelScope.launch {
             val line = withContext(Dispatchers.IO) {
-                linesRepository.getUiLine(navArgs.lineId, navArgs.lineType).also {
-                    // register a view for this line (assuming loadLine is called once)
-                    historyDao.registerAccessed(true, navArgs.lineId, navArgs.lineType)
+                try {
+                    linesRepository.getUiLine(navArgs.lineId, navArgs.lineType)
+                        .also {
+                            if (it == null) {
+                                logError(
+                                    "UI line (${navArgs.lineId}, ${navArgs.lineType}) not found"
+                                )
+                            }
+
+                            // register a view for this line (assuming loadLine is called once)
+                            historyDao.registerAccessed(true, navArgs.lineId, navArgs.lineType)
+                        }
+                } catch (e: Throwable) {
+                    logError("Could not load UI line (${navArgs.lineId}, ${navArgs.lineType})", e)
+                    null
                 }
             }
             mutableUiState.update { it.copy(line = line) }
@@ -77,17 +91,29 @@ class LineTripsViewModel @Inject constructor(
                 prevEnabled = false,
                 nextEnabled = false,
                 referenceDateTime = referenceDateTime,
-                loading = true
+                loading = true,
+                error = false,
             )
         }
 
         viewModelScope.launch {
+            var error = false
             val (tripsInDayCount, tripIndex, trip) = withContext(Dispatchers.IO) {
-                tripsRepository.getUiTrip(
-                    lineId = navArgs.lineId,
-                    lineType = navArgs.lineType,
-                    referenceDateTime = referenceDateTime
-                )
+                try {
+                    tripsRepository.getUiTrip(
+                        lineId = navArgs.lineId,
+                        lineType = navArgs.lineType,
+                        referenceDateTime = referenceDateTime
+                    )
+                } catch (e: Throwable) {
+                    logError(
+                        "Could not load trip for UI line (${navArgs.lineId}, " +
+                            "${navArgs.lineType}) at time $referenceDateTime",
+                        e
+                    )
+                    error = true
+                    Triple(0, 0, null)
+                }
             }
 
             mutableUiState.update {
@@ -98,24 +124,51 @@ class LineTripsViewModel @Inject constructor(
                     prevEnabled = tripIndex > 0,
                     nextEnabled = tripIndex < tripsInDayCount - 1,
                     referenceDateTime = referenceDateTime,
-                    loading = false
+                    loading = false,
+                    error = error,
                 )
             }
         }
     }
 
     fun onReload() {
-        val previousTrip = uiState.value.trip ?: return
-        mutableUiState.update { it.copy(loading = true) }
+        val previousTrip = uiState.value.trip
+        if (previousTrip == null) {
+            // this could happen if an error happened while loading initial/more trips
+            if (uiState.value.tripsInDayCount > 0) {
+                // more trips failed loading, try to load again the currently set index
+                loadIndex(uiState.value.tripIndex)
+            } else {
+                // initial trips failed loading, try to load again the current day
+                setReferenceDateTime(uiState.value.referenceDateTime)
+            }
+            return
+        }
+
+        mutableUiState.update { it.copy(loading = true, error = false) }
         viewModelScope.launch {
             val trip = withContext(Dispatchers.IO) {
-                tripsRepository.reloadUiTrip(
-                    uiTrip = previousTrip,
-                    index = uiState.value.tripIndex,
-                    referenceDateTime = uiState.value.referenceDateTime
-                )
+                try {
+                    tripsRepository.reloadUiTrip(
+                        uiTrip = previousTrip,
+                        index = uiState.value.tripIndex,
+                        referenceDateTime = uiState.value.referenceDateTime
+                    )
+                } catch (e: Throwable) {
+                    logError(
+                        "Could not load trip ${previousTrip.tripId} for UI line " +
+                                "(${navArgs.lineId}, ${navArgs.lineType})",
+                        e
+                    )
+                    null
+                }
             }
-            mutableUiState.update { it.copy(trip = trip, loading = false) }
+
+            if (trip == null) {
+                mutableUiState.update { it.copy(loading = false, error = true) }
+            } else {
+                mutableUiState.update { it.copy(trip = trip, loading = false, error = false) }
+            }
         }
     }
 
@@ -129,30 +182,46 @@ class LineTripsViewModel @Inject constructor(
 
     private fun loadIndex(index: Int) {
         if (index < 0 || index >= uiState.value.tripsInDayCount) {
-            mutableUiState.update { it.copy(loading = false) }
+            mutableUiState.update { it.copy(loading = false, error = false) }
             return // this will happen when there are no trips in a day, for example
         }
 
-        mutableUiState.update { it.copy(loading = true) }
+        mutableUiState.update {
+            it.copy(
+                tripIndex = index,
+                trip = null,
+                prevEnabled = index > 0,
+                nextEnabled = index < uiState.value.tripsInDayCount - 1,
+                loading = true,
+                error = false,
+            )
+        }
 
         viewModelScope.launch {
             val (trip, loadedFromNetwork) = withContext(Dispatchers.IO) {
-                tripsRepository.getUiTrip(
-                    lineId = navArgs.lineId,
-                    lineType = navArgs.lineType,
-                    referenceDateTime = uiState.value.referenceDateTime,
-                    index = index
-                )
+                try {
+                    tripsRepository.getUiTrip(
+                        lineId = navArgs.lineId,
+                        lineType = navArgs.lineType,
+                        referenceDateTime = uiState.value.referenceDateTime,
+                        index = index
+                    )
+                } catch (e: Throwable) {
+                    logError(
+                        "Could not load trip at index $index for UI line " +
+                                "(${navArgs.lineId}, ${navArgs.lineType})",
+                        e
+                    )
+                    Pair(null, true) // set loadedFromNetwork to true to prevent calling onReload
+                }
             }
 
             // show the trip even if loadedFromNetwork is false (in which case it could be outdated)
             mutableUiState.update {
                 it.copy(
-                    loading = false,
-                    tripIndex = index,
                     trip = trip,
-                    prevEnabled = index > 0,
-                    nextEnabled = index < uiState.value.tripsInDayCount - 1,
+                    loading = false,
+                    error = trip == null,
                 )
             }
 

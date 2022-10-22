@@ -15,5 +15,6 @@ data class LineTripsUiState(
     val referenceDateTime: ZonedDateTime, // <- reuse only when trip != null
     val stopIdToHighlight: Int?,
     val stopTypeToHighlight: StopLineType?,
-    val loading: Boolean
+    val loading: Boolean,
+    val error: Boolean,
 )
