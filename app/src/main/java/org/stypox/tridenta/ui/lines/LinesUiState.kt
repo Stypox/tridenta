@@ -7,4 +7,5 @@ data class LinesUiState(
     val lines: List<DbLine>,
     val selectedArea: Area,
     val loading: Boolean,
+    val error: Boolean,
 )

@@ -32,7 +32,8 @@ class LinesViewModel @Inject constructor(
                         // if the preferences do not contain a selected area, use DEFAULT_AREA
                         selectedArea = Area.values().firstOrNull { it.value == prefArea }
                             ?: Area.DEFAULT_AREA,
-                        loading = true
+                        loading = true,
+                        error = false,
                     )
                 )
             }
@@ -66,10 +67,19 @@ class LinesViewModel @Inject constructor(
 
         viewModelScope.launch {
             val lines = withContext(Dispatchers.IO) {
-                linesRepository.getDbLinesByArea(mutableUiState.value.selectedArea, forceReload)
+                try {
+                    linesRepository.getDbLinesByArea(mutableUiState.value.selectedArea, forceReload)
+                } catch (e: Throwable) {
+                    null
+                }
             }
-            mutableUiState.update { linesUiState ->
-                linesUiState.copy(lines = lines, loading = false)
+
+            mutableUiState.update {
+                it.copy(
+                    lines = lines ?: listOf(),
+                    loading = false,
+                    error = lines == null,
+                )
             }
         }
     }
