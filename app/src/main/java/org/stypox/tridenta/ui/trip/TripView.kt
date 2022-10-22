@@ -16,11 +16,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
+import org.stypox.tridenta.ui.error.ErrorPanel
+import org.stypox.tridenta.ui.error.ErrorRow
 import org.stypox.tridenta.ui.theme.*
 import org.stypox.tridenta.util.*
 import java.time.ZonedDateTime
@@ -29,6 +33,7 @@ import java.time.ZonedDateTime
 fun TripView(
     trip: UiTrip?,
     setReferenceDateTime: (ZonedDateTime) -> Unit,
+    error: Boolean,
     loading: Boolean,
     onReload: () -> Unit,
     prevEnabled: Boolean,
@@ -37,6 +42,7 @@ fun TripView(
     onNextClicked: () -> Unit,
     stopIdToHighlight: Int?,
     stopTypeToHighlight: StopLineType?,
+    navigator: DestinationsNavigator,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxHeight()) {
@@ -50,6 +56,15 @@ fun TripView(
                     trip = trip,
                     modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 16.dp)
                 )
+
+                if (error) {
+                    ErrorRow(
+                        onRetry = onReload,
+                        navigator = navigator,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
                 TripViewStops(
                     trip = trip,
                     stopIdToHighlight = stopIdToHighlight,
@@ -60,6 +75,13 @@ fun TripView(
 
         } else if (loading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+        } else if (error) {
+            ErrorPanel(
+                onRetry = onReload,
+                navigator = navigator,
+                modifier = Modifier.align(Alignment.Center),
+            )
 
         } else {
             Column(
@@ -83,6 +105,7 @@ fun TripView(
         TripViewBottomRow(
             setReferenceDateTime = setReferenceDateTime,
             loading = loading,
+            reloadEnabled = loading || trip != null,
             onReload = onReload,
             prevEnabled = prevEnabled,
             onPrevClicked = onPrevClicked,
@@ -163,6 +186,7 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
 private fun TripViewBottomRow(
     setReferenceDateTime: (ZonedDateTime) -> Unit,
     loading: Boolean,
+    reloadEnabled: Boolean,
     onReload: () -> Unit,
     prevEnabled: Boolean,
     onPrevClicked: () -> Unit,
@@ -198,7 +222,8 @@ private fun TripViewBottomRow(
         }
 
         FloatingActionButton(
-            onClick = onReload
+            onClick = onReload,
+            modifier = Modifier.alpha(if (reloadEnabled) 1.0f else 0.5f)
         ) {
             if (loading) {
                 SmallCircularProgressIndicator()
@@ -234,6 +259,7 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
             TripView(
                 trip = trip,
                 setReferenceDateTime = {},
+                error = false,
                 loading = loading,
                 onReload = { loading = !loading },
                 prevEnabled = true,
@@ -242,6 +268,7 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
                 onNextClicked = {},
                 stopIdToHighlight = stopToHighlight.stopId,
                 stopTypeToHighlight = stopToHighlight.type,
+                navigator = EmptyDestinationsNavigator,
             )
         }
     }
@@ -258,6 +285,7 @@ private fun TripViewPreviewLoading() {
             TripView(
                 trip = null,
                 setReferenceDateTime = {},
+                error = false,
                 loading = loading,
                 onReload = { loading = !loading },
                 prevEnabled = true,
@@ -266,6 +294,7 @@ private fun TripViewPreviewLoading() {
                 onNextClicked = {},
                 stopIdToHighlight = null,
                 stopTypeToHighlight = null,
+                navigator = EmptyDestinationsNavigator,
             )
         }
     }

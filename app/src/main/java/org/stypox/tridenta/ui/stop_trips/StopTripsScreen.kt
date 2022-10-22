@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
@@ -87,6 +88,7 @@ private fun StopTripsScreen(
             TripView(
                 trip = trip,
                 setReferenceDateTime = setReferenceDateTime,
+                error = false,
                 loading = loading,
                 onReload = onReload,
                 prevEnabled = prevEnabled,
@@ -95,6 +97,7 @@ private fun StopTripsScreen(
                 onNextClicked = onNextClicked,
                 stopIdToHighlight = stop?.stopId,
                 stopTypeToHighlight = stop?.type,
+                navigator = EmptyDestinationsNavigator,
                 modifier = Modifier.padding(paddingValues)
             )
         }

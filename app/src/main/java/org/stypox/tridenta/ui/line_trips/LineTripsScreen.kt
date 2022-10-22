@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiLine
@@ -38,7 +40,10 @@ import java.time.ZonedDateTime
     deepLinks = [DeepLink(uriPattern = DEEP_LINK_URL_PATTERN)]
 )
 @Composable
-fun LineTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
+fun LineTripsScreen(
+    navigationIconWrapper: NavigationIconWrapper,
+    navigator: DestinationsNavigator
+) {
     val lineTripsViewModel: LineTripsViewModel = hiltViewModel()
     val lineTripsUiState by lineTripsViewModel.uiState.collectAsState()
     val isFavorite by lineTripsViewModel.isFavorite.observeAsState(initial = false)
@@ -47,6 +52,7 @@ fun LineTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
         line = lineTripsUiState.line,
         setReferenceDateTime = lineTripsViewModel::setReferenceDateTime,
         trip = lineTripsUiState.trip,
+        error = lineTripsUiState.error,
         loading = lineTripsUiState.loading,
         onReload = lineTripsViewModel::onReload,
         prevEnabled = lineTripsUiState.prevEnabled,
@@ -57,6 +63,7 @@ fun LineTripsScreen(navigationIconWrapper: NavigationIconWrapper) {
         stopTypeToHighlight = lineTripsUiState.stopTypeToHighlight,
         isFavorite = isFavorite,
         onFavoriteClicked = lineTripsViewModel::onFavoriteClicked,
+        navigator = navigator,
         navigationIcon = navigationIconWrapper.navigationIcon
     )
 }
@@ -67,6 +74,7 @@ private fun LineTripsScreen(
     line: UiLine?,
     setReferenceDateTime: (ZonedDateTime) -> Unit,
     trip: UiTrip?,
+    error: Boolean,
     loading: Boolean,
     onReload: () -> Unit,
     prevEnabled: Boolean,
@@ -77,6 +85,7 @@ private fun LineTripsScreen(
     stopTypeToHighlight: StopLineType?,
     isFavorite: Boolean,
     onFavoriteClicked: () -> Unit,
+    navigator: DestinationsNavigator,
     navigationIcon: @Composable () -> Unit
 ) {
     Scaffold(
@@ -92,6 +101,7 @@ private fun LineTripsScreen(
             TripView(
                 trip = trip,
                 setReferenceDateTime = setReferenceDateTime,
+                error = error,
                 loading = loading,
                 onReload = onReload,
                 prevEnabled = prevEnabled,
@@ -100,6 +110,7 @@ private fun LineTripsScreen(
                 onNextClicked = onNextClicked,
                 stopIdToHighlight = stopIdToHighlight,
                 stopTypeToHighlight = stopTypeToHighlight,
+                navigator = navigator,
                 modifier = Modifier.padding(paddingValues)
             )
         }
@@ -192,6 +203,7 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         line = SampleUiLineProvider().values.find { uiLine -> uiLine.lineId == trip.line.lineId }!!,
         setReferenceDateTime = {},
         trip = trip,
+        error = false,
         loading = false,
         onReload = {},
         prevEnabled = false,
@@ -202,6 +214,7 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         stopTypeToHighlight = stopToHighlight.type,
         isFavorite = true,
         onFavoriteClicked = {},
+        navigator = EmptyDestinationsNavigator,
         navigationIcon = { AppBarDrawerIcon {} }
     )
 }
