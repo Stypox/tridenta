@@ -49,6 +49,11 @@ class StopTripsRepository @Inject constructor(
 
         fun reloadUiTrip(uiTrip: UiTrip, index: Int, referenceDateTime: ZonedDateTime): UiTrip {
             val exTrip = extractor.getTripById(uiTrip.tripId, referenceDateTime)
+            if (uiTrip.lastEventReceivedAt != null && exTrip.lastEventReceivedAt == null) {
+                // keep previous trip intact, since the just loaded trip has no live information
+                return uiTrip
+            }
+
             exTrips[index] = exTrip
 
             // replace only info that might have changed and avoid loading line and stops data again

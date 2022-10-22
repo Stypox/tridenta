@@ -89,6 +89,11 @@ class LineTripsRepository @Inject constructor(
 
     fun reloadUiTrip(uiTrip: UiTrip, index: Int, referenceDateTime: ZonedDateTime): UiTrip {
         val exTrip = extractor.getTripById(uiTrip.tripId, referenceDateTime)
+        if (uiTrip.lastEventReceivedAt != null && exTrip.lastEventReceivedAt == null) {
+            // keep previous trip intact, since the just loaded trip has no live information
+            return uiTrip
+        }
+
         val key = Triple(uiTrip.lineId, uiTrip.type, referenceDateTime.toLocalDate())
         days[key]?.put(index, exTrip)
 
