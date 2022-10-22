@@ -225,8 +225,9 @@ class LineTripsViewModel @Inject constructor(
                 )
             }
 
-            if (!loadedFromNetwork && trip != null) {
+            if (!loadedFromNetwork && trip != null && trip.completedStops < trip.stopTimes.size) {
                 // after showing the (possibly) outdated trip fast, reload it to show latest updates
+                // (but reload it only if there actually is a trip and it is not completed)
                 onReload()
             }
         }

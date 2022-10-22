@@ -209,8 +209,9 @@ class StopTripsViewModel @Inject constructor(
                 )
             }
 
-            if (requestedByUser && trip != null) {
+            if (requestedByUser && trip != null && trip.completedStops < trip.stopTimes.size) {
                 // after showing the (possibly) outdated trip fast, reload it to show latest updates
+                // (but reload it only if there actually is a trip and it is not completed)
                 onReload()
             }
         }
