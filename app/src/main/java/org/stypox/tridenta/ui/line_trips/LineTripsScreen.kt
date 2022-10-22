@@ -198,9 +198,9 @@ private fun LineAppBarLoadingPreview() {
 @Preview
 @Composable
 private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip: UiTrip) {
-    val stopToHighlight = trip.stopTimes.last().stop
+    val stopToHighlight = trip.stopTimes.lastOrNull()?.stop!!
     LineTripsScreen(
-        line = SampleUiLineProvider().values.find { uiLine -> uiLine.lineId == trip.line.lineId }!!,
+        line = SampleUiLineProvider().values.find { uiLine -> uiLine.lineId == trip.lineId }!!,
         setReferenceDateTime = {},
         trip = trip,
         error = false,

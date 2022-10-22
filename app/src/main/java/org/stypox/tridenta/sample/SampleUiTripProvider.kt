@@ -3,7 +3,6 @@ package org.stypox.tridenta.sample
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
-import org.stypox.tridenta.repo.data.UiStop
 import org.stypox.tridenta.repo.data.UiStopTime
 import org.stypox.tridenta.repo.data.UiTrip
 import java.time.OffsetDateTime
@@ -20,6 +19,7 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
             delay = 1,
             direction = Direction.Backward,
             lastEventReceivedAt = referenceDateTime.minusMinutes(3),
+            lineId = sampleDbLines.first().lineId,
             line = sampleDbLines.first(),
             headSign = "Conci \"Villazzano 3\"",
             tripId = "0003726592022061120220911",
@@ -37,6 +37,7 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
             delay = 0,
             direction = Direction.Forward,
             lastEventReceivedAt = null,
+            lineId = sampleDbLines.last().lineId,
             line = sampleDbLines.last(),
             headSign = "Trento-Vezzano-Sarche-Tione",
             tripId = "0003726592022061120220911",

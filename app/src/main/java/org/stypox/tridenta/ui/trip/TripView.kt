@@ -124,18 +124,20 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        // shortName
-        val shortNameBackground = trip.line.color.toComposeColor()
-        Surface(
-            color = shortNameBackground,
-            shape = MaterialTheme.shapes.medium,
-        ) {
-            TitleText(
-                text = trip.line.shortName,
-                color = textColorOnBackground(shortNameBackground),
-                modifier = Modifier.padding(8.dp),
-                maxLines = 1,
-            )
+        // shortName (the trip line will be null only in case of error)
+        if (trip.line != null) {
+            val shortNameBackground = trip.line.color.toComposeColor()
+            Surface(
+                color = shortNameBackground,
+                shape = MaterialTheme.shapes.medium,
+            ) {
+                TitleText(
+                    text = trip.line.shortName,
+                    color = textColorOnBackground(shortNameBackground),
+                    modifier = Modifier.padding(8.dp),
+                    maxLines = 1,
+                )
+            }
         }
 
         Column(

@@ -13,6 +13,7 @@ abstract class TripsRepository(
             delay = exTrip.delay,
             direction = exTrip.direction,
             lastEventReceivedAt = exTrip.lastEventReceivedAt,
+            lineId = exTrip.lineId,
             line = linesRepository.getDbLine(exTrip.lineId, exTrip.type),
             headSign = exTrip.headSign,
             tripId = exTrip.tripId,

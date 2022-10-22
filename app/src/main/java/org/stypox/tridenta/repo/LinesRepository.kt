@@ -14,17 +14,10 @@ class LinesRepository @Inject constructor(
     private val stopLineReloadHandler: StopLineReloadHandler,
     private val lineDao: LineDao
 ) {
-    fun getDbLine(lineId: Int, lineType: StopLineType): DbLine {
+    fun getDbLine(lineId: Int, lineType: StopLineType): DbLine? {
         return stopLineReloadHandler.reloadIfNeededAndRun {
             lineDao.getLine(lineId, lineType)
-        } ?: DbLine(
-            lineId = lineId,
-            type = lineType,
-            area = Area.All, // i.e. "undefined area"
-            color = null,
-            longName = "Error",
-            shortName = "???"
-        )
+        }
     }
 
     fun getDbLinesByArea(area: Area, forceReload: Boolean): List<DbLine> {

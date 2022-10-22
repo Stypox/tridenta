@@ -15,7 +15,8 @@ data class UiTrip(
     val delay: Int,
     val direction: Direction,
     val lastEventReceivedAt: OffsetDateTime?,
-    val line: DbLine,
+    val lineId: Int, // needed for when DbLine could not be loaded, and so it is null
+    val line: DbLine?,
     val headSign: String,
     val tripId: String,
     val type: StopLineType,
