@@ -1,9 +1,7 @@
 package org.stypox.tridenta.ui.stops
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +22,7 @@ import org.stypox.tridenta.R
 import org.stypox.tridenta.repo.data.UiStop
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
+import org.stypox.tridenta.ui.error.ErrorPanel
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.nav.SearchTopAppBar
@@ -39,6 +39,7 @@ fun StopsScreen(
     val stopsUiState by stopsViewModel.uiState.collectAsState()
 
     StopsScreen(
+        error = stopsUiState.error,
         loading = stopsUiState.loading,
         onReload = stopsViewModel::onReload,
         stops = stopsUiState.stops,
@@ -52,6 +53,7 @@ fun StopsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StopsScreen(
+    error: Boolean,
     loading: Boolean,
     onReload: () -> Unit,
     stops: List<UiStop>,
@@ -71,36 +73,51 @@ private fun StopsScreen(
             )
         },
         content = { paddingValues ->
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing = loading),
-                onRefresh = onReload,
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxHeight()
-            ) {
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(stops) { stop ->
-                        StopItem(
-                            stop = stop,
-                            onLineClick = { line ->
-                                navigator.navigate(
-                                    LineTripsScreenDestination(
-                                        lineId = line.lineId,
-                                        lineType = line.type,
-                                        stopIdToHighlight = stop.stopId,
-                                        stopTypeToHighlight = stop.type
+            if (error) {
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                ) {
+                    ErrorPanel(
+                        onRetry = onReload,
+                        navigator = navigator,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+            } else {
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing = loading),
+                    onRefresh = onReload,
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxHeight()
+                ) {
+                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                        items(stops) { stop ->
+                            StopItem(
+                                stop = stop,
+                                onLineClick = { line ->
+                                    navigator.navigate(
+                                        LineTripsScreenDestination(
+                                            lineId = line.lineId,
+                                            lineType = line.type,
+                                            stopIdToHighlight = stop.stopId,
+                                            stopTypeToHighlight = stop.type
+                                        )
                                     )
-                                )
-                            },
-                            modifier = Modifier.clickable {
-                                navigator.navigate(
-                                    StopTripsScreenDestination(
-                                        stopId = stop.stopId,
-                                        stopType = stop.type
+                                },
+                                modifier = Modifier.clickable {
+                                    navigator.navigate(
+                                        StopTripsScreenDestination(
+                                            stopId = stop.stopId,
+                                            stopType = stop.type
+                                        )
                                     )
-                                )
-                            }
-                        )
+                                }
+                            )
+                        }
                     }
                 }
             }
