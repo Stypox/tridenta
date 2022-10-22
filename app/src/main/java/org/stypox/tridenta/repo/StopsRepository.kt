@@ -13,19 +13,10 @@ class StopsRepository @Inject constructor(
     private val stopLineReloadHandler: StopLineReloadHandler,
     private val stopDao: StopDao
 ) {
-    fun getDbStop(stopId: Int, stopType: StopLineType): DbStop {
+    fun getDbStop(stopId: Int, stopType: StopLineType): DbStop? {
         return stopLineReloadHandler.reloadIfNeededAndRun {
             stopDao.getStop(stopId, stopType)
-        } ?: DbStop(
-            stopId = stopId,
-            type = stopType,
-            latitude = 0.0,
-            longitude = 0.0,
-            name = "Error",
-            street = "",
-            town = "",
-            wheelchairAccessible = false,
-        )
+        }
     }
 
     fun getUiStopsFiltered(

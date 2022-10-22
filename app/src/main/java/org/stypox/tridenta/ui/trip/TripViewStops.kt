@@ -51,7 +51,8 @@ fun TripViewStops(
         itemsIndexed(trip.stopTimes) { index, stopTime ->
             TripViewStopItem(
                 trip = trip,
-                highlight = stopTime.stop.stopId == stopIdToHighlight &&
+                highlight = stopTime.stop != null &&
+                    stopTime.stop.stopId == stopIdToHighlight &&
                     stopTime.stop.type == stopTypeToHighlight,
                 completed = index < trip.completedStops,
                 stopTime = stopTime
@@ -99,7 +100,7 @@ private fun TripViewStopItem(
             modifier = Modifier.padding(end = 6.dp)
         )
 
-        if (stopTime.stop.isFavorite) {
+        if (stopTime.stop?.isFavorite == true) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
                 contentDescription = stringResource(R.string.favorite),
@@ -109,7 +110,7 @@ private fun TripViewStopItem(
         }
 
         BodyText(
-            text = stopTime.stop.name,
+            text = stopTime.stop?.name ?: stringResource(R.string.error),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
@@ -122,7 +123,13 @@ private fun TripViewStopItem(
                     }
                 },
             fontWeight = if (highlight) FontWeight.Bold else null,
-            color = if (highlight) MaterialTheme.colorScheme.primary else Color.Unspecified
+            color = if (stopTime.stop == null) {
+                MaterialTheme.colorScheme.error
+            } else if (highlight) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                Color.Unspecified
+            }
         )
 
         val isLate = trip.lastEventReceivedAt != null

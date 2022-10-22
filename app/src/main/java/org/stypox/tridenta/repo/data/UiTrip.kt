@@ -29,5 +29,5 @@ data class UiTrip(
 data class UiStopTime(
     val arrivalTime: OffsetDateTime?,
     val departureTime: OffsetDateTime?,
-    val stop: DbStop,
+    val stop: DbStop?,
 )
