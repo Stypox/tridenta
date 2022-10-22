@@ -165,6 +165,7 @@ class LineTripsViewModel @Inject constructor(
             }
 
             if (trip == null) {
+                // keep previous trip intact, we don't want to hide information that we do have!
                 mutableUiState.update { it.copy(loading = false, error = true) }
             } else {
                 mutableUiState.update { it.copy(trip = trip, loading = false, error = false) }
@@ -182,7 +183,6 @@ class LineTripsViewModel @Inject constructor(
 
     private fun loadIndex(index: Int) {
         if (index < 0 || index >= uiState.value.tripsInDayCount) {
-            mutableUiState.update { it.copy(loading = false, error = false) }
             return // this will happen when there are no trips in a day, for example
         }
 
@@ -212,7 +212,7 @@ class LineTripsViewModel @Inject constructor(
                                 "(${navArgs.lineId}, ${navArgs.lineType})",
                         e
                     )
-                    Pair(null, true) // set loadedFromNetwork to true to prevent calling onReload
+                    Pair(null, true /* <- useless when trip == null */)
                 }
             }
 
@@ -225,7 +225,7 @@ class LineTripsViewModel @Inject constructor(
                 )
             }
 
-            if (!loadedFromNetwork) {
+            if (!loadedFromNetwork && trip != null) {
                 // after showing the (possibly) outdated trip fast, reload it to show latest updates
                 onReload()
             }
