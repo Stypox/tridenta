@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.stypox.tridenta.enums.Area
+import org.stypox.tridenta.log.logError
 import org.stypox.tridenta.repo.LinesRepository
 import org.stypox.tridenta.util.PreferenceKeys
 import javax.inject.Inject
@@ -46,9 +47,7 @@ class LinesViewModel @Inject constructor(
     fun setSelectedArea(area: Area) {
         if (area != mutableUiState.value.selectedArea) {
             // clear current lines and close the header, since the selected area item changed
-            mutableUiState.update { linesUiState ->
-                linesUiState.copy(selectedArea = area, lines = listOf())
-            }
+            mutableUiState.update { it.copy(selectedArea = area, lines = listOf()) }
 
             reloadLines(forceReload = false)
 
@@ -63,13 +62,14 @@ class LinesViewModel @Inject constructor(
 
     private fun reloadLines(forceReload: Boolean) {
         // show the loading indicator
-        mutableUiState.update { linesUiState -> linesUiState.copy(loading = true) }
+        mutableUiState.update { it.copy(loading = true, error = false) }
 
         viewModelScope.launch {
             val lines = withContext(Dispatchers.IO) {
                 try {
-                    linesRepository.getDbLinesByArea(mutableUiState.value.selectedArea, forceReload)
+                    linesRepository.getDbLinesByArea(uiState.value.selectedArea, forceReload)
                 } catch (e: Throwable) {
+                    logError("Could not load lines in area ${uiState.value.selectedArea}", e)
                     null
                 }
             }

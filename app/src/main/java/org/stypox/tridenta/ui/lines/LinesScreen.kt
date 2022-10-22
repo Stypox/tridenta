@@ -26,6 +26,7 @@ import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.sample.SampleDbLineProvider
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
+import org.stypox.tridenta.ui.error.ErrorPanel
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
@@ -43,6 +44,7 @@ fun LinesScreen(
     val linesUiState by linesViewModel.uiState.collectAsState()
 
     LinesScreen(
+        error = linesUiState.error,
         loading = linesUiState.loading,
         onReload = linesViewModel::onReload,
         lines = linesUiState.lines,
@@ -56,6 +58,7 @@ fun LinesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LinesScreen(
+    error: Boolean,
     loading: Boolean,
     onReload: () -> Unit,
     lines: List<DbLine>,
@@ -100,27 +103,42 @@ private fun LinesScreen(
             )
         },
         content = { paddingValues ->
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing = loading),
-                onRefresh = onReload,
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxHeight()
-            ) {
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(lines) {
-                        LineItem(
-                            line = it,
-                            showAreaChip = selectedArea == Area.All,
-                            modifier = Modifier.clickable {
-                                navigator.navigate(
-                                    LineTripsScreenDestination(
-                                        lineId = it.lineId,
-                                        lineType = it.type
+            if (error) {
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                ) {
+                    ErrorPanel(
+                        onRetry = onReload,
+                        navigator = navigator,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+            } else {
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing = loading),
+                    onRefresh = onReload,
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxHeight()
+                ) {
+                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                        items(lines) {
+                            LineItem(
+                                line = it,
+                                showAreaChip = selectedArea == Area.All,
+                                modifier = Modifier.clickable {
+                                    navigator.navigate(
+                                        LineTripsScreenDestination(
+                                            lineId = it.lineId,
+                                            lineType = it.type
+                                        )
                                     )
-                                )
-                            }
-                        )
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -135,6 +153,7 @@ private fun LinesViewAllPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesScreen(
+            error = false,
             loading = true,
             onReload = {},
             lines = SampleDbLineProvider().values.toList(),
@@ -156,6 +175,7 @@ private fun LinesViewSmallHeightPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesScreen(
+            error = false,
             loading = true,
             onReload = {},
             lines = SampleDbLineProvider().values.toList(),
