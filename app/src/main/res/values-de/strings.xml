@@ -5,7 +5,7 @@
     <string name="area_funicular">Seilbahn</string>
     <string name="lines">Buslinien</string>
     <string name="select_area">Bereich auswählen</string>
-    <string name="selected_area">Ausgewählter Bereich</string>
+    <string name="selected_area">Bereich -</string>
     <string name="navigation_drawer">Navigationsleiste</string>
     <string name="search">Suchen</string>
     <string name="back">Nach oben</string>
