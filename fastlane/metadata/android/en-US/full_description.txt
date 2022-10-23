@@ -1,4 +1,4 @@
-Tridenta loads and shows the <b>local transportation</b> data of the italian region "<i>Trentino</i>". You can view information about <b>stops</b>, <b>lines</b> and most importantly <b>trips</b>, whose <b>delay</b> can be queried in <b>real time</b>! The app also has favorites and history, and allows creating shortcuts in the phone launcher.
+Tridenta loads and shows the <b>public transport</b> data of the italian region "<i>Trentino</i>". You can view information about <b>stops</b>, <b>lines</b> and most importantly <b>trips</b>, whose <b>delay</b> can be queried in <b>real time</b>! The app also has favorites and history, and allows creating shortcuts in the phone launcher.
 
 <ul>
 <li><b>Stops</b>: view and search stops all across Trentino, and see which lines pass by a stop</li>
