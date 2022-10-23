@@ -1,0 +1,11 @@
+Tridenta ist eine App für den <b>öffentlichen Verkehr im Trentino</b>. Sie können die <b>Haltestellen</b>, die <b>Linien</b> und vor allem die durchgeführten <b>Fahrten mit Verspätung in Echtzeit</b> sehen! Es gibt auch Favoriten und Verlauf, und Sie können Verknüpfungen im App Launcher Ihres Telefons erstellen.
+
+<ul>
+<li><b>Haltestellen</b>: finden Sie Haltestellen im gesamten Trentino; Sie sehen auch, welche Linien an einer Haltestelle vorbeifahren</li>
+<li><b>Linien</b>: Filtern Sie die städtischen und vorstädtischen Linien, indem Sie das Gebiet auf einer Karte des Trentino auswählen</li>
+<li><b>Fahrten</b>: Finden Sie die Fahrten einer Linie oder die Fahrten an einer Haltestelle; Sie sehen die Ankunftszeiten an den verschiedenen Haltestellen, die Verspätung, den Text auf der Vorderseite des Busses und Informationen über die Richtung (Hin- oder Rückfahrt)</li>
+<li>Die <b>Favoriten</b> und der Verlauf werden im Hamburger-Menü angezeigt, damit Sie bequem auf die von Ihnen am häufigsten benutzten Linien oder Haltestellen zugreifen können.</li>
+<li>Erstellen Sie <b>Verknüpfungen</b> im App-Launcher Ihres Telefons, die direkt einen bestimmten Bildschirm in Tridenta öffnen und Ihnen so noch mehr Zeit sparen</li>
+</ul>
+
+Mit Jetpack Compose und Material Design 3 wurde Tridenta entwickelt und unterstützt sowohl helle als auch dunkle Themes (mit dynamischen Farben auf Android 12+). Die Informationen, die in Tridenta angezeigt werden, stammen aus denselben APIs wie die offizielle App für den öffentlichen Verkehr im Trentino, "Muoversi in Trentino".
