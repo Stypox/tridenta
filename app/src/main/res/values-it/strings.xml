@@ -56,4 +56,6 @@
     <string name="open">Apri</string>
     <string name="mindshub">Associazione MindsHub</string>
     <string name="mindshub_description">MindsHub è un\'associazione trentina no-profit, che mette a disposizione degli appassionati uno spazio per collaborare su informatica, meccanica, elettronica e stampa 3d</string>
+    <string name="error">Si è verificato un errore</string>
+    <string name="retry">Riprova</string>
 </resources>
