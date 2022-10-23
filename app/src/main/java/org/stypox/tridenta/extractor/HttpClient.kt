@@ -2,7 +2,7 @@ package org.stypox.tridenta.extractor
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.net.SocketTimeoutException
+import org.stypox.tridenta.log.logWarning
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,17 +20,26 @@ class HttpClient @Inject constructor(
             .header("Authorization", "Basic bWl0dG1vYmlsZTplY0dzcC5SSEIz")
             .build()
 
-        lateinit var error: SocketTimeoutException
-        repeat(retries) {
+        var error: Throwable? = null
+        repeat(retries) { retryIndex ->
             try {
-                return okHttpClient.newCall(request).execute().use { it.body!!.string() }
-            } catch (e: SocketTimeoutException) {
+                return okHttpClient.newCall(request)
+                    .execute()
+                    .use { it.body!!.string() }
+                    .also {
+                        error?.let {
+                            // only log if at the end we were able to make the request properly
+                            logWarning("Ignoring network error: " + it::class.qualifiedName)
+                        }
+                    }
+            } catch (e: Throwable) {
                 // since the server seems to be unstable, retry [retries] times on timeout
+                Thread.sleep(50L * retryIndex) // will wait at most 0.05*(0+1+2+3+4)=0.5s
                 error = e
             }
         }
 
         // after [retries] tries, throw the error
-        throw error
+        throw error ?: java.lang.NullPointerException("Unreachable code")
     }
 }
