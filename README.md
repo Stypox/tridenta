@@ -2,6 +2,15 @@
 
 An Android app that loads and shows the **local transportation** data of the italian region "*Trentino*". You can view information about **stops**, **lines** and most importantly **trips**, whose **delay** can be queried in **real time**! The shown data is the same as that shown in the official "[Muoversi In Trentino](https://www.trentinotrasporti.it/en/travel-with-us/muoversi-en)" application, except that there are *fewer* errors and slowdowns. Tridenta has a **modern look** and was built using [Jetpack Compose](https://developer.android.com/jetpack/compose) and [Material 3](https://m3.material.io/).
 
+<p align="center">
+    <a href="https://f-droid.org/packages/org.stypox.tridenta">
+        <img height="80" alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">
+    </a>
+    <a href="https://github.com/Stypox/tridenta/releases">
+        <img height="80" alt="Get it on GitHub" src="https://github.com/Stypox/dicio-android/raw/05e06e3d24f303fbb7662b0c853ca63de1564b97/meta/get-it-on-github.png">
+    </a>
+</p>
+
 ## Screenshots
 
 [<img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/0.png" width=200>](./fastlane/metadata/android/en-US/images/phoneScreenshots/0.png)
