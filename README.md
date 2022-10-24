@@ -32,6 +32,8 @@ An Android app for **public transport** in the italian region "*Trentino*". You 
 - **Favorites** and history are shown in the drawer for easy access to the lines or stops you use the most
 - **Shortcuts** in your phone's application launcher can link directly to a specific screen inside Tridenta, allowing you to save even more time
 
+Tridenta handles *errors without crashing* and also has a logs screen for viewing stack traces and other logs, if needed. There is a nice *about screen*, too!
+
 ## Translations
 
 Tridenta is available in English, Italian and German.
