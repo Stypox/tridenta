@@ -34,7 +34,9 @@ class HttpClient @Inject constructor(
                     }
             } catch (e: Throwable) {
                 // since the server seems to be unstable, retry [retries] times on timeout
-                Thread.sleep(100L * (retryIndex + 1)) // will wait at most 0.1*(1+2+3+4+5)=1.5s
+                if (retryIndex + 1 != retries) {
+                    Thread.sleep(200L * (retryIndex + 1)) // will wait at most 0.2*(1+2+3+4)=2s
+                }
                 error = e
             }
         }
