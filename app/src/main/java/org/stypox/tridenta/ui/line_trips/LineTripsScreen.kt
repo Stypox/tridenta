@@ -33,6 +33,7 @@ import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
+import org.stypox.tridenta.util.LifecycleAwareRepeatedAction
 import java.time.ZonedDateTime
 
 @Destination(
@@ -47,6 +48,15 @@ fun LineTripsScreen(
     val lineTripsViewModel: LineTripsViewModel = hiltViewModel()
     val lineTripsUiState by lineTripsViewModel.uiState.collectAsState()
     val isFavorite by lineTripsViewModel.isFavorite.observeAsState(initial = false)
+
+    LifecycleAwareRepeatedAction(millisInterval = 10000) {
+        if (
+            !lineTripsUiState.loading &&
+            lineTripsUiState.trip?.let { it.completedStops < it.stopTimes.size } == true
+        ) {
+            lineTripsViewModel.onReload() // reload the trip every ten seconds while app is active
+        }
+    }
 
     LineTripsScreen(
         line = lineTripsUiState.line,
