@@ -30,7 +30,11 @@ platform :android do
     )
     upload_to_play_store(
       release_status: 'draft',
-      json_key: options[:play_store_json_key]
+      json_key: options[:play_store_json_key],
+      # just upload the changelog
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
     )
   end
 end
