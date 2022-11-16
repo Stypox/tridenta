@@ -1,0 +1,11 @@
+Novità:
+- I viaggi sono ora ricaricati in automatico ogni 10 secondi
+- Quando l'app crasha viene spiegato dove trovare i dettagli del malfunzionamento
+
+Miglioramenti:
+- Ridotta la dimensione dell'APK da ~13MB a ~4MB
+- Migliorata la strategia per riprovare le richieste di rete
+
+Correzioni:
+- Corretta l'ora mostrata come ultimo aggiornamento ricevuto da un viaggio
+- Sistemate varie inconsistenze legate al tempo quando il fuso orario del telefono non è Europe/Rome

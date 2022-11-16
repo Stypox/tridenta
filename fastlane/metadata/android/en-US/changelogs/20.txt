@@ -1,0 +1,11 @@
+New:
+- Automatically reload trips every 10 seconds
+- Explain where to find the crash report if the app crashes
+
+Improved:
+- Reduce APK size from ~13MB to ~4MB
+- Improve strategy for retrying network requests
+
+Fixed:
+- Fix incorrect time shown as the last received update on a trip
+- Fix time-related inconsistencies when the phone's timezone is not Europe/Rome

@@ -1,0 +1,11 @@
+Neu:
+- Automatisches Neuladen von Fahrten alle 10 Sekunden
+- Erklärung, wo man den Absturzbericht findet, wenn die App abstürzt
+
+Verbessert:
+- Verkleinerung der APK-Größe von ~13MB auf ~4MB
+- Verbesserte Strategie zur Wiederholung von Netzwerkanfragen
+
+Behoben:
+- Behebung der falschen Zeitanzeige für das letzte empfangene Update auf einer Reise
+- Behebung von zeitbezogenen Inkonsistenzen, wenn die Zeitzone des Telefons nicht Europe/Rome ist
