@@ -2,6 +2,9 @@ package org.stypox.tridenta.log
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
+import org.stypox.tridenta.R
 import org.stypox.tridenta.db.DatabaseModule
 import java.lang.Thread.UncaughtExceptionHandler
 
@@ -21,6 +24,7 @@ class AppUncaughtExceptionHandler private constructor(
 
             logToDatabaseBlocking(logDao, LogLevel.Error, "App crash on $t", e)
             Log.i(TAG, "Error saved to database")
+            Toast.makeText(context, R.string.error_open_logs, LENGTH_SHORT).show()
 
         } catch (t: Throwable) {
             // if exceptions are not caught, the app would hang indefinitely

@@ -58,4 +58,5 @@
     <string name="found_a_bug_description">Melden Sie Probleme oder fordern Sie neue Funktionen an, und fügen Sie unbedingt Protokolle bei</string>
     <string name="error">Ein Fehler ist aufgetreten</string>
     <string name="retry">Wiederholen</string>
+    <string name="error_open_logs">Finden Sie den Absturzbericht in den Protokollen</string>
 </resources>

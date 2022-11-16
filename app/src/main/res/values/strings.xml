@@ -69,4 +69,5 @@
     <string name="found_a_bug_description">Feel free to report broken things or request new features, making sure to attach logs</string>
     <string name="error">An error occurred</string>
     <string name="retry">Retry</string>
+    <string name="error_open_logs">Find the crash report in the logs</string>
 </resources>
