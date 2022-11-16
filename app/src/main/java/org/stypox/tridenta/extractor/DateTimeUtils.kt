@@ -4,6 +4,8 @@ import java.io.IOException
 import java.time.*
 import java.time.temporal.ChronoUnit
 
+private val ROME_ZONE_ID = ZoneId.of("Europe/Rome")
+
 fun dateTimeFromEpochString(s: String): OffsetDateTime {
     if (s.length <= 8) {
         throw IOException("Invalid epoch string date: $s")
@@ -15,13 +17,11 @@ fun dateTimeFromEpochString(s: String): OffsetDateTime {
 }
 
 fun dateTimeFromISOString(s: String?): OffsetDateTime? {
-    return if (s.isNullOrEmpty() || s == "null") null else OffsetDateTime.parse(s).plusHours(2)
-}
-
-fun localToRomeDateTime(localDateTime: LocalDateTime): ZonedDateTime {
-    return localDateTime
-        .atZone(ZoneId.systemDefault()) // this local datetime references the system time zone
-        .withZoneSameInstant(ZoneId.of("Europe/Rome")) // ... and is then converted to Rome's
+    return if (s.isNullOrEmpty() || s == "null") {
+        null
+    } else {
+        OffsetDateTime.parse(s).atZoneSameInstant(ROME_ZONE_ID).toOffsetDateTime()
+    }
 }
 
 class ZonedTimeHelper(private var referenceDateTime: ZonedDateTime) {
