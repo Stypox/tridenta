@@ -4,7 +4,7 @@ import java.io.IOException
 import java.time.*
 import java.time.temporal.ChronoUnit
 
-private val ROME_ZONE_ID = ZoneId.of("Europe/Rome")
+val ROME_ZONE_ID: ZoneId = ZoneId.of("Europe/Rome")
 
 fun dateTimeFromEpochString(s: String): OffsetDateTime {
     if (s.length <= 8) {

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.stypox.tridenta.db.HistoryDao
+import org.stypox.tridenta.extractor.ROME_ZONE_ID
 import org.stypox.tridenta.log.logError
 import org.stypox.tridenta.repo.StopTripsRepository
 import org.stypox.tridenta.repo.StopsRepository
@@ -37,7 +38,7 @@ class StopTripsViewModel @Inject constructor(
             trip = null,
             prevEnabled = false,
             nextEnabled = false,
-            referenceDateTime = ZonedDateTime.now(),
+            referenceDateTime = ZonedDateTime.now().withZoneSameInstant(ROME_ZONE_ID),
             loading = true,
             error = false,
         )
@@ -80,7 +81,8 @@ class StopTripsViewModel @Inject constructor(
         }
     }
 
-    fun setReferenceDateTime(referenceDateTime: ZonedDateTime) {
+    fun setReferenceDateTime(referenceDateTimeCurrentZone: ZonedDateTime) {
+        val referenceDateTime = referenceDateTimeCurrentZone.withZoneSameInstant(ROME_ZONE_ID)
         tripsAtDateTimeList = null
         mutableUiState.update {
             it.copy(
