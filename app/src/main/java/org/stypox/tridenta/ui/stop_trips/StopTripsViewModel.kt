@@ -5,12 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.stypox.tridenta.db.HistoryDao
 import org.stypox.tridenta.extractor.ROME_ZONE_ID
 import org.stypox.tridenta.log.logError
@@ -46,6 +44,7 @@ class StopTripsViewModel @Inject constructor(
     val uiState = mutableUiState.asStateFlow()
     
     private var tripsAtDateTimeList: StopTripsRepository.TripsAtDateTimeList? = null
+    private var tripReloadJob: Job? = null
 
     val isFavorite = historyDao.isFavorite(
         isLine = false,
@@ -58,7 +57,47 @@ class StopTripsViewModel @Inject constructor(
         setReferenceDateTime(ZonedDateTime.now())
     }
 
+
+    fun setReferenceDateTime(referenceDateTimeCurrentZone: ZonedDateTime) {
+        cancelTripReloadJobAndLaunch {
+            setReferenceDateTimeAsync(referenceDateTimeCurrentZone)
+        }
+    }
+
+    fun onReload() {
+        cancelTripReloadJobAndLaunch {
+            onReloadAsync()
+        }
+    }
+
+    fun onPrevClicked() {
+        cancelTripReloadJobAndLaunch {
+            loadIndex(uiState.value.tripIndex - 1, true)
+        }
+    }
+
+    fun onNextClicked() {
+        cancelTripReloadJobAndLaunch {
+            loadIndex(uiState.value.tripIndex + 1, true)
+        }
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                historyDao.setFavorite(
+                    isLine = false,
+                    id = navArgs.stopId,
+                    type = navArgs.stopType,
+                    isFavorite = isFavorite.value?.not() ?: true
+                )
+            }
+        }
+    }
+
+
     private fun loadStop() {
+        // this job is independent from trip reloading jobs, so don't use cancelReloadJobAndLaunch
         viewModelScope.launch {
             val stop = withContext(Dispatchers.IO) {
                 try {
@@ -81,7 +120,12 @@ class StopTripsViewModel @Inject constructor(
         }
     }
 
-    fun setReferenceDateTime(referenceDateTimeCurrentZone: ZonedDateTime) {
+    private fun cancelTripReloadJobAndLaunch(block: suspend CoroutineScope.() -> Unit) {
+        tripReloadJob?.cancel()
+        tripReloadJob = viewModelScope.launch(block = block)
+    }
+
+    private suspend fun setReferenceDateTimeAsync(referenceDateTimeCurrentZone: ZonedDateTime) {
         val referenceDateTime = referenceDateTimeCurrentZone.withZoneSameInstant(ROME_ZONE_ID)
         tripsAtDateTimeList = null
         mutableUiState.update {
@@ -96,79 +140,68 @@ class StopTripsViewModel @Inject constructor(
             )
         }
 
-        viewModelScope.launch {
-            tripsAtDateTimeList = withContext(Dispatchers.IO) {
-                try {
-                    tripsRepository.getTrips(
-                        stopId = navArgs.stopId,
-                        stopType = navArgs.stopType,
-                        referenceDateTime = referenceDateTime
-                    )
-                } catch (e: Throwable) {
-                    logError(
-                        "Could not load trips for DB stop (${navArgs.stopId}, " +
-                                "${navArgs.stopType}) at time $referenceDateTime",
-                        e
-                    )
-                    null
-                }
+        tripsAtDateTimeList = withContext(Dispatchers.IO) {
+            try {
+                tripsRepository.getTrips(
+                    stopId = navArgs.stopId,
+                    stopType = navArgs.stopType,
+                    referenceDateTime = referenceDateTime
+                )
+            } catch (e: Throwable) {
+                logError(
+                    "Could not load trips for DB stop (${navArgs.stopId}, " +
+                            "${navArgs.stopType}) at time $referenceDateTime",
+                    e
+                )
+                null
             }
+        }
 
-            if (tripsAtDateTimeList == null) {
-                mutableUiState.update { it.copy(loading = false, error = true) }
-            } else {
-                // show the first trip, which should be the next one arriving at the stop;
-                // `thenReload` is false since the trip is surely up-to-date, as it was just fetched
-                loadIndex(0, false)
-            }
+        if (tripsAtDateTimeList == null) {
+            mutableUiState.update { it.copy(loading = false, error = true) }
+        } else {
+            // show the first trip, which should be the next one arriving at the stop;
+            // `thenReload` is false since the trip is surely up-to-date, as it was just fetched
+            loadIndex(0, false)
         }
     }
 
-    fun onReload() {
+    private suspend fun onReloadAsync() {
         val previousTrip = uiState.value.trip
         if (previousTrip == null) {
             // initial trips failed loading, try to load again the current day
-            setReferenceDateTime(uiState.value.referenceDateTime)
+            setReferenceDateTimeAsync(uiState.value.referenceDateTime)
             return
         }
 
         mutableUiState.update { it.copy(loading = true, error = false) }
-        viewModelScope.launch {
-            val trip = withContext(Dispatchers.IO) {
-                try {
-                    tripsAtDateTimeList?.reloadUiTrip(
-                        uiTrip = previousTrip,
-                        index = uiState.value.tripIndex,
-                        referenceDateTime = uiState.value.referenceDateTime
-                    )
-                } catch (e: Throwable) {
-                    logError(
-                        "Could not load trip ${previousTrip.tripId} for DB stop " +
-                                "(${navArgs.stopId}, ${navArgs.stopType})",
-                        e
-                    )
-                    null
-                }
+        val trip = withContext(Dispatchers.IO) {
+            try {
+                tripsAtDateTimeList?.reloadUiTrip(
+                    uiTrip = previousTrip,
+                    index = uiState.value.tripIndex,
+                    referenceDateTime = uiState.value.referenceDateTime
+                )
+            } catch (e: Throwable) {
+                logError(
+                    "Could not load trip ${previousTrip.tripId} for DB stop " +
+                            "(${navArgs.stopId}, ${navArgs.stopType})",
+                    e
+                )
+                null
             }
+        }
 
-            if (trip == null) {
-                // keep previous trip intact, we don't want to hide information that we do have!
-                mutableUiState.update { it.copy(loading = false, error = true) }
-            } else {
-                mutableUiState.update { it.copy(trip = trip, loading = false, error = false) }
-            }
+        if (trip == null) {
+            // keep previous trip intact, we don't want to hide information that we do have!
+            mutableUiState.update { it.copy(loading = false, error = true) }
+        } else if (trip.tripId == uiState.value.trip?.tripId) {
+            // the condition above is to
+            mutableUiState.update { it.copy(trip = trip, loading = false, error = false) }
         }
     }
 
-    fun onPrevClicked() {
-        loadIndex(uiState.value.tripIndex - 1, true)
-    }
-
-    fun onNextClicked() {
-        loadIndex(uiState.value.tripIndex + 1, true)
-    }
-
-    private fun loadIndex(index: Int, requestedByUser: Boolean) {
+    private suspend fun loadIndex(index: Int, requestedByUser: Boolean) {
         if (index < 0 || index >= (tripsAtDateTimeList?.tripCount ?: -1)) {
             if (!requestedByUser) {
                 // called as part of setReferenceDateTime, so this clears loading/error state;
@@ -189,46 +222,31 @@ class StopTripsViewModel @Inject constructor(
             )
         }
 
-        viewModelScope.launch {
-            val trip = withContext(Dispatchers.IO) {
-                try {
-                    tripsAtDateTimeList?.getUiTripAtIndex(index)
-                } catch (e: Throwable) {
-                    logError(
-                        "Could not load trip at index $index for DB stop " +
-                                "(${navArgs.stopId}, ${navArgs.stopType})",
-                        e
-                    )
-                    null
-                }
-            }
-
-            mutableUiState.update {
-                it.copy(
-                    trip = trip,
-                    loading = false,
-                    error = trip == null,
+        val trip = withContext(Dispatchers.IO) {
+            try {
+                tripsAtDateTimeList?.getUiTripAtIndex(index)
+            } catch (e: Throwable) {
+                logError(
+                    "Could not load trip at index $index for DB stop " +
+                            "(${navArgs.stopId}, ${navArgs.stopType})",
+                    e
                 )
-            }
-
-            if (requestedByUser && trip != null && trip.completedStops < trip.stopTimes.size) {
-                // after showing the (possibly) outdated trip fast, reload it to show latest updates
-                // (but reload it only if there actually is a trip and it is not completed)
-                onReload()
+                null
             }
         }
-    }
 
-    fun onFavoriteClicked() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                historyDao.setFavorite(
-                    isLine = false,
-                    id = navArgs.stopId,
-                    type = navArgs.stopType,
-                    isFavorite = isFavorite.value?.not() ?: true
-                )
-            }
+        mutableUiState.update {
+            it.copy(
+                trip = trip,
+                loading = false,
+                error = trip == null,
+            )
+        }
+
+        if (requestedByUser && trip != null && trip.completedStops < trip.stopTimes.size) {
+            // after showing the (possibly) outdated trip fast, reload it to show latest updates
+            // (but reload it only if there actually is a trip and it is not completed)
+            onReloadAsync()
         }
     }
 }
