@@ -18,4 +18,7 @@ interface LogDao {
 
     @Query("DELETE FROM LogEntry WHERE dateTime < :before")
     fun clearOldLogs(before: OffsetDateTime)
+
+    @Query("DELETE FROM LogEntry")
+    fun clearLogs()
 }

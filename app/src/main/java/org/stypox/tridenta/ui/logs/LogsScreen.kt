@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +40,7 @@ fun LogsScreen(navigationIconWrapper: NavigationIconWrapper) {
     LogsScreen(
         loading = logs == null,
         logs = logs ?: listOf(),
+        onClearLogsClick = logsViewModel::clearLogs,
         navigationIcon = navigationIconWrapper.navigationIcon,
     )
 }
@@ -43,6 +49,7 @@ fun LogsScreen(navigationIconWrapper: NavigationIconWrapper) {
 private fun LogsScreen(
     loading: Boolean,
     logs: List<LogEntry>,
+    onClearLogsClick: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
     Scaffold(
@@ -52,6 +59,14 @@ private fun LogsScreen(
                     Text(text = stringResource(R.string.logs))
                 },
                 navigationIcon = navigationIcon,
+                actions = {
+                    IconButton(onClick = onClearLogsClick) {
+                        Icon(
+                            imageVector = Icons.Filled.DeleteSweep,
+                            contentDescription = stringResource(R.string.clear)
+                        )
+                    }
+                }
             )
         },
         content = { paddingValues ->
@@ -79,6 +94,7 @@ private fun LogsScreenPreview() {
     LogsScreen(
         loading = false,
         logs = SampleLogEntryProvider().values.toList(),
+        onClearLogsClick = { },
         navigationIcon = { }
     )
 }
