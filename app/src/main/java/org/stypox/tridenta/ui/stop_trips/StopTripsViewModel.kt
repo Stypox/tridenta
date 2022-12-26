@@ -71,15 +71,11 @@ class StopTripsViewModel @Inject constructor(
     }
 
     fun onPrevClicked() {
-        cancelTripReloadJobAndLaunch {
-            loadIndex(uiState.value.tripIndex - 1, true)
-        }
+        loadIndex(uiState.value.tripIndex - 1)
     }
 
     fun onNextClicked() {
-        cancelTripReloadJobAndLaunch {
-            loadIndex(uiState.value.tripIndex + 1, true)
-        }
+        loadIndex(uiState.value.tripIndex + 1)
     }
 
     fun onFavoriteClicked() {
@@ -120,9 +116,15 @@ class StopTripsViewModel @Inject constructor(
         }
     }
 
-    private fun cancelTripReloadJobAndLaunch(block: suspend CoroutineScope.() -> Unit) {
+    private fun cancelTripReloadJobAndLaunch(tripLoadingFunction: suspend () -> Unit) {
         tripReloadJob?.cancel()
-        tripReloadJob = viewModelScope.launch(block = block)
+        tripReloadJob = viewModelScope.launch {
+            // clear errors and set the state to "loading" before starting to load
+            mutableUiState.update { it.copy(loading = true, error = false) }
+            tripLoadingFunction()
+            // set "loading" to false when loading finished (errors are set inside the function)
+            mutableUiState.update { it.copy(loading = false) }
+        }
     }
 
     private suspend fun setReferenceDateTimeAsync(referenceDateTimeCurrentZone: ZonedDateTime) {
@@ -135,8 +137,6 @@ class StopTripsViewModel @Inject constructor(
                 prevEnabled = false,
                 nextEnabled = false,
                 referenceDateTime = referenceDateTime,
-                loading = true,
-                error = false,
             )
         }
 
@@ -158,11 +158,11 @@ class StopTripsViewModel @Inject constructor(
         }
 
         if (tripsAtDateTimeList == null) {
-            mutableUiState.update { it.copy(loading = false, error = true) }
+            mutableUiState.update { it.copy(error = true) }
         } else {
             // show the first trip, which should be the next one arriving at the stop;
-            // `thenReload` is false since the trip is surely up-to-date, as it was just fetched
-            loadIndex(0, false)
+            // requestedByUser is false since the trip is surely up-to-date, as it was just fetched
+            loadIndexAsync(0, false)
         }
     }
 
@@ -174,7 +174,6 @@ class StopTripsViewModel @Inject constructor(
             return
         }
 
-        mutableUiState.update { it.copy(loading = true, error = false) }
         val trip = withContext(Dispatchers.IO) {
             try {
                 tripsAtDateTimeList?.reloadUiTrip(
@@ -194,31 +193,29 @@ class StopTripsViewModel @Inject constructor(
 
         if (trip == null) {
             // keep previous trip intact, we don't want to hide information that we do have!
-            mutableUiState.update { it.copy(loading = false, error = true) }
-        } else if (trip.tripId == uiState.value.trip?.tripId) {
-            // the condition above is to
-            mutableUiState.update { it.copy(trip = trip, loading = false, error = false) }
+            mutableUiState.update { it.copy(error = true) }
+        } else {
+            mutableUiState.update { it.copy(trip = trip) }
         }
     }
 
-    private suspend fun loadIndex(index: Int, requestedByUser: Boolean) {
-        if (index < 0 || index >= (tripsAtDateTimeList?.tripCount ?: -1)) {
-            if (!requestedByUser) {
-                // called as part of setReferenceDateTime, so this clears loading/error state;
-                // otherwise, if called by user, this is just a "void" action, so do nothing
-                mutableUiState.update { it.copy(loading = false, error = false) }
+    private fun loadIndex(index: Int) {
+        if (index >= 0 && index < (tripsAtDateTimeList?.tripCount ?: -1)) {
+            // only cancel any currently running job if there is something to do; the above
+            // condition will be false e.g. when there are no trips in a day (but not only for that)
+            cancelTripReloadJobAndLaunch {
+                loadIndexAsync(index, true)
             }
-            return // this will happen when there are no trips in a day, for example
         }
+    }
 
+    private suspend fun loadIndexAsync(index: Int, requestedByUser: Boolean) {
         mutableUiState.update {
             it.copy(
                 tripIndex = index,
                 trip = null,
                 prevEnabled = index > 0,
                 nextEnabled = index < (tripsAtDateTimeList?.tripCount ?: -1) - 1,
-                loading = true,
-                error = false
             )
         }
 
