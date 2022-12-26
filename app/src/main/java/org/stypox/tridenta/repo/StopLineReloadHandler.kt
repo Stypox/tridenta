@@ -1,10 +1,7 @@
 package org.stypox.tridenta.repo
 
 import android.content.SharedPreferences
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.stypox.tridenta.db.AppDatabase
 import org.stypox.tridenta.db.LineDao
 import org.stypox.tridenta.db.StopDao
@@ -32,19 +29,7 @@ class StopLineReloadHandler @Inject constructor(
     private val stopDao: StopDao,
     private val lineDao: LineDao,
 ) {
-
-    private fun <R> reloadAndRun(function: () -> R): R {
-        reloadFromNetwork()
-
-        prefs.edit()
-            .putLong(
-                PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS,
-                LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-            )
-            .commit()
-
-        return function()
-    }
+    private var job: Job? = null
 
     fun <R> reloadIfNeededAndRun(forceReload: Boolean = false, function: () -> R): R {
         if (forceReload) {
@@ -52,15 +37,17 @@ class StopLineReloadHandler @Inject constructor(
             return reloadAndRun(function)
         }
 
-        val lastReloadSeconds = prefs.getLong(PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS, 0)
-        val nowSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-        val secondsSinceLastReload = nowSeconds - lastReloadSeconds
+        val secondsSinceLastReload = getSecondsSinceLastReload()
 
         // also check `secondsSinceLastReload < 0` just to be sure
         if (secondsSinceLastReload < 0 ||
-            secondsSinceLastReload >= NORMAL_RELOAD_INTERVAL_SECONDS) {
-            // some time has passed, so reload data to make sure it is up to date
-            logInfo("Reloading lines and stops because some time has passed since the last reload")
+            secondsSinceLastReload >= LONG_TIME_RELOAD_INTERVAL_SECONDS) {
+            // a long time has passed, data is probably outdated, so reload it before even trying to
+            // run the function (it might be the same time the user opens the app)
+            logInfo(
+                "Reloading lines and stops without first checking for errors "
+                        + "because a long time has passed since the last reload"
+            )
             return reloadAndRun(function)
         }
 
@@ -88,11 +75,48 @@ class StopLineReloadHandler @Inject constructor(
         }
     }
 
+    fun reloadIfOutdatedData() {
+        if (getSecondsSinceLastReload() >= NORMAL_RELOAD_INTERVAL_SECONDS) {
+            // some time has passed, so reload data to make sure it is up to date
+            logInfo("Reloading lines and stops on app start "
+                + "because some time has passed since the last reload")
+            launchReloadFromNetworkJob()
+        }
+    }
+
+    private fun getSecondsSinceLastReload(): Long {
+        val lastReloadSeconds = prefs.getLong(PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS, 0)
+        val nowSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+        return nowSeconds - lastReloadSeconds
+    }
+
+    private fun <R> reloadAndRun(function: () -> R): R {
+        launchReloadFromNetworkJob()
+        return function()
+    }
+
+    private fun launchReloadFromNetworkJob() {
+        if (job?.isActive != true) {
+            logInfo("Running lines and stops reloading job")
+            runBlocking {
+                job = launch {
+                    reloadFromNetwork()
+                }
+                job?.join()
+            }
+        } else {
+            logInfo("Lines and stops reloading job is already running")
+            runBlocking {
+                job?.join()
+            }
+        }
+    }
+
     private fun reloadFromNetwork() {
         lateinit var exLines: List<ExLine>
         lateinit var exStops: List<ExStop>
         runBlocking {
-            coroutineScope {
+            launch {
                 awaitAll(async {
                     exLines = extractor.getLines()
                 }, async {
@@ -171,9 +195,18 @@ class StopLineReloadHandler @Inject constructor(
                 }
             )
         }
+
+        // once reloading succeeds, store the last reload time
+        prefs.edit()
+            .putLong(
+                PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS,
+                LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+            )
+            .commit()
     }
 
     companion object {
+        private const val LONG_TIME_RELOAD_INTERVAL_SECONDS = 15811200L // six months
         private const val NORMAL_RELOAD_INTERVAL_SECONDS = 604800L // one week
         private const val ERROR_RELOAD_INTERVAL_SECONDS = 86400L // one day
     }
