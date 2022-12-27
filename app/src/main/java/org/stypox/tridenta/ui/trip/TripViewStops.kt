@@ -21,11 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiStopTime
 import org.stypox.tridenta.repo.data.UiTrip
+import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.formatTime
@@ -181,4 +184,10 @@ private fun TripViewStopItem(
                 }
         }
     }
+}
+
+@Preview
+@Composable
+fun TripViewStopsPreview(@PreviewParameter(SampleUiTripProvider::class) uiTrip: UiTrip) {
+    TripViewStops(trip = uiTrip, stopIdToHighlight = null, stopTypeToHighlight = null)
 }
