@@ -3,9 +3,9 @@ package org.stypox.tridenta.ui.nav
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
-import android.view.ViewTreeObserver
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -39,8 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import org.stypox.tridenta.R
 import org.stypox.tridenta.ui.theme.AppTheme
 
@@ -261,7 +258,7 @@ private fun SearchTopAppBarExpanded(
     hint: String,
     onSearchDone: () -> Unit
 ) {
-    fun onBack() {
+    fun cancelSearch() {
         // clear the search filter (will not work properly, but prevents the old value from
         // appearing for the one frame before the runnable posted below is called)
         setSearchString("")
@@ -277,33 +274,12 @@ private fun SearchTopAppBarExpanded(
 
     CenterAlignedTopAppBar(
         title = {
-            // close the search if the keyboard is closed
-            val view = LocalView.current
-            DisposableEffect(view) {
-                var wasKeyboardOpen = false
-                val listener = ViewTreeObserver.OnGlobalLayoutListener {
-                    val isKeyboardOpen = ViewCompat.getRootWindowInsets(view)
-                        ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
-                    if (wasKeyboardOpen && !isKeyboardOpen) {
-                        onBack()
-                    }
-                    wasKeyboardOpen = isKeyboardOpen
-                }
-
-                view.viewTreeObserver.addOnGlobalLayoutListener(listener)
-                onDispose {
-                    view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
-                }
-            }
-
             AppBarTextField(
                 value = searchString,
                 onValueChange = setSearchString,
                 hint = hint,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(
-                    onSearch = { onSearchDone() }
-                ),
+                keyboardActions = KeyboardActions(onSearch = { onSearchDone() }),
                 modifier = Modifier.onKeyEvent {
                     if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                         onSearchDone()
@@ -313,7 +289,7 @@ private fun SearchTopAppBarExpanded(
                 },
             )
         },
-        navigationIcon = { AppBarBackIcon { onBack() } },
+        navigationIcon = { AppBarBackIcon { cancelSearch() } },
         actions = {
             IconButton(onClick = { setSearchString("") }) {
                 Icon(
@@ -323,4 +299,9 @@ private fun SearchTopAppBarExpanded(
             }
         }
     )
+
+    BackHandler {
+        // this will only be triggered if the user presses back when the keyboard is already closed
+        cancelSearch()
+    }
 }
