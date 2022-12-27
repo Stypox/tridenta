@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -138,11 +139,13 @@ private fun TripViewStopItem(
         val lateDecoration = if (isLate) TextDecoration.LineThrough else null
 
         if (stopTime.arrivalTime != null) {
-            LabelText(
-                text = formatTime(stopTime.arrivalTime),
-                maxLines = 1,
-                textDecoration = lateDecoration
-            )
+            key(lateDecoration) {
+                LabelText(
+                    text = formatTime(stopTime.arrivalTime),
+                    maxLines = 1,
+                    textDecoration = lateDecoration
+                )
+            }
         }
         if (stopTime.arrivalTime != stopTime.departureTime) {
             if (stopTime.arrivalTime != null) {
@@ -153,11 +156,13 @@ private fun TripViewStopItem(
                 )
             }
             if (stopTime.departureTime != null) {
-                LabelText(
-                    text = formatTime(stopTime.departureTime),
-                    maxLines = 1,
-                    textDecoration = lateDecoration
-                )
+                key(lateDecoration) {
+                    LabelText(
+                        text = formatTime(stopTime.departureTime),
+                        maxLines = 1,
+                        textDecoration = lateDecoration
+                    )
+                }
             }
         }
         if (isLate) {
