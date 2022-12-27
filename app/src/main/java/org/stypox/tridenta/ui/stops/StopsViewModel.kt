@@ -35,9 +35,12 @@ class StopsViewModel @Inject constructor(
     }
 
     fun setSearchString(searchString: String) {
-        // update the search string instantly, as it is shown in the search field
-        mutableUiState.update { it.copy(searchString = searchString) }
-        reloadStops(forceReload = false)
+        // no need to reload anything if the query has not changed
+        if (searchString != uiState.value.searchString) {
+            // update the search string instantly, as it is shown in the search field
+            mutableUiState.update { it.copy(searchString = searchString) }
+            reloadStops(forceReload = false)
+        }
     }
 
     fun onReload() {
