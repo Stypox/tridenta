@@ -1,0 +1,11 @@
+New:
+- Add button to clear logs
+
+Improved:
+- When automatically reloading lines and stops, do so in the background instead of keeping the user waiting
+- Do not cancel the search on closing the keyboard
+
+Fixed:
+- Prevent reloading lines and stops two times concurrently in some cases
+- Fix inconsistent UI when switching trip fast in trip screens
+- Fix strikethrough on trip times even if trip is not late

@@ -1,0 +1,11 @@
+Neu:
+- Schaltfläche zum Löschen von Protokollen
+
+Verbessert:
+- Die automatische Aktualisierung von Linien und Haltestellen erfolgt jetzt im Hintergrund
+- Die Suche wird beim Schließen der Tastatur nicht abgebrochen
+
+Behoben:
+- In manchen Fällen werden Linien und Haltestellen nicht mehr zweimal gleichzeitig neu geladen
+- Die Benutzeroberfläche für Reisen ist jetzt konsistent, wenn Sie Reisen schnell ändern.
+- Balken entfernt, wenn eine Reise nicht verspätet ist

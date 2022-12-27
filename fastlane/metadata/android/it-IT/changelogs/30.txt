@@ -1,0 +1,11 @@
+Novità:
+- Bottone per eliminare i log
+
+Miglioramenti:
+- L'aggiornamento di linee e fermate automatico ora avviene in background, invece di far aspettare l'utente
+- La ricerca non viene più annullata quando si chiude la tastiera
+
+Correzioni:
+- Sistemato il fatto che linee e fermate venissero talvolta ricaricate due volte in contemporanea
+- L'interfaccia dei viaggi è ora consistente quando si cambia viaggio velocemente
+- Rimossa la barra sui tempi di un viaggio quando non è in ritardo
