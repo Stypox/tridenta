@@ -10,7 +10,7 @@ An Android app for **public transport** in the italian region "*Trentino*". You 
         <img height="80" alt="Get it on GitHub" src="https://github.com/Stypox/dicio-android/raw/05e06e3d24f303fbb7662b0c853ca63de1564b97/meta/get-it-on-github.png">
     </a>
     <a href="https://play.google.com/store/apps/details?id=org.stypox.tridenta">
-        <img height="80" alt="Get it on GitHub" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png">
+        <img height="80" alt="Get it on Play Store" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png">
     </a>
 </p>
 
