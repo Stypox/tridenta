@@ -142,6 +142,8 @@ private fun TripViewStopItem(
         val lateDecoration = if (isLate) TextDecoration.LineThrough else null
 
         if (stopTime.arrivalTime != null) {
+            // TODO `key` forces recompositions when `lateDecoration` changes, needed because of
+            //  probably a bug in Compose (also see below)
             key(lateDecoration) {
                 LabelText(
                     text = formatTime(stopTime.arrivalTime),
