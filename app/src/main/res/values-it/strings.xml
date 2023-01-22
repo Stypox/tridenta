@@ -13,7 +13,7 @@
     <string name="clear">Cancella</string>
     <string name="search_stop_hint">Cerca una fermata…</string>
     <string name="news_and_warnings">Novità e avvisi</string>
-    <string name="trips_for_line">Viaggi -</string>
+    <string name="trips_for_line">Corse -</string>
     <string name="on_time">in orario</string>
     <string name="late">%1$s in ritardo</string>
     <string name="early">%1$s in anticipo</string>
@@ -25,7 +25,7 @@
     <string name="choose_date_time">Scegli data e ora</string>
     <string name="reload">Ricarica</string>
     <string name="short_minute_format">%1$d min</string>
-    <string name="no_trip_found">Nessun viaggio trovato</string>
+    <string name="no_trip_found">Nessuna corsa trovata</string>
     <string name="no_trip_found_description">Prova a selezionare una data diversa usando il bottone col calendario</string>
     <string name="favorite">Preferito</string>
     <string name="favorites">Preferiti</string>
