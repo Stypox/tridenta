@@ -70,7 +70,7 @@ fun LineShortName(
     val backgroundColor = color.toComposeColor()
     val textColor = textColorOnBackground(backgroundColor)
 
-        Surface(
+    Surface(
         color = backgroundColor,
         shape = MaterialTheme.shapes.small,
         modifier = modifier,
