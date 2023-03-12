@@ -75,6 +75,16 @@ fun TripViewStops(
         }
 
         item {
+            LabelText(
+                text = if (trip.busId == -1) {
+                    stringResource(R.string.no_bus_id)
+                } else {
+                    stringResource(R.string.bus_id, trip.busId)
+                }
+            )
+        }
+
+        item {
             Spacer(modifier = Modifier.size(height = 84.dp, width = 0.dp))
         }
     }

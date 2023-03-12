@@ -22,6 +22,7 @@ data class UiTrip(
     val type: StopLineType,
     val completedStops: Int,
     val stopTimes: List<UiStopTime>,
+    val busId: Int,
 )
 
 /**

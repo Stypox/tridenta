@@ -75,7 +75,8 @@ fun tripFromJSONObject(o: JSONObject, zonedTimeHelper: ZonedTimeHelper): ExTrip 
         tripId = o.getString("tripId"),
         type = stopLineTypeFromString(o.getString("type")),
         completedStops = stopTimes.indexOfFirst { it.stopId == o.getInt("stopLast") } + 1,
-        stopTimes = stopTimes
+        stopTimes = stopTimes,
+        busId = o.optInt("matricolaBus", ExTrip.BUS_ID_UNKNOWN)
     )
 }
 
@@ -107,3 +108,4 @@ fun directionFromInt(i: Int): Direction {
 fun colorFromString(s: String?): Int? {
     return if (s.isNullOrEmpty() || s == "null") null else s.toInt(16)
 }
+

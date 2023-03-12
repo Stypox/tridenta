@@ -31,7 +31,8 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
                     departureTime = referenceDateTime.plusMinutes((index + index % 2 - 2).toLong()),
                     stop = dbStop
                 )
-            }
+            },
+            busId = 886,
         ),
         UiTrip(
             delay = 0,
@@ -49,7 +50,8 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
                     departureTime = referenceDateTime.plusMinutes((index + index % 2 - 2).toLong()),
                     stop = dbStop
                 )
-            }
+            },
+            busId = 1406,
         )
     )
 }

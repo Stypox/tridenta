@@ -14,6 +14,7 @@ data class ExTrip(
     val type: StopLineType,
     val completedStops: Int,
     val stopTimes: List<ExStopTime>,
+    val busId: Int,
 ) {
     fun getLastStopDateTime(): OffsetDateTime? {
         return stopTimes.asSequence().map { it.arrivalTime }.filter { it != null }.lastOrNull()
@@ -25,6 +26,7 @@ data class ExTrip(
 
     companion object {
         const val DELAY_UNKNOWN = -1
+        const val BUS_ID_UNKNOWN = -1
     }
 }
 

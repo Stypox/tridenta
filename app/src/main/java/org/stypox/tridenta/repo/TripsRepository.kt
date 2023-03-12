@@ -25,7 +25,8 @@ abstract class TripsRepository(
                     departureTime = exStopTime.departureTime,
                     stop = stopsRepository.getDbStop(exStopTime.stopId, exTrip.type)
                 )
-            }
+            },
+            busId = exTrip.busId,
         )
     }
 }
