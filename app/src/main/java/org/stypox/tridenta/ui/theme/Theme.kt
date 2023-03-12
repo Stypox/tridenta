@@ -76,11 +76,11 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    useDynamicTheme: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    useDynamicTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme =
-        if (useDynamicTheme) {
+        if (useDynamicTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val context = LocalContext.current
             if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         } else {
