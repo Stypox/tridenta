@@ -26,11 +26,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import org.stypox.tridenta.R
 import org.stypox.tridenta.enums.StopLineType
+import org.stypox.tridenta.extractor.data.ExTrip
 import org.stypox.tridenta.repo.data.UiStopTime
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiTripProvider
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
+import org.stypox.tridenta.util.formatConcatStrings
 import org.stypox.tridenta.util.formatTime
 
 
@@ -65,26 +67,24 @@ fun TripViewStops(
 
         item {
             LabelText(
-                text = if (trip.lastEventReceivedAt == null) {
-                    stringResource(R.string.no_update)
-                } else {
-                    stringResource(R.string.last_update, formatTime(trip.lastEventReceivedAt))
-                },
+                text = formatConcatStrings(
+                    if (trip.lastEventReceivedAt == null) {
+                        stringResource(R.string.no_update)
+                    } else {
+                        stringResource(R.string.last_update, formatTime(trip.lastEventReceivedAt))
+                    },
+                    if (trip.busId == ExTrip.BUS_ID_UNKNOWN) {
+                        null
+                    } else {
+                        stringResource(R.string.bus_id, trip.busId)
+                    }
+                ),
                 modifier = Modifier.padding(8.dp)
             )
         }
 
         item {
-            LabelText(
-                text = if (trip.busId == -1) {
-                    stringResource(R.string.no_bus_id)
-                } else {
-                    stringResource(R.string.bus_id, trip.busId)
-                }
-            )
-        }
-
-        item {
+            // space for FABs
             Spacer(modifier = Modifier.size(height = 84.dp, width = 0.dp))
         }
     }

@@ -41,3 +41,7 @@ fun formatDateShort(offsetDateTime: OffsetDateTime): String {
 fun formatDateTimeShort(offsetDateTime: OffsetDateTime): String {
     return DATE_TIME_FORMAT_SHORT.format(offsetDateTime)
 }
+
+fun formatConcatStrings(vararg strings: String?): String {
+    return strings.filter { it?.isBlank() == false }.joinToString(" • ")
+}

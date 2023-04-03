@@ -22,6 +22,7 @@
     <string name="no_date_time_information">Keine Angaben zu Datum und Uhrzeit</string>
     <string name="last_update">Letzte Aktualisierung: %1$s</string>
     <string name="no_update">Noch keine Aktualisierung erhalten</string>
+    <string name="bus_id">Bus ID: %1$d</string>
     <string name="choose_date_time">Datum und Uhrzeit wählen</string>
     <string name="reload">Neu laden</string>
     <string name="short_minute_format">%1$d Min</string>
