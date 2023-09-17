@@ -3,7 +3,6 @@ package org.stypox.tridenta.db.data
 import androidx.annotation.ColorInt
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.Ignore
 import androidx.room.Index
 import org.stypox.tridenta.enums.Area
@@ -43,7 +42,7 @@ data class DbLine(
             entity = DbLine::class,
             parentColumns = ["lineId", "type"],
             childColumns = ["lineId", "lineType"],
-            onDelete = CASCADE
+            onDelete = ForeignKey.CASCADE,
         )
     ],
     indices = [

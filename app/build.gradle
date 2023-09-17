@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.stypox.tridenta"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 30
         versionName "1.2"
 
@@ -40,18 +40,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
         coreLibraryDesugaringEnabled true
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.2.0'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
     packagingOptions {
         resources {
@@ -59,9 +59,9 @@ android {
         }
     }
     namespace 'org.stypox.tridenta'
-    applicationVariants.all { variant ->
+    applicationVariants.configureEach { variant ->
         kotlin.sourceSets {
-            getByName(variant.name) {
+            named(variant.name) {
                 kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
             }
         }
@@ -71,25 +71,25 @@ android {
 dependencies {
     // do not update desugaring to 2.x.x until the Android Gradle Plugin is updated to 7.4.x,
     // which in turn requires Android Studio to be updated to Electric Eel (currently beta)
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 
     // Core
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
 
     // Compose and Material3
-    implementation 'androidx.activity:activity-compose:1.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:1.3.1" // compose_version
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation 'androidx.compose.material3:material3:1.0.1'
+    implementation 'androidx.compose.material3:material3:1.1.1'
 
     // Accompanist
     implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
@@ -117,6 +117,6 @@ dependencies {
     // Test
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20220320'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

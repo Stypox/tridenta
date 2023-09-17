@@ -1,7 +1,6 @@
 package org.stypox.tridenta.db.data
 
 import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
 import org.stypox.tridenta.enums.StopLineType
 
 @Entity(
@@ -38,16 +37,16 @@ data class DbStop(
             entity = DbStop::class,
             parentColumns = ["stopId", "type"],
             childColumns = ["stopId", "stopType"],
-            onDelete = CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = DbLine::class,
             parentColumns = ["lineId", "type"],
             childColumns = ["lineId", "lineType"],
-            onDelete = CASCADE,
+            onDelete = ForeignKey.CASCADE,
             // when lines are reloaded, they are all deleted and reinserted, but we don't want to
             // lose the stop-line join data, since such data is reloaded
-            deferred = true
+            deferred = true,
         )
     ],
     indices = [

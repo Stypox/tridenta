@@ -40,11 +40,12 @@ fun DisplayText(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
 ) {
     Text(
         text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing,
-        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, onTextLayout,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
         style = MaterialTheme.typography.displayMedium
     )
 }
@@ -71,11 +72,12 @@ fun HeadlineText(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
 ) {
     Text(
         text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing,
-        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, onTextLayout,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
         style = MaterialTheme.typography.headlineMedium
     )
 }
@@ -103,11 +105,12 @@ fun TitleText(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
 ) {
     Text(
         text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing,
-        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, onTextLayout,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
         style = MaterialTheme.typography.titleMedium
     )
 }
@@ -135,11 +138,12 @@ fun BodyText(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
 ) {
     Text(
         text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing,
-        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, onTextLayout,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
         style = MaterialTheme.typography.bodyMedium
     )
 }
@@ -166,11 +170,12 @@ fun LabelText(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
 ) {
     Text(
         text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing,
-        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, onTextLayout,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
         style = MaterialTheme.typography.labelMedium
     )
 }
