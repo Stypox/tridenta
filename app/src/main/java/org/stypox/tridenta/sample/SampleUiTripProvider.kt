@@ -3,6 +3,7 @@ package org.stypox.tridenta.sample
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
+import org.stypox.tridenta.extractor.data.ExTrip
 import org.stypox.tridenta.repo.data.UiStopTime
 import org.stypox.tridenta.repo.data.UiTrip
 import java.time.OffsetDateTime
@@ -31,7 +32,8 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
                     departureTime = referenceDateTime.plusMinutes((index + index % 2 - 2).toLong()),
                     stop = dbStop
                 )
-            }
+            },
+            busId = 886,
         ),
         UiTrip(
             delay = 0,
@@ -49,7 +51,8 @@ class SampleUiTripProvider : PreviewParameterProvider<UiTrip> {
                     departureTime = referenceDateTime.plusMinutes((index + index % 2 - 2).toLong()),
                     stop = dbStop
                 )
-            }
+            },
+            busId = ExTrip.BUS_ID_UNKNOWN,
         )
     )
 }

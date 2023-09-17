@@ -22,6 +22,7 @@
     <string name="no_date_time_information">Informazioni su data e ora non disponibili</string>
     <string name="last_update">Ultimo aggiornamento: %1$s</string>
     <string name="no_update">Nessun aggiornamento ricevuto finora</string>
+    <string name="bus_id">ID bus: %1$d</string>
     <string name="choose_date_time">Scegli data e ora</string>
     <string name="reload">Ricarica</string>
     <string name="short_minute_format">%1$d min</string>

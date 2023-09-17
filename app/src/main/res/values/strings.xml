@@ -32,6 +32,7 @@
     <string name="no_date_time_information">No date/time information</string>
     <string name="last_update">Last update: %1$s</string>
     <string name="no_update">No update received yet</string>
+    <string name="bus_id">Bus ID: %1$d</string>
     <string name="choose_date_time">Choose date and time</string>
     <string name="reload">Reload</string>
     <string name="short_minute_format">%1$d min</string>

@@ -103,7 +103,8 @@ class LineTripsRepository @Inject constructor(
             direction = exTrip.direction,
             lastEventReceivedAt = exTrip.lastEventReceivedAt,
             headSign = exTrip.headSign,
-            completedStops = exTrip.completedStops
+            completedStops = exTrip.completedStops,
+            busId = exTrip.busId,
         )
     }
 
