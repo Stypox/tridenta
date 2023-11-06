@@ -112,7 +112,11 @@ fun AppBarTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val textStyle = LocalTextStyle.current
     // make sure there is no background color in the decoration box
-    val colors = TextFieldDefaults.textFieldColors(containerColor = Color.Unspecified)
+    val colors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.Unspecified,
+        unfocusedContainerColor = Color.Unspecified,
+        disabledContainerColor = Color.Unspecified,
+    )
 
     // If color is not provided via the text style, use content color as a default
     val textColor = textStyle.color.takeOrElse {
@@ -168,17 +172,17 @@ fun AppBarTextField(
             singleLine = true,
             decorationBox = { innerTextField ->
                 // places text field with placeholder and appropriate bottom padding
-                TextFieldDefaults.TextFieldDecorationBox(
+                TextFieldDefaults.DecorationBox(
                     value = value,
-                    visualTransformation = VisualTransformation.None,
                     innerTextField = innerTextField,
-                    placeholder = { Text(text = hint) },
-                    singleLine = true,
                     enabled = true,
-                    isError = false,
+                    singleLine = true,
+                    visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
+                    isError = false,
+                    placeholder = { Text(text = hint) },
                     colors = colors,
-                    contentPadding = PaddingValues(bottom = 4.dp)
+                    contentPadding = PaddingValues(bottom = 4.dp),
                 )
             }
         )
