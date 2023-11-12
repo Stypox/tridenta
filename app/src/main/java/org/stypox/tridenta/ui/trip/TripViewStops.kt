@@ -170,6 +170,7 @@ private fun TripViewStopItem(
                 && !completed
                 && trip.delay > 0
         val lateDecoration = if (isLate) TextDecoration.LineThrough else null
+        val highlightWeight = if (highlight) FontWeight.ExtraBold else null
 
         if (stopTime.arrivalTime != null) {
             // TODO `key` forces recompositions when `lateDecoration` changes, needed because of
@@ -178,7 +179,8 @@ private fun TripViewStopItem(
                 LabelText(
                     text = formatTime(stopTime.arrivalTime),
                     maxLines = 1,
-                    textDecoration = lateDecoration
+                    textDecoration = lateDecoration,
+                    fontWeight = highlightWeight,
                 )
             }
         }
@@ -187,7 +189,7 @@ private fun TripViewStopItem(
                 Icon(
                     imageVector = Icons.Filled.DoubleArrow,
                     contentDescription = null,
-                    modifier = Modifier.size(8.dp)
+                    modifier = Modifier.size(8.dp),
                 )
             }
             if (stopTime.departureTime != null) {
@@ -195,7 +197,8 @@ private fun TripViewStopItem(
                     LabelText(
                         text = formatTime(stopTime.departureTime),
                         maxLines = 1,
-                        textDecoration = lateDecoration
+                        textDecoration = lateDecoration,
+                        fontWeight = highlightWeight,
                     )
                 }
             }
@@ -211,7 +214,8 @@ private fun TripViewStopItem(
                         ),
                         modifier = Modifier.padding(start = 5.dp),
                         color = MaterialTheme.colorScheme.error,
-                        maxLines = 1
+                        maxLines = 1,
+                        fontWeight = highlightWeight,
                     )
                 }
         }
