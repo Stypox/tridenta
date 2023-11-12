@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -92,7 +93,7 @@ fun DrawerSheetContent(
                 section = section
             )
         }
-        item { 
+        item {
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
@@ -246,13 +247,17 @@ private fun getHistoryDrawerSection(
                 is DbStop -> DrawerItem(
                     name = item.name,
                     icon = {
-                        Row {
+                        if (item.cardinalPoint == null) {
                             StopLineTypeIcon(stopLineType = item.type)
-                            if (item.cardinalPoint != null) {
-                                TitleText(
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    text = stringResource(item.cardinalPoint.shortName),
+                        } else {
+                            Box(
+                                contentAlignment = Alignment.Center
+                            ) {
+                                StopLineTypeIcon(
+                                    stopLineType = item.type,
+                                    modifier = Modifier.alpha(0.2F),
                                 )
+                                TitleText(stringResource(item.cardinalPoint.shortName))
                             }
                         }
                     },

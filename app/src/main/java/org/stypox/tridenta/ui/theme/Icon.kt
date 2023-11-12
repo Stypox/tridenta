@@ -13,7 +13,7 @@ import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.log.LogLevel
 
 @Composable
-fun StopLineTypeIcon(stopLineType: StopLineType) {
+fun StopLineTypeIcon(stopLineType: StopLineType, modifier: Modifier = Modifier) {
     Icon(
         imageVector = when (stopLineType) {
             StopLineType.Urban -> Icons.Filled.LocationCity
@@ -24,7 +24,8 @@ fun StopLineTypeIcon(stopLineType: StopLineType) {
                 StopLineType.Urban -> R.string.urban
                 StopLineType.Suburban -> R.string.suburban
             }
-        )
+        ),
+        modifier = modifier,
     )
 }
 
