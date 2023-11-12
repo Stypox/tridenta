@@ -21,6 +21,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
+import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiLine
 import org.stypox.tridenta.repo.data.UiTrip
@@ -31,6 +32,7 @@ import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.AppBarFavoriteIcon
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
+import org.stypox.tridenta.ui.theme.DirectionIcon
 import org.stypox.tridenta.ui.theme.SmallCircularProgressIndicator
 import org.stypox.tridenta.ui.trip.TripView
 import org.stypox.tridenta.util.LifecycleAwareRepeatedAction
@@ -73,6 +75,8 @@ fun LineTripsScreen(
         stopTypeToHighlight = lineTripsUiState.stopTypeToHighlight,
         isFavorite = isFavorite,
         onFavoriteClicked = lineTripsViewModel::onFavoriteClicked,
+        directionFilter = lineTripsUiState.directionFilter,
+        onDirectionClicked = lineTripsViewModel::onDirectionClicked,
         navigator = navigator,
         navigationIcon = navigationIconWrapper.navigationIcon
     )
@@ -94,8 +98,10 @@ private fun LineTripsScreen(
     stopTypeToHighlight: StopLineType?,
     isFavorite: Boolean,
     onFavoriteClicked: () -> Unit,
+    directionFilter: Direction,
+    onDirectionClicked: () -> Unit,
     navigator: DestinationsNavigator,
-    navigationIcon: @Composable () -> Unit
+    navigationIcon: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -103,7 +109,9 @@ private fun LineTripsScreen(
                 line = line,
                 isFavorite = isFavorite,
                 onFavoriteClicked = onFavoriteClicked,
-                navigationIcon = navigationIcon
+                directionFilter = directionFilter,
+                onDirectionClicked = onDirectionClicked,
+                navigationIcon = navigationIcon,
             )
         },
         content = { paddingValues ->
@@ -132,7 +140,9 @@ private fun LineAppBar(
     line: UiLine?,
     isFavorite: Boolean,
     onFavoriteClicked: () -> Unit,
-    navigationIcon: @Composable () -> Unit
+    directionFilter: Direction,
+    onDirectionClicked: () -> Unit,
+    navigationIcon: @Composable () -> Unit,
 ) {
     var showNewsItemsDialog by rememberSaveable { mutableStateOf(false) }
     if (showNewsItemsDialog) {
@@ -174,6 +184,12 @@ private fun LineAppBar(
                     )
                 }
             }
+            IconButton(onClick = onDirectionClicked) {
+                // without `key` it would miss some updates... this is a bug in Compose
+                key(directionFilter) {
+                    DirectionIcon(direction = directionFilter)
+                }
+            }
             AppBarFavoriteIcon(isFavorite = isFavorite, onFavoriteClicked = onFavoriteClicked)
         }
     )
@@ -186,7 +202,9 @@ private fun LineAppBarPreview(@PreviewParameter(SampleUiLineProvider::class) lin
         line = line,
         isFavorite = true,
         onFavoriteClicked = {},
-        navigationIcon = { AppBarDrawerIcon {} }
+        directionFilter = Direction.entries[line.lineId % Direction.entries.size],
+        onDirectionClicked = {},
+        navigationIcon = { AppBarDrawerIcon {} },
     )
 }
 
@@ -197,7 +215,9 @@ private fun LineAppBarLoadingPreview() {
         line = null,
         isFavorite = false,
         onFavoriteClicked = {},
-        navigationIcon = { AppBarDrawerIcon {} }
+        directionFilter = Direction.ForwardAndBackward,
+        onDirectionClicked = {},
+        navigationIcon = { AppBarDrawerIcon {} },
     )
 }
 
@@ -221,6 +241,8 @@ private fun LineTripsViewPreview(@PreviewParameter(SampleUiTripProvider::class) 
         isFavorite = true,
         onFavoriteClicked = {},
         navigator = EmptyDestinationsNavigator,
+        directionFilter = Direction.entries[trip.completedStops % Direction.entries.size],
+        onDirectionClicked = {},
         navigationIcon = { AppBarDrawerIcon {} }
     )
 }

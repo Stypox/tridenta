@@ -35,7 +35,7 @@ fun DirectionIcon(direction: Direction) {
         imageVector = when (direction) {
             Direction.Forward -> Icons.Filled.TurnSharpRight
             Direction.Backward -> Icons.Filled.UTurnLeft
-            Direction.ForwardAndBackward -> Icons.Filled.Loop
+            Direction.ForwardAndBackward -> Icons.Filled.SwapCalls
         },
         contentDescription = stringResource(
             when (direction) {

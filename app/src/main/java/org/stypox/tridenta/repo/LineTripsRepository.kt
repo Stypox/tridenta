@@ -1,5 +1,6 @@
 package org.stypox.tridenta.repo
 
+import org.stypox.tridenta.enums.Direction
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.extractor.data.ExTrip
@@ -46,6 +47,36 @@ class LineTripsRepository @Inject constructor(
             ?: Triple(day.tripsInDayCount, 0, null)
     }
 
+    private fun loadMoreTripsAtIndex(
+        key: Triple<Int, StopLineType, LocalDate>,
+        referenceDateTime: ZonedDateTime,
+        index: Int,
+    ): TripsInDayMap {
+        val tripsInDay = days[key]
+        return handleNewTrips(
+            key = key,
+            trips = extractor.getTripsByLine(
+                lineId = key.first,
+                lineType = key.second,
+                referenceDateTime = referenceDateTime,
+                indexFromInclusive = maxOf(
+                    0,
+                    index - LINE_TRIPS_BATCH_SIZE / 2,
+                    tripsInDay?.let {
+                        it.keys.asSequence().filter { i -> i < index }.maxOrNull()?.plus(1)
+                    } ?: 0
+                ),
+                indexToInclusive = minOf(
+                    tripsInDay?.tripsInDayCount ?: Int.MAX_VALUE,
+                    index + LINE_TRIPS_BATCH_SIZE / 2,
+                    tripsInDay?.let {
+                        it.keys.asSequence().filter { i -> i > index }.minOrNull()?.minus(1)
+                    } ?: Int.MAX_VALUE
+                ),
+            )
+        )
+    }
+
     /**
      * Returns a pair with the ui trip and whether the trip was loaded from network
      */
@@ -60,31 +91,73 @@ class LineTripsRepository @Inject constructor(
         val loadFromNetwork = tripsInDay?.containsKey(index) != true
 
         if (loadFromNetwork) {
-            handleNewTrips(
-                key = key,
-                trips = extractor.getTripsByLine(
-                    lineId = lineId,
-                    lineType = lineType,
-                    referenceDateTime = referenceDateTime,
-                    indexFromInclusive = maxOf(
-                        0,
-                        index - LINE_TRIPS_BATCH_SIZE / 2,
-                        tripsInDay?.let {
-                            it.keys.asSequence().filter { i -> i < index }.maxOrNull()?.plus(1)
-                        } ?: 0
-                    ),
-                    indexToInclusive = minOf(
-                        tripsInDay?.tripsInDayCount ?: Int.MAX_VALUE,
-                        index + LINE_TRIPS_BATCH_SIZE / 2,
-                        tripsInDay?.let {
-                            it.keys.asSequence().filter { i -> i > index }.minOrNull()?.minus(1)
-                        } ?: Int.MAX_VALUE
-                    ),
-                )
-            )
+            loadMoreTripsAtIndex(key, referenceDateTime, index)
         }
 
         return Pair(loadUiTripFromExTrip(days[key]!![index]!!), loadFromNetwork)
+    }
+
+    // TODO add comments and reduce function size
+    fun getUiTripWithDirection(
+        lineId: Int,
+        lineType: StopLineType,
+        referenceDateTime: ZonedDateTime,
+        direction: Direction,
+        index: Int,
+        prevIndex: Int,
+    ): Triple<UiTrip, Int, Boolean>? {
+        val key = Triple(lineId, lineType, referenceDateTime.toLocalDate())
+        var loadedFromNetworkOnce = false
+
+        val initialTripsInDay = days[key];
+        val tripsInDay = if (initialTripsInDay == null) {
+            loadedFromNetworkOnce = true
+            loadMoreTripsAtIndex(key, referenceDateTime, index)
+        } else {
+            initialTripsInDay
+        }
+
+        val indexGenerator = iterator {
+            if (index < prevIndex) {
+                // the last index change was decreasing, so keep decreasing
+                yieldAll(index.downTo(0))
+
+            } else if (index > prevIndex) {
+                // the last index change was increasing, so keep increasing
+                yieldAll(index..tripsInDay.tripsInDayCount)
+
+            } else /* prevIndex == index */ {
+                // find the closest trip starting from the current index in both directions
+                var newIndexDown = index
+                var newIndexUp = index+1
+                while (newIndexDown >= 0 || newIndexUp < tripsInDay.tripsInDayCount) {
+                    if (newIndexDown >= 0) {
+                        yield(newIndexDown)
+                        --newIndexDown
+                    }
+                    if (newIndexUp < tripsInDay.tripsInDayCount) {
+                        yield(newIndexUp)
+                        ++newIndexUp
+                    }
+                }
+            }
+        }
+
+        indexGenerator.forEach { newIndex ->
+            if (!loadedFromNetworkOnce && tripsInDay[newIndex] == null) {
+                loadedFromNetworkOnce = true
+                loadMoreTripsAtIndex(key, referenceDateTime, newIndex)
+            }
+
+            // if the trip is null it means we would need to load from network a second time
+            val trip = tripsInDay[newIndex] ?: return null
+            if (trip.direction == direction) {
+                return Triple(loadUiTripFromExTrip(trip), newIndex, loadedFromNetworkOnce)
+            }
+        }
+
+        // we went out of bounds, keep the original index
+        return null
     }
 
     fun reloadUiTrip(uiTrip: UiTrip, index: Int, referenceDateTime: ZonedDateTime): UiTrip {
@@ -112,9 +185,9 @@ class LineTripsRepository @Inject constructor(
     private fun handleNewTrips(
         key: Triple<Int, StopLineType, LocalDate>,
         trips: Pair<Int, List<Pair<Int, ExTrip>>>
-    ) {
-        days.getOrPut(key) { TripsInDayMap(trips.first) }
-            .let { tripsInDay ->
+    ): TripsInDayMap {
+        return days.getOrPut(key) { TripsInDayMap(trips.first) }
+            .also { tripsInDay ->
                 trips.second.forEach { indexTripPair ->
                     tripsInDay[indexTripPair.first] = indexTripPair.second
                 }
@@ -132,8 +205,10 @@ class LineTripsRepository @Inject constructor(
             val closestTwo = this.asSequence()
                 .sortedWith(
                     Comparator.comparing<Map.Entry<Int, ExTrip>?, Long?> {
-                        abs((it.value.getServerSortDateTime()?.toEpochSecond() ?: 0) -
-                                referenceDateTime.toEpochSecond())
+                        abs(
+                            (it.value.getServerSortDateTime()?.toEpochSecond() ?: 0) -
+                                    referenceDateTime.toEpochSecond()
+                        )
                     }.then(Comparator.comparing { it.key })
                 )
                 .take(2)
