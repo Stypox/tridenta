@@ -21,7 +21,6 @@ import org.stypox.tridenta.db.views.DbStopAndFavorite
         DbLineAndFavorite::class,
     ],
     version = 1,
-    exportSchema = false
 )
 @TypeConverters(DbTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {

@@ -21,14 +21,10 @@ android {
             useSupportLibrary true
         }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += [
-                        "room.schemaLocation": "$projectDir/schemas".toString(),
-                        "room.incremental": "true",
-                        "room.expandProjection": "true"
-                ]
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.incremental", "true")
+            arg("room.expandProjection", "true")
         }
     }
 

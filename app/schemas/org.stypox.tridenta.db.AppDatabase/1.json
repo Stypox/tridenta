@@ -1,0 +1,416 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "56c13d382c80c8ebd5da7f7e4472b8e6",
+    "entities": [
+      {
+        "tableName": "DbLine",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lineId` INTEGER NOT NULL, `type` TEXT NOT NULL, `area` TEXT NOT NULL, `color` INTEGER, `longName` TEXT NOT NULL, `shortName` TEXT NOT NULL, PRIMARY KEY(`lineId`, `type`))",
+        "fields": [
+          {
+            "fieldPath": "lineId",
+            "columnName": "lineId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "area",
+            "columnName": "area",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longName",
+            "columnName": "longName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortName",
+            "columnName": "shortName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "lineId",
+            "type"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DbNewsItem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`serviceType` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `header` TEXT NOT NULL, `details` TEXT NOT NULL, `url` TEXT NOT NULL, `lineId` INTEGER NOT NULL, `lineType` TEXT NOT NULL, PRIMARY KEY(`serviceType`, `startDate`, `endDate`, `header`, `details`, `url`, `lineId`, `lineType`), FOREIGN KEY(`lineId`, `lineType`) REFERENCES `DbLine`(`lineId`, `type`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "serviceType",
+            "columnName": "serviceType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startDate",
+            "columnName": "startDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endDate",
+            "columnName": "endDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "header",
+            "columnName": "header",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "details",
+            "columnName": "details",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineId",
+            "columnName": "lineId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineType",
+            "columnName": "lineType",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "serviceType",
+            "startDate",
+            "endDate",
+            "header",
+            "details",
+            "url",
+            "lineId",
+            "lineType"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_DbNewsItem_lineId_lineType",
+            "unique": false,
+            "columnNames": [
+              "lineId",
+              "lineType"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DbNewsItem_lineId_lineType` ON `${TABLE_NAME}` (`lineId`, `lineType`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "DbLine",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "lineId",
+              "lineType"
+            ],
+            "referencedColumns": [
+              "lineId",
+              "type"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "DbStop",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stopId` INTEGER NOT NULL, `type` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `name` TEXT NOT NULL, `street` TEXT NOT NULL, `town` TEXT NOT NULL, `wheelchairAccessible` INTEGER NOT NULL, PRIMARY KEY(`stopId`, `type`))",
+        "fields": [
+          {
+            "fieldPath": "stopId",
+            "columnName": "stopId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "street",
+            "columnName": "street",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "town",
+            "columnName": "town",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wheelchairAccessible",
+            "columnName": "wheelchairAccessible",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "stopId",
+            "type"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DbStopLineJoin",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stopId` INTEGER NOT NULL, `stopType` TEXT NOT NULL, `lineId` INTEGER NOT NULL, `lineType` TEXT NOT NULL, PRIMARY KEY(`stopId`, `stopType`, `lineId`, `lineType`), FOREIGN KEY(`stopId`, `stopType`) REFERENCES `DbStop`(`stopId`, `type`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`lineId`, `lineType`) REFERENCES `DbLine`(`lineId`, `type`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "stopId",
+            "columnName": "stopId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stopType",
+            "columnName": "stopType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineId",
+            "columnName": "lineId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineType",
+            "columnName": "lineType",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "stopId",
+            "stopType",
+            "lineId",
+            "lineType"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_DbStopLineJoin_stopId_stopType",
+            "unique": false,
+            "columnNames": [
+              "stopId",
+              "stopType"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DbStopLineJoin_stopId_stopType` ON `${TABLE_NAME}` (`stopId`, `stopType`)"
+          },
+          {
+            "name": "index_DbStopLineJoin_lineId_lineType",
+            "unique": false,
+            "columnNames": [
+              "lineId",
+              "lineType"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DbStopLineJoin_lineId_lineType` ON `${TABLE_NAME}` (`lineId`, `lineType`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "DbStop",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "stopId",
+              "stopType"
+            ],
+            "referencedColumns": [
+              "stopId",
+              "type"
+            ]
+          },
+          {
+            "table": "DbLine",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "lineId",
+              "lineType"
+            ],
+            "referencedColumns": [
+              "lineId",
+              "type"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "HistoryEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`isLine` INTEGER NOT NULL, `id` INTEGER NOT NULL, `type` TEXT NOT NULL, `timesAccessed` INTEGER NOT NULL, `lastAccessed` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, PRIMARY KEY(`isLine`, `id`, `type`))",
+        "fields": [
+          {
+            "fieldPath": "isLine",
+            "columnName": "isLine",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timesAccessed",
+            "columnName": "timesAccessed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastAccessed",
+            "columnName": "lastAccessed",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "isLine",
+            "id",
+            "type"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LogEntry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`logLevel` TEXT NOT NULL, `text` TEXT NOT NULL, `stackTrace` TEXT, `dateTime` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "logLevel",
+            "columnName": "logLevel",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stackTrace",
+            "columnName": "stackTrace",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateTime",
+            "columnName": "dateTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [
+      {
+        "viewName": "DbStopAndFavorite",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT DbStop.*,\n                HistoryEntry.isFavorite <> 0 AS isFavorite\n            FROM DbStop LEFT OUTER JOIN HistoryEntry\n                ON HistoryEntry.isLine = 0\n                    AND DbStop.stopId = HistoryEntry.id\n                    AND DbStop.type = HistoryEntry.type"
+      },
+      {
+        "viewName": "DbLineAndFavorite",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT DbLine.*,\n                HistoryEntry.isFavorite <> 0 AS isFavorite\n            FROM DbLine LEFT OUTER JOIN HistoryEntry\n                ON HistoryEntry.isLine <> 0\n                    AND DbLine.lineId = HistoryEntry.id\n                    AND DbLine.type = HistoryEntry.type"
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '56c13d382c80c8ebd5da7f7e4472b8e6')"
+    ]
+  }
+}
