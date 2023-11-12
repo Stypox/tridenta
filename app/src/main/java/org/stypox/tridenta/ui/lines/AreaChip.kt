@@ -8,6 +8,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -28,8 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.toComposeColor
@@ -83,14 +83,14 @@ fun AreaChip(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AreaChipGroup(selectedArea: Area, onAreaClick: (Area) -> Unit, modifier: Modifier = Modifier) {
     @Composable
     fun AreaChipGroupRow(vararg areas: Area) {
         FlowRow(
-            mainAxisSpacing = 4.dp,
-            mainAxisAlignment = FlowMainAxisAlignment.Center,
-            crossAxisSpacing = 4.dp,
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
         ) {
             areas.forEach { area ->
                 AreaChip(

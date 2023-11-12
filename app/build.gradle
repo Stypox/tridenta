@@ -84,7 +84,8 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.1.2'
 
     // Accompanist
-    implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
+    // accompanist SwipeRefresh is deprecated, but there is still no alternative
+    // available in material3: https://issuetracker.google.com/issues/261760718
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
 
     // Navigation
