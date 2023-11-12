@@ -2,6 +2,7 @@ package org.stypox.tridenta.ui.trip
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -111,7 +112,7 @@ private fun TripViewStopItem(
             },
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(end = 6.dp)
+            modifier = Modifier.padding(end = 6.dp),
         )
 
         if (stopTime.stop?.isFavorite == true) {
@@ -119,13 +120,16 @@ private fun TripViewStopItem(
                 imageVector = Icons.Filled.Favorite,
                 contentDescription = stringResource(R.string.favorite),
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(end = 6.dp),
+                modifier = Modifier
+                    .padding(end = 3.dp)
+                    .height(16.dp),
             )
         }
 
         stopTime.stop?.cardinalPoint?.let {
             LabelText(
                 text = stringResource(it.shortName),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(end = 3.dp),
             )
         }
