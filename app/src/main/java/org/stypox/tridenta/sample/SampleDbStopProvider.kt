@@ -20,7 +20,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             isFavorite = false,
         ),
         DbStop(
-            stopId = 0,
+            stopId = 1,
             latitude = 0.0,
             longitude = 0.0,
             name = "Funivia-Staz. di Monte-Sardagna lorem ipsum dolor sit amet",
@@ -32,7 +32,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             isFavorite = true,
         ),
         DbStop(
-            stopId = 0,
+            stopId = 2,
             latitude = 0.0,
             longitude = 0.0,
             name = "Pinè Bivio",
@@ -44,7 +44,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             isFavorite = true,
         ),
         DbStop(
-            stopId = 0,
+            stopId = 3,
             latitude = 0.0,
             longitude = 0.0,
             name = "Verona Big Center",
