@@ -31,7 +31,7 @@ fun AboutScreen(navigationIconWrapper: NavigationIconWrapper) {
 private fun AboutScreen(navigationIcon: @Composable () -> Unit = { }) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(text = stringResource(R.string.about))
                 },

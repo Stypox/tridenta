@@ -3,7 +3,7 @@ package org.stypox.tridenta.ui.stop_trips
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -129,7 +129,7 @@ private fun StopAppBar(
     onFavoriteClicked: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         title = {
             if (stop == null) {
                 SmallCircularProgressIndicator()
@@ -148,10 +148,6 @@ private fun StopAppBar(
         },
         navigationIcon = navigationIcon,
         actions = {
-            // TODO title's width isn't properly calculated when `navigationIcon` and `actions` have
-            //  different widths, resulting in `title` and `navigationIcon` overlapping. Fortunately
-            //  the favorite icon here compensates that, otherwise 48dp of Spacer would be needed.
-            //  https://issuetracker.google.com/issues/236994621
             AppBarFavoriteIcon(
                 isFavorite = isFavorite,
                 onFavoriteClicked = onFavoriteClicked

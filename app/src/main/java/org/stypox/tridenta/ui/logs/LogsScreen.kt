@@ -51,7 +51,7 @@ private fun LogsScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(text = stringResource(R.string.logs))
                 },

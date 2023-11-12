@@ -238,7 +238,7 @@ private fun SearchTopAppBarUnexpanded(
     onSearchClick: () -> Unit,
     navigationIcon: @Composable () -> Unit
 ) {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         title = {
             AppBarTitle(text = title)
         },
@@ -276,7 +276,7 @@ private fun SearchTopAppBarExpanded(
         }
     }
 
-    CenterAlignedTopAppBar(
+    TopAppBar(
         title = {
             AppBarTextField(
                 value = searchString,

@@ -146,10 +146,7 @@ private fun LineAppBar(
         }
     }
 
-    // TODO title's width isn't properly calculated when `navigationIcon` and `actions` have
-    //  different widths, resulting in the overlap of the `title` and the widest of `actions` or
-    //  `navigationIcon`, see https://issuetracker.google.com/issues/236994621
-    CenterAlignedTopAppBar(
+    TopAppBar(
         title = {
             if (line == null) {
                 SmallCircularProgressIndicator()
