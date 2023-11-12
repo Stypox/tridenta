@@ -8,7 +8,11 @@ fun Int.toComposeColor(): Color {
     return Color(0xff000000 + this)
 }
 
-fun Int?.toComposeColor(): Color {
+/**
+ * @return converts the int color to a Compose color, or returns the default color for bus lines
+ * when the the color is null
+ */
+fun Int?.toLineColor(): Color {
     return if (this == null)
         Color.LightGray
     else
@@ -16,7 +20,7 @@ fun Int?.toComposeColor(): Color {
 }
 
 /**
- * Returns one of [Color.Black] or [Color.White], such that text with such color is readable on
+ * @return one of [Color.Black] or [Color.White], such that text with such color is readable on
  * [backgroundColor].
  * @see <a href="https://stackoverflow.com/a/3943023/9481500">Stack Overflow</a>
  */

@@ -1,6 +1,12 @@
 package org.stypox.tridenta.enums
 
-enum class StopLineType(val value: String) {
-    Urban("U"),
-    Suburban("E"),
+import androidx.annotation.DrawableRes
+import org.stypox.tridenta.R
+
+enum class StopLineType(
+    val value: String,
+    @DrawableRes val shortcutDrawable: Int,
+) {
+    Urban("U", R.drawable.shortcut_urban),
+    Suburban("E", R.drawable.shortcut_suburban),
 }

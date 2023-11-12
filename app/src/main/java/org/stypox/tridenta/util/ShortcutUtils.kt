@@ -9,34 +9,33 @@ import android.graphics.Rect
 import android.net.Uri
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.graphics.drawable.IconCompat
 import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
+import org.stypox.tridenta.enums.CardinalPoint
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.nav.DEEP_LINK_PREFIX
 import java.lang.Float.min
 
-private fun generateLineBitmap(context: Context, @ColorInt color: Int?, shortName: String): Bitmap {
-    val backgroundColor = color.toComposeColor()
-
+private fun generateBitmapWithText(
+    shortName: String,
+    drawBackground: (Canvas) -> Int,
+): Bitmap {
     // create a bitmap (240px seems good)
     val bitmap = Bitmap.createBitmap(240, 240, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
     // draw background
-    context.getDrawable(R.drawable.shortcut_background)?.apply {
-        setTint(backgroundColor.toArgb())
-        setBounds(0, 0, 240, 240)
-        draw(canvas)
-    }
+    val textColor = drawBackground(canvas)
 
     // create a painter for the text
     val paint = Paint()
-    paint.color = textColorOnBackground(backgroundColor).toArgb()
+    paint.color = textColor
     paint.textAlign = Paint.Align.CENTER
 
     // set the text size based on how wide and high the text to draw is
@@ -58,19 +57,59 @@ private fun generateLineBitmap(context: Context, @ColorInt color: Int?, shortNam
     return bitmap
 }
 
+private fun generateLineBitmap(context: Context, @ColorInt color: Int?, shortName: String): Bitmap {
+    return generateBitmapWithText(shortName) { canvas ->
+        val backgroundColor = color.toLineColor()
+
+        // change the background color to the
+        context.getDrawable(R.drawable.shortcut_background)?.apply {
+            setTint(backgroundColor.toArgb())
+            setBounds(0, 0, 240, 240)
+            draw(canvas)
+        }
+
+        textColorOnBackground(backgroundColor).toArgb()
+    }
+}
+
+private fun generateStopBitmap(
+    context: Context,
+    stopLineType: StopLineType,
+    cardinalPoint: CardinalPoint
+): Bitmap {
+    return generateBitmapWithText(context.getString(cardinalPoint.shortName)) { canvas ->
+        // draw the shortcut background in the original color
+        context.getDrawable(R.drawable.shortcut_background)?.apply {
+            setBounds(0, 0, 240, 240)
+            draw(canvas)
+        }
+
+        // draw additional semitransparent background with urban/suburban icons
+        context.getDrawable(stopLineType.shortcutDrawable)?.apply {
+            alpha = 50
+            setBounds(0, 0, 240, 240)
+            draw(canvas)
+        }
+
+        // use the same color as urban/suburban icons
+        ContextCompat.getColor(context, R.color.shortcut_foreground_color)
+    }
+
+}
+
 fun buildStopShortcutInfo(context: Context, stop: DbStop): ShortcutInfoCompat.Builder {
     val route = StopTripsScreenDestination(stop.stopId, stop.type).route
     return ShortcutInfoCompat.Builder(context, route)
         .setShortLabel(stop.name)
         .setLongLabel(stop.name)
         .setIcon(
-            IconCompat.createWithResource(
-                context,
-                when (stop.type) {
-                    StopLineType.Urban -> R.drawable.shortcut_urban
-                    StopLineType.Suburban -> R.drawable.shortcut_suburban
-                }
-            )
+            when (stop.cardinalPoint) {
+                is CardinalPoint -> IconCompat.createWithBitmap(
+                    generateStopBitmap(context, stop.type, stop.cardinalPoint)
+                )
+
+                else -> IconCompat.createWithResource(context, stop.type.shortcutDrawable)
+            }
         )
         .setIntent(Intent(Intent.ACTION_VIEW, Uri.parse(DEEP_LINK_PREFIX + route)))
 }

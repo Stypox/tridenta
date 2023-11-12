@@ -126,7 +126,7 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
     ) {
         // shortName (the trip line will be null only in case of error)
         if (trip.line != null) {
-            val shortNameBackground = trip.line.color.toComposeColor()
+            val shortNameBackground = trip.line.color.toLineColor()
             Surface(
                 color = shortNameBackground,
                 shape = MaterialTheme.shapes.medium,

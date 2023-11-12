@@ -22,7 +22,7 @@ import org.stypox.tridenta.sample.SampleDbLineProvider
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.textColorOnBackground
-import org.stypox.tridenta.util.toComposeColor
+import org.stypox.tridenta.util.toLineColor
 
 @Composable
 fun LineItem(line: DbLine, showAreaChip: Boolean, modifier: Modifier = Modifier) {
@@ -67,7 +67,7 @@ fun LineShortName(
     isFavorite: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = color.toComposeColor()
+    val backgroundColor = color.toLineColor()
     val textColor = textColorOnBackground(backgroundColor)
 
     Surface(
