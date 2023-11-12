@@ -1,9 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-    id 'com.google.devtools.ksp' version "$ksp_version"
-    id 'dagger.hilt.android.plugin'
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -65,9 +64,7 @@ android {
 }
 
 dependencies {
-    // do not update desugaring to 2.x.x until the Android Gradle Plugin is updated to 7.4.x,
-    // which in turn requires Android Studio to be updated to Electric Eel (currently beta)
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
     // Core
     implementation 'androidx.core:core-ktx:1.12.0'
@@ -101,10 +98,10 @@ dependencies {
     ksp "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
 
-    // Hilt (ksp is still not supported, using kapt instead)
+    // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    implementation "androidx.hilt:hilt-navigation-compose:1.1.0"
+    ksp "com.google.dagger:hilt-compiler:$hilt_version"
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     androidTestAnnotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
