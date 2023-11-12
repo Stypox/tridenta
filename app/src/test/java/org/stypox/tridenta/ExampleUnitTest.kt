@@ -5,7 +5,6 @@ import org.junit.Test
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.extractor.HttpClient
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 /**

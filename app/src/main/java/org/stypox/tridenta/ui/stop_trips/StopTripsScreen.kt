@@ -75,7 +75,6 @@ fun StopTripsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StopTripsScreen(
     stop: DbStop?,

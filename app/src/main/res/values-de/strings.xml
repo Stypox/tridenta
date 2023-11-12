@@ -43,7 +43,6 @@
     <string name="logs">Protokolle</string>
     <string name="copy_to_clipboard">In die Zwischenablage kopieren</string>
     <string name="about">Informationen</string>
-    <string name="view_on_github">Ansicht auf GitHub</string>
     <string name="app_description">Eine schnelle, moderne und freie App für den öffentlichen Verkehr im Trentino</string>
     <string name="found_a_bug">Fehler gefunden?</string>
     <string name="found_a_bug_open_issue">Ein Thema eröffnen</string>

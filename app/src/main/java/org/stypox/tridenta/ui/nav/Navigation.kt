@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package org.stypox.tridenta.ui.nav
 
 import androidx.activity.compose.BackHandler

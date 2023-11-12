@@ -1,7 +1,6 @@
 package org.stypox.tridenta.ui.lines
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.Image
@@ -34,16 +33,16 @@ import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.toComposeColor
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AreaChip(
     area: Area,
+    modifier: Modifier = Modifier,
     selected: Boolean? = null,
     onClick: ((Area) -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
     val iconTextColor by animateColorAsState(
-        targetValue = if (selected == false) Color(0xffdddddd) else Color.White
+        label = "areaChipIconTextColor",
+        targetValue = if (selected == false) Color(0xffdddddd) else Color.White,
     )
 
     var clickableModifier = modifier.clip(MaterialTheme.shapes.small)
@@ -60,9 +59,12 @@ fun AreaChip(
             modifier = Modifier.padding(6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AnimatedContent(targetState = selected) { targetState ->
+            AnimatedContent(label = "areaChipRadioButton", targetState = selected) { targetState ->
                 Image(
-                    imageVector = if (targetState == true) Icons.Filled.RadioButtonChecked else area.icon,
+                    imageVector = if (targetState == true)
+                        Icons.Filled.RadioButtonChecked
+                    else
+                        area.icon,
                     contentDescription = area.icon.name,
                     colorFilter = ColorFilter.tint(iconTextColor)
                 )
@@ -71,7 +73,8 @@ fun AreaChip(
             // once supported by the compose material3 library, font grade instead of weight should
             // be used, so that the width of the text does not change
             val weight by animateIntAsState(
-                targetValue = (if (selected == true) FontWeight.ExtraBold else FontWeight.Normal).weight
+                label = "areaChipTextWeight",
+                targetValue = (if (selected == true) FontWeight.ExtraBold else FontWeight.Normal).weight,
             )
             LabelText(
                 text = stringResource(id = area.nameRes),

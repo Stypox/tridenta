@@ -26,8 +26,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.enums.StopLineType
@@ -35,7 +33,6 @@ import org.stypox.tridenta.extractor.data.ExTrip
 import org.stypox.tridenta.repo.data.UiStopTime
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiTripProvider
-import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.formatConcatStrings

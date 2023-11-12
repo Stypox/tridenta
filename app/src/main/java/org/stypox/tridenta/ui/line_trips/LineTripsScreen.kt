@@ -78,7 +78,6 @@ fun LineTripsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LineTripsScreen(
     line: UiLine?,

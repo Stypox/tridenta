@@ -43,7 +43,6 @@
     <string name="logs">Registro eventi</string>
     <string name="copy_to_clipboard">Copia negli appunti</string>
     <string name="about">Informazioni</string>
-    <string name="view_on_github">Vedi su GitHub</string>
     <string name="app_description">Un\'app veloce, moderna e libera per il trasporto pubblico in Trentino</string>
     <string name="found_a_bug">Trovato un bug?</string>
     <string name="found_a_bug_description">Segnala pure problemi oppure richiedi nuove funzionalita, assicurandoti di allegare i log dal registro eventi</string>

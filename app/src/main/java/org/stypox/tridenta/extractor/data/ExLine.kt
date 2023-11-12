@@ -4,8 +4,6 @@ import androidx.annotation.ColorInt
 import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.enums.StopLineType
 import java.time.OffsetDateTime
-import java.util.regex.Pattern
-import kotlin.math.min
 
 data class ExLine(
     val lineId: Int,

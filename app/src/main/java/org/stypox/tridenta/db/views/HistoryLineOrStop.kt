@@ -62,7 +62,7 @@ class HistoryLineOrStop(
     fun intoLineOrStop(): Any? {
         if (isLine) {
             if (lineArea == null || lineLongName == null || lineShortName == null) {
-                return null;
+                return null
             }
 
             return DbLine(
@@ -78,7 +78,7 @@ class HistoryLineOrStop(
             if (stopLatitude == null || stopLongitude == null || stopName == null
                 || stopStreet == null || stopTown == null || stopWheelchairAccessible == null
             ) {
-                return null;
+                return null
             }
 
             return DbStop(

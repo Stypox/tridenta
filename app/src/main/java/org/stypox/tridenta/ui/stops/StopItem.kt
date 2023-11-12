@@ -36,8 +36,8 @@ private const val MIN_LEVENSHTEIN_DISTANCE = 3
 @Composable
 fun StopItem(
     @PreviewParameter(SampleUiStopProvider::class) stop: UiStop,
+    modifier: Modifier = Modifier,
     onLineClick: ((DbLine) -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
     fun shouldBeShown(description: String): Boolean {
         val cleanDescription = WORD_DELIMITERS_PATTERN.matcher(description).replaceAll("")
