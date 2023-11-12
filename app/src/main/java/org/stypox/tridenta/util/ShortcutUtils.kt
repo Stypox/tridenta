@@ -86,7 +86,7 @@ private fun generateStopBitmap(
 
         // draw additional semitransparent background with urban/suburban icons
         context.getDrawable(stopLineType.shortcutDrawable)?.apply {
-            alpha = 50
+            alpha = 51 // equivalent to the 0.2 used in other places of the ui
             setBounds(0, 0, 240, 240)
             draw(canvas)
         }
