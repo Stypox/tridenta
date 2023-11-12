@@ -34,7 +34,7 @@ private data class AreaPosition(
     val y: Float,
 )
 
-private val AREA_POSITIONS = listOf(
+private val areaPositions = listOf(
     AreaPosition(Area.Suburban1, .81f, .21f),
     AreaPosition(Area.Suburban2, .19f, .59f),
     AreaPosition(Area.Suburban3, .42f, .78f),
@@ -60,7 +60,7 @@ fun SuburbanAreasMap(modifier: Modifier = Modifier, onAreaClick: (Area) -> Unit)
             modifier = Modifier.size(this.maxWidth, height)
         )
 
-        AREA_POSITIONS.forEach { areaPosition ->
+        areaPositions.forEach { areaPosition ->
             val color =
                 if (isSystemInDarkTheme()) {
                     val hsvColor = FloatArray(3)

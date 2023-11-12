@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 
-private val LightColors = lightColorScheme(
+private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -43,7 +43,7 @@ private val LightColors = lightColorScheme(
 )
 
 
-private val DarkColors = darkColorScheme(
+private val darkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -84,7 +84,7 @@ fun AppTheme(
             val context = LocalContext.current
             if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         } else {
-            if (useDarkTheme) DarkColors else LightColors
+            if (useDarkTheme) darkColors else lightColors
         }
 
     val view = LocalView.current

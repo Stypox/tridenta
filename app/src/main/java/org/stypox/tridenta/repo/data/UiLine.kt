@@ -30,10 +30,10 @@ data class UiLine(
     )
 }
 
-private val SHORT_NAME_SPLIT_PATTERN = Pattern.compile("[^0-9]+|[0-9]+")
+private val shortNameSplitPattern = Pattern.compile("[^0-9]+|[0-9]+")
 
 private fun splitShortName(shortName: String): ArrayList<Any> {
-    val matcher = SHORT_NAME_SPLIT_PATTERN.matcher(shortName)
+    val matcher = shortNameSplitPattern.matcher(shortName)
     val result = ArrayList<Any>()
     while (matcher.find()) {
         result.add(try {
@@ -48,7 +48,7 @@ private fun splitShortName(shortName: String): ArrayList<Any> {
 /**
  * Compares two lines by their short name, such that a list of lines would be sorted
  * lexicographically except for the fact that numbers are parsed as such and then considered as a
- * whole (and not as independent chars). So e.g. 2 < 13; A51 < B401; ...
+ * whole (and not as independent chars). So e.g. 2 < 13; B51 < A401; C51 < C401; ...
  */
 fun lineShortNameComparator(a: DbLine, b: DbLine): Int {
     val aSplit = splitShortName(a.shortName)

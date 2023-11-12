@@ -9,17 +9,17 @@ import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
 import java.time.temporal.ChronoField
 
-private val TIME_FORMAT = DateTimeFormatterBuilder()
+private val timeFormat = DateTimeFormatterBuilder()
     .appendValue(ChronoField.HOUR_OF_DAY)
     .appendLiteral(':')
     .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
     .toFormatter()
 
-private val DATE_FORMAT_FULL = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+private val dateFormatFull = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
 
-private val DATE_FORMAT_SHORT = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+private val dateFormatShort = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
-private val DATE_TIME_FORMAT_SHORT = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+private val dateTimeFormatShort = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
 @Composable
 fun formatDurationMinutes(minutes: Int): String {
@@ -27,19 +27,19 @@ fun formatDurationMinutes(minutes: Int): String {
 }
 
 fun formatTime(offsetDateTime: OffsetDateTime): String {
-    return TIME_FORMAT.format(offsetDateTime)
+    return timeFormat.format(offsetDateTime)
 }
 
 fun formatDateFull(offsetDateTime: OffsetDateTime): String {
-    return DATE_FORMAT_FULL.format(offsetDateTime)
+    return dateFormatFull.format(offsetDateTime)
 }
 
 fun formatDateShort(offsetDateTime: OffsetDateTime): String {
-    return DATE_FORMAT_SHORT.format(offsetDateTime)
+    return dateFormatShort.format(offsetDateTime)
 }
 
 fun formatDateTimeShort(offsetDateTime: OffsetDateTime): String {
-    return DATE_TIME_FORMAT_SHORT.format(offsetDateTime)
+    return dateTimeFormatShort.format(offsetDateTime)
 }
 
 fun formatConcatStrings(vararg strings: String?): String {

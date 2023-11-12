@@ -33,7 +33,7 @@ import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.ui.theme.LogLevelIcon
 import org.stypox.tridenta.util.formatDateTimeShort
 
-private val ICON_SIZE = 24.dp
+private val iconSize = 24.dp
 
 @Preview(showBackground = true, backgroundColor = 0xffffff)
 @Composable
@@ -68,7 +68,7 @@ private fun LogItemUnexpanded(
     ) {
         LogLevelIcon(
             logLevel = logEntry.logLevel,
-            modifier = Modifier.size(ICON_SIZE)
+            modifier = Modifier.size(iconSize)
         )
         Text(
             text = logEntry.text,
@@ -98,7 +98,7 @@ private fun LogItemExpanded(
                 logLevel = logEntry.logLevel,
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .size(ICON_SIZE)
+                    .size(iconSize)
             )
 
             LabelText(
@@ -115,7 +115,7 @@ private fun LogItemExpanded(
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(ICON_SIZE)
+                    .size(iconSize)
             ) {
                 Icon(
                     imageVector = Icons.Filled.ContentCopy,
