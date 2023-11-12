@@ -3,6 +3,7 @@ package org.stypox.tridenta.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import org.stypox.tridenta.db.data.HistoryEntry
+import org.stypox.tridenta.db.views.HistoryLineOrStop
 import org.stypox.tridenta.enums.StopLineType
 import java.time.OffsetDateTime
 
@@ -40,12 +41,12 @@ interface HistoryDao {
     @Query(
         """
             SELECT *
-            FROM HistoryEntry
-            WHERE HistoryEntry.isFavorite <> 0
-            ORDER BY HistoryEntry.timesAccessed DESC
+            FROM HistoryLineOrStop
+            WHERE HistoryLineOrStop.isFavorite <> 0
+            ORDER BY HistoryLineOrStop.timesAccessed DESC
         """
     )
-    fun getFavoritesSortedByTimesAccessed(): LiveData<List<HistoryEntry>>
+    fun getFavoritesSortedByTimesAccessed(): LiveData<List<HistoryLineOrStop>>
 
     /**
      * Does not include favorite items, since those are already shown in another part of the ui and
@@ -54,23 +55,25 @@ interface HistoryDao {
     @Query(
         """
             SELECT *
-            FROM HistoryEntry
-            WHERE HistoryEntry.isFavorite = 0
-            ORDER BY HistoryEntry.lastAccessed DESC
+            FROM HistoryLineOrStop
+            WHERE HistoryLineOrStop.isFavorite = 0
+            ORDER BY HistoryLineOrStop.lastAccessed DESC
             LIMIT :limit
         """
     )
-    fun getHistorySortedByLastAccessed(limit: Int): LiveData<List<HistoryEntry>>
+    fun getHistorySortedByLastAccessed(limit: Int): LiveData<List<HistoryLineOrStop>>
 
     @Query(
         """
             SELECT *
-            FROM HistoryEntry
-            ORDER BY (HistoryEntry.isFavorite <> 0) DESC, HistoryEntry.lastAccessed DESC
+            FROM HistoryLineOrStop
+            ORDER BY (HistoryLineOrStop.isFavorite <> 0) DESC,
+                HistoryLineOrStop.lastAccessed DESC
             LIMIT :limit
         """
     )
-    fun getEntriesForShortcuts(limit: Int): LiveData<List<HistoryEntry>>
+    fun getEntriesForShortcuts(limit: Int): LiveData<List<HistoryLineOrStop>>
+
 
     @Transaction
     fun registerAccessed(isLine: Boolean, id: Int, type: StopLineType) {

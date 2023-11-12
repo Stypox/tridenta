@@ -25,6 +25,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import org.stypox.tridenta.R
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
+import org.stypox.tridenta.db.views.HistoryLineOrStop
 import org.stypox.tridenta.ui.destinations.*
 import org.stypox.tridenta.ui.lines.LineShortName
 import org.stypox.tridenta.ui.theme.*
@@ -223,13 +224,13 @@ private fun getBaseDrawerSection(): DrawerSection {
 private fun getHistoryDrawerSection(
     name: String,
     icon: ImageVector,
-    items: List<Any>?
+    items: List<HistoryLineOrStop>?
 ): DrawerSection {
     return DrawerSection(
         name = name,
         icon = icon,
-        items = items?.map { item ->
-            when (item) {
+        items = items?.map { historyEntry ->
+            when (val item = historyEntry.intoLineOrStop()) {
                 is DbLine -> DrawerItem(
                     name = item.longName,
                     icon = {

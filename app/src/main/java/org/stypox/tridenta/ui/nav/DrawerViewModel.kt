@@ -6,10 +6,10 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
+import org.stypox.tridenta.db.views.HistoryLineOrStop
 import org.stypox.tridenta.repo.HistoryRepository
 import org.stypox.tridenta.util.buildLineShortcutInfo
 import org.stypox.tridenta.util.buildStopShortcutInfo
@@ -25,14 +25,14 @@ class DrawerViewModel @Inject constructor(
     historyRepository: HistoryRepository
 ) : AndroidViewModel(application) {
 
-    val favorites = historyRepository.getFavorites(viewModelScope)
-    val history = historyRepository.getHistory(viewModelScope, limit = MAX_HISTORY_ENTRIES_TO_SHOW)
+    val favorites = historyRepository.getFavorites()
+    val history = historyRepository.getHistory(limit = MAX_HISTORY_ENTRIES_TO_SHOW)
 
     private val context: Context
         get() = getApplication<Application>().baseContext
 
-    private var entriesForShortcuts: LiveData<List<Any>>? = null
-    private var entriesForShortcutsObserver: Observer<List<Any>>? = null
+    private var entriesForShortcuts: LiveData<List<HistoryLineOrStop>>? = null
+    private var entriesForShortcutsObserver: Observer<List<HistoryLineOrStop>>? = null
 
     init {
         // note: this is not actually the number of items shown in the launcher's menu
@@ -41,14 +41,13 @@ class DrawerViewModel @Inject constructor(
         if (dynamicShortcutCount > 0) {
 
             entriesForShortcuts = historyRepository.getEntriesForShortcuts(
-                coroutineScope = viewModelScope,
                 limit = dynamicShortcutCount
             )
 
             entriesForShortcutsObserver = Observer { items ->
                 ShortcutManagerCompat.removeAllDynamicShortcuts(context)
-                items.forEachIndexed { index, item ->
-                    val shortcutInfo = when (item) {
+                items.forEachIndexed { index, historyEntry ->
+                    val shortcutInfo = when (val item = historyEntry.intoLineOrStop()) {
                         is DbStop -> buildStopShortcutInfo(context, item)
                         is DbLine -> buildLineShortcutInfo(context, item)
                         else -> return@forEachIndexed

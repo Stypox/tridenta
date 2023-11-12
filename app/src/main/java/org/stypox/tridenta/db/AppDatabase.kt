@@ -7,6 +7,7 @@ import androidx.room.TypeConverters
 import org.stypox.tridenta.db.data.*
 import org.stypox.tridenta.db.views.DbLineAndFavorite
 import org.stypox.tridenta.db.views.DbStopAndFavorite
+import org.stypox.tridenta.db.views.HistoryLineOrStop
 
 @Database(
     entities = [
@@ -20,13 +21,18 @@ import org.stypox.tridenta.db.views.DbStopAndFavorite
     views = [
         DbStopAndFavorite::class,
         DbLineAndFavorite::class,
+        HistoryLineOrStop::class,
     ],
-    version = 2,
+    version = 3,
     autoMigrations = [
         AutoMigration(
             from = 1,
             to = 2,
-        )
+        ),
+        AutoMigration(
+            from = 2,
+            to = 3,
+        ),
     ],
 )
 @TypeConverters(DbTypeConverters::class)
