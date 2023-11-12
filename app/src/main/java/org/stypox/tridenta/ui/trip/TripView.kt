@@ -23,6 +23,7 @@ import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
+import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.error.ErrorPanel
 import org.stypox.tridenta.ui.error.ErrorRow
 import org.stypox.tridenta.ui.theme.*
@@ -66,10 +67,18 @@ fun TripView(
                 }
 
                 TripViewStops(
+                    modifier = Modifier.weight(1.0f),
                     trip = trip,
                     stopIdToHighlight = stopIdToHighlight,
                     stopTypeToHighlight = stopTypeToHighlight,
-                    modifier = Modifier.weight(1.0f)
+                    onStopClick = { stop ->
+                        navigator.navigate(
+                            StopTripsScreenDestination(
+                                stop.stopId,
+                                stop.type
+                            )
+                        )
+                    },
                 )
             }
 

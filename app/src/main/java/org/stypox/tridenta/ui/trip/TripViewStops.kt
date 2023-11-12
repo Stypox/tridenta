@@ -1,5 +1,6 @@
 package org.stypox.tridenta.ui.trip
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -25,12 +26,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
+import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.enums.StopLineType
 import org.stypox.tridenta.extractor.data.ExTrip
 import org.stypox.tridenta.repo.data.UiStopTime
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleUiTripProvider
+import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.theme.BodyText
 import org.stypox.tridenta.ui.theme.LabelText
 import org.stypox.tridenta.util.formatConcatStrings
@@ -42,7 +47,8 @@ fun TripViewStops(
     trip: UiTrip,
     stopIdToHighlight: Int?,
     stopTypeToHighlight: StopLineType?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onStopClick: ((DbStop) -> Unit)? = null,
 ) {
     val listState = rememberLazyListState()
     LaunchedEffect(trip.tripId) {
@@ -62,7 +68,12 @@ fun TripViewStops(
                         stopTime.stop.stopId == stopIdToHighlight &&
                         stopTime.stop.type == stopTypeToHighlight,
                 completed = index < trip.completedStops,
-                stopTime = stopTime
+                stopTime = stopTime,
+                modifier = if (stopTime.stop == null || onStopClick == null) {
+                    Modifier // not clickable, since there is no stop
+                } else {
+                    Modifier.clickable { onStopClick(stopTime.stop) }
+                }
             )
         }
 
@@ -96,11 +107,12 @@ private fun TripViewStopItem(
     trip: UiTrip,
     highlight: Boolean,
     completed: Boolean,
-    stopTime: UiStopTime
+    stopTime: UiStopTime,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp)
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 0.dp)
     ) {
         Icon(
             imageVector = if (trip.lastEventReceivedAt == null) {
