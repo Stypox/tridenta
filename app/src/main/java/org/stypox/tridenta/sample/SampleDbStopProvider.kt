@@ -23,7 +23,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             stopId = 0,
             latitude = 0.0,
             longitude = 0.0,
-            name = "Funivia-Staz. di Monte-Sardagna",
+            name = "Funivia-Staz. di Monte-Sardagna lorem ipsum dolor sit amet",
             street = "Cembra - Via 4 Novembre - Dir.Cavalese lorem ipsum dolor sit",
             town = "Appiano sulla strada del vino",
             type = StopLineType.Suburban,
@@ -40,7 +40,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Civezzano",
             type = StopLineType.Suburban,
             wheelchairAccessible = false,
-            cardinalPoint = CardinalPoint.NorthEast,
+            cardinalPoint = CardinalPoint.NorthWest,
             isFavorite = true,
         ),
         DbStop(
@@ -52,7 +52,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Trento",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
-            cardinalPoint = CardinalPoint.SouthEast,
+            cardinalPoint = null,
             isFavorite = false,
         )
     )

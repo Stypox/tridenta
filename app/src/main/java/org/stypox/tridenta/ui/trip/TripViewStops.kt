@@ -58,8 +58,8 @@ fun TripViewStops(
             TripViewStopItem(
                 trip = trip,
                 highlight = stopTime.stop != null &&
-                    stopTime.stop.stopId == stopIdToHighlight &&
-                    stopTime.stop.type == stopTypeToHighlight,
+                        stopTime.stop.stopId == stopIdToHighlight &&
+                        stopTime.stop.type == stopTypeToHighlight,
                 completed = index < trip.completedStops,
                 stopTime = stopTime
             )
@@ -119,7 +119,14 @@ private fun TripViewStopItem(
                 imageVector = Icons.Filled.Favorite,
                 contentDescription = stringResource(R.string.favorite),
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(end = 6.dp)
+                modifier = Modifier.padding(end = 6.dp),
+            )
+        }
+
+        stopTime.stop?.cardinalPoint?.let {
+            LabelText(
+                text = stringResource(it.shortName),
+                modifier = Modifier.padding(end = 3.dp),
             )
         }
 
@@ -198,7 +205,7 @@ private fun TripViewStopItem(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun TripViewStopsPreview(@PreviewParameter(SampleUiTripProvider::class) uiTrip: UiTrip) {
     TripViewStops(trip = uiTrip, stopIdToHighlight = null, stopTypeToHighlight = null)
