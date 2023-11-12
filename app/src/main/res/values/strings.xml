@@ -71,4 +71,12 @@
     <string name="error">An error occurred</string>
     <string name="retry">Retry</string>
     <string name="error_open_logs">Find the crash report in the logs</string>
+    <string name="east_short">E</string>
+    <string name="north_east_short">NE</string>
+    <string name="north_short">N</string>
+    <string name="north_west_short">NW</string>
+    <string name="west_short">W</string>
+    <string name="south_west_short">SW</string>
+    <string name="south_short">S</string>
+    <string name="south_east_short">SE</string>
 </resources>

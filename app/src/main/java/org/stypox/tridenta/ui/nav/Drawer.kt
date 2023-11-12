@@ -244,7 +244,17 @@ private fun getHistoryDrawerSection(
 
                 is DbStop -> DrawerItem(
                     name = item.name,
-                    icon = { StopLineTypeIcon(stopLineType = item.type) },
+                    icon = {
+                        Row {
+                            StopLineTypeIcon(stopLineType = item.type)
+                            if (item.cardinalPoint != null) {
+                                TitleText(
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    text = stringResource(item.cardinalPoint.shortName),
+                                )
+                            }
+                        }
+                    },
                     destination = StopTripsScreenDestination(item.stopId, item.type)
                 )
 

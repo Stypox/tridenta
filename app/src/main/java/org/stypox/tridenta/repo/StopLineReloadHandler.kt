@@ -9,6 +9,7 @@ import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbNewsItem
 import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.db.data.DbStopLineJoin
+import org.stypox.tridenta.enums.CardinalPoint
 import org.stypox.tridenta.extractor.Extractor
 import org.stypox.tridenta.extractor.data.ExLine
 import org.stypox.tridenta.extractor.data.ExStop
@@ -20,6 +21,8 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.PI
+import kotlin.math.atan2
 
 @Singleton
 class StopLineReloadHandler @Inject constructor(
@@ -125,6 +128,26 @@ class StopLineReloadHandler @Inject constructor(
             }
         }
 
+        val nameToCoordinates = mutableMapOf<String, MutableList<Pair<Double, Double>>>()
+        exStops.forEach {
+            val normalizedName = normalizeStopName(it)
+            val list = nameToCoordinates[normalizedName]
+            if (list == null) {
+                nameToCoordinates[normalizedName] = mutableListOf(Pair(it.latitude, it.longitude))
+            } else {
+                list.add(Pair(it.latitude, it.longitude))
+            }
+        }
+
+        val nameToAverageCoordinates = mutableMapOf<String, Pair<Double, Double>>()
+        nameToCoordinates.forEach { (name, list) ->
+            if (list.size > 0) {
+                nameToAverageCoordinates[name] = list
+                    .reduce { acc, pair -> Pair(acc.first + pair.first, acc.second + pair.second) }
+                    .let { Pair(it.first / list.size, it.second / list.size) }
+            }
+        }
+
         appDatabase.runInTransaction {
             // first delete all data from the previous network fetch
             stopDao.deleteAllDbStopLineJoins()
@@ -168,6 +191,29 @@ class StopLineReloadHandler @Inject constructor(
             // then insert stops, which are a dependency of stop line joins
             stopDao.insertDbStops(
                 exStops.map { exStop ->
+                    var cardinalPoint: CardinalPoint? = null
+                    val averageCoordinates = nameToAverageCoordinates[normalizeStopName(exStop)]
+                    if (averageCoordinates != null &&
+                        (averageCoordinates.first != exStop.latitude ||
+                                averageCoordinates.second != exStop.longitude)
+                    ) {
+                        val angle = atan2(
+                            exStop.latitude - averageCoordinates.first,
+                            exStop.longitude - averageCoordinates.second,
+                        )
+                        cardinalPoint = when (angle){
+                            in (-PI*1/8..<+PI*1/8) -> CardinalPoint.East
+                            in (+PI*1/8..<+PI*3/8) -> CardinalPoint.NorthEast
+                            in (+PI*3/8..<+PI*5/8) -> CardinalPoint.North
+                            in (+PI*5/8..<+PI*7/8) -> CardinalPoint.NorthWest
+                            // west has an angle >= +PI*7/8 or < -PI*7/8
+                            in (-PI*7/8..<-PI*5/8) -> CardinalPoint.SouthWest
+                            in (-PI*5/8..<-PI*3/8) -> CardinalPoint.South
+                            in (-PI*3/8..<-PI*1/8) -> CardinalPoint.SouthEast
+                            else -> CardinalPoint.West
+                        }
+                    }
+
                     DbStop(
                         stopId = exStop.stopId,
                         type = exStop.type,
@@ -176,7 +222,8 @@ class StopLineReloadHandler @Inject constructor(
                         name = exStop.name,
                         street = exStop.street,
                         town = exStop.town,
-                        wheelchairAccessible = exStop.wheelchairAccessible
+                        wheelchairAccessible = exStop.wheelchairAccessible,
+                        cardinalPoint = cardinalPoint,
                     )
                 }
             )
@@ -202,12 +249,19 @@ class StopLineReloadHandler @Inject constructor(
                 PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS,
                 LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
             )
-            .commit()
+            .apply()
+    }
+
+    private fun normalizeStopName(stop: ExStop): String {
+        return stop.type.value + (stop.name + stop.street + stop.town)
+            .lowercase()
+            .replace(NORMALIZE_STOP_NAME_REGEX, "")
     }
 
     companion object {
         private const val LONG_TIME_RELOAD_INTERVAL_SECONDS = 15811200L // six months
         private const val NORMAL_RELOAD_INTERVAL_SECONDS = 604800L // one week
         private const val ERROR_RELOAD_INTERVAL_SECONDS = 86400L // one day
+        private val NORMALIZE_STOP_NAME_REGEX = Regex("[^a-z0-9]")
     }
 }

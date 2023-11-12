@@ -2,6 +2,7 @@ package org.stypox.tridenta.sample
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import org.stypox.tridenta.db.data.DbStop
+import org.stypox.tridenta.enums.CardinalPoint
 import org.stypox.tridenta.enums.StopLineType
 
 class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
@@ -15,6 +16,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "",
             type = StopLineType.Urban,
             wheelchairAccessible = false,
+            cardinalPoint = CardinalPoint.North,
             isFavorite = false,
         ),
         DbStop(
@@ -26,6 +28,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Appiano sulla strada del vino",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
+            cardinalPoint = null,
             isFavorite = true,
         ),
         DbStop(
@@ -37,6 +40,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Civezzano",
             type = StopLineType.Suburban,
             wheelchairAccessible = false,
+            cardinalPoint = CardinalPoint.NorthEast,
             isFavorite = true,
         ),
         DbStop(
@@ -48,6 +52,7 @@ class SampleDbStopProvider : PreviewParameterProvider<DbStop> {
             town = "Trento",
             type = StopLineType.Suburban,
             wheelchairAccessible = true,
+            cardinalPoint = CardinalPoint.SouthEast,
             isFavorite = false,
         )
     )

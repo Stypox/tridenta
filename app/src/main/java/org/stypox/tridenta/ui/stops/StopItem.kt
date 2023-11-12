@@ -91,7 +91,9 @@ fun StopItem(
             }
         }
 
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             if (stop.isFavorite) {
                 Icon(
                     imageVector = Icons.Filled.Favorite,
@@ -105,6 +107,14 @@ fun StopItem(
                 Icon(
                     imageVector = Icons.Filled.Accessible,
                     contentDescription = stringResource(R.string.accessible)
+                )
+            }
+
+            if (stop.cardinalPoint != null) {
+                val text = stringResource(stop.cardinalPoint.shortName)
+                TitleText(
+                    text = text,
+                    maxLines = 1,
                 )
             }
         }

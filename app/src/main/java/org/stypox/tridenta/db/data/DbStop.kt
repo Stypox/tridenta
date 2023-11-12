@@ -1,6 +1,7 @@
 package org.stypox.tridenta.db.data
 
 import androidx.room.*
+import org.stypox.tridenta.enums.CardinalPoint
 import org.stypox.tridenta.enums.StopLineType
 
 @Entity(
@@ -16,6 +17,7 @@ data class DbStop(
     val street: String,
     val town: String,
     val wheelchairAccessible: Boolean,
+    val cardinalPoint: CardinalPoint?,
     @Ignore val isFavorite: Boolean,
 ) {
     constructor(
@@ -27,7 +29,8 @@ data class DbStop(
         street: String,
         town: String,
         wheelchairAccessible: Boolean,
-    ) : this(stopId, type, latitude, longitude, name, street, town, wheelchairAccessible, false)
+        cardinalPoint: CardinalPoint?,
+    ) : this(stopId, type, latitude, longitude, name, street, town, wheelchairAccessible, cardinalPoint, false)
 }
 
 @Entity(

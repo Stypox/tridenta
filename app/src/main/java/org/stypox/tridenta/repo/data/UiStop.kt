@@ -2,6 +2,7 @@ package org.stypox.tridenta.repo.data
 
 import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.db.data.DbStop
+import org.stypox.tridenta.enums.CardinalPoint
 import org.stypox.tridenta.enums.StopLineType
 
 data class UiStop(
@@ -14,6 +15,7 @@ data class UiStop(
     val street: String,
     val town: String,
     val wheelchairAccessible: Boolean,
+    val cardinalPoint: CardinalPoint?,
     val lines: List<DbLine>,
     val isFavorite: Boolean,
 ) {
@@ -26,6 +28,7 @@ data class UiStop(
         street = dbStop.street,
         town = dbStop.town,
         wheelchairAccessible = dbStop.wheelchairAccessible,
+        cardinalPoint = dbStop.cardinalPoint,
         lines = lines,
         isFavorite = dbStop.isFavorite,
     )

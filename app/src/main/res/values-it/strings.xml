@@ -60,4 +60,12 @@
     <string name="error">Si è verificato un errore</string>
     <string name="retry">Riprova</string>
     <string name="error_open_logs">Trova i dettagli del crash nel registro eventi</string>
+    <string name="east_short">E</string>
+    <string name="north_east_short">NE</string>
+    <string name="north_short">N</string>
+    <string name="north_west_short">NO</string>
+    <string name="west_short">O</string>
+    <string name="south_west_short">SO</string>
+    <string name="south_short">S</string>
+    <string name="south_east_short">SE</string>
 </resources>
