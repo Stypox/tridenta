@@ -183,7 +183,8 @@ class LineTripsViewModel @Inject constructor(
                 tripsRepository.getUiTrip(
                     lineId = navArgs.lineId,
                     lineType = navArgs.lineType,
-                    referenceDateTime = referenceDateTime
+                    referenceDateTime = referenceDateTime,
+                    directionFilter = uiState.value.directionFilter,
                 )
             } catch (e: Throwable) {
                 logError(

@@ -21,12 +21,15 @@ class LineTripsRepository @Inject constructor(
     private val days = HashMap<Triple<Int, StopLineType, LocalDate>, TripsInDayMap>()
 
     /**
+     * @param directionFilter can be [Direction.Forward], [Direction.Backward] or
+     * [Direction.ForwardAndBackward]
      * @return the triple (number of trips in the day, index of the trip, the trip)
      */
     fun getUiTrip(
         lineId: Int,
         lineType: StopLineType,
-        referenceDateTime: ZonedDateTime
+        referenceDateTime: ZonedDateTime,
+        directionFilter: Direction,
     ): Triple<Int, Int, UiTrip?> {
         val key = Triple(lineId, lineType, referenceDateTime.toLocalDate())
         if (days[key]?.isClosestOnServerLoaded(referenceDateTime) != true) {
@@ -42,7 +45,7 @@ class LineTripsRepository @Inject constructor(
         }
 
         val day = days[key]!!
-        return day.getTripToShowInitially(referenceDateTime)
+        return day.getTripToShowInitially(referenceDateTime, directionFilter)
             ?.let { Triple(day.tripsInDayCount, it.first, loadUiTripFromExTrip(it.second)) }
             ?: Triple(day.tripsInDayCount, 0, null)
     }
@@ -163,6 +166,7 @@ class LineTripsRepository @Inject constructor(
      * happen at most once, as it's highly unlikely that after loading more items from network and
      * finding none of the correct type, there will be some even further.
      *
+     * @param direction must be one of [Direction.Forward] or [Direction.Backward]
      * @return a triple (ui trip, actual trip index, whether the trip was loaded from network)
      */
     fun getUiTripWithDirection(
@@ -276,10 +280,21 @@ class LineTripsRepository @Inject constructor(
         }
 
         /**
+         * @param directionFilter only consider trips in this direction (if different from
+         * [Direction.ForwardAndBackward])
          * @return the most suitable trip to show initially based on the provided date time
          */
-        fun getTripToShowInitially(referenceDateTime: ZonedDateTime): Pair<Int, ExTrip>? {
-            return this.asSequence()
+        fun getTripToShowInitially(
+            referenceDateTime: ZonedDateTime,
+            directionFilter: Direction,
+        ): Pair<Int, ExTrip>? {
+            return if (directionFilter == Direction.ForwardAndBackward) {
+                this.asSequence()
+            } else {
+                this.asSequence()
+                    // exclude trips in the wrong direction
+                    .filter { directionFilter == it.value.direction }
+            }
                 .sortedWith(
                     Comparator.comparing<Map.Entry<Int, ExTrip>?, Long?> {
                         ((it.value.getLastStopDateTime()?.toEpochSecond() ?: 0) -
