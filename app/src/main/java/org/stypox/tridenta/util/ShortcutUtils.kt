@@ -80,6 +80,7 @@ private fun generateStopBitmap(
     return generateBitmapWithText(context.getString(cardinalPoint.shortName)) { canvas ->
         // draw the shortcut background in the original color
         context.getDrawable(R.drawable.shortcut_background)?.apply {
+            setTintList(null) // reset the tint, as previous setTints on this drawable persist
             setBounds(0, 0, 240, 240)
             draw(canvas)
         }
