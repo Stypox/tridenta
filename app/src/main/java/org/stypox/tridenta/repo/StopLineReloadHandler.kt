@@ -253,9 +253,7 @@ class StopLineReloadHandler @Inject constructor(
     }
 
     private fun normalizeStopName(stop: ExStop): String {
-        return stop.type.value + (stop.name + stop.street + stop.town)
-            .lowercase()
-            .replace(NORMALIZE_STOP_NAME_REGEX, "")
+        return stop.type.value + stop.name.lowercase().replace(NORMALIZE_STOP_NAME_REGEX, "")
     }
 
     companion object {
