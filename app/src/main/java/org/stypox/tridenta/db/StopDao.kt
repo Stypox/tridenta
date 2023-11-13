@@ -19,7 +19,7 @@ interface StopDao {
 
 
     // TODO use a better filtering and sorting method, that also caches nfkd-normalized strings
-    @RewriteQueriesToDropUnusedColumns // only DbStop.* columns are needed
+    @RewriteQueriesToDropUnusedColumns // only DbStopAndFavorite.* columns are needed
     @Query(
         """
             SELECT DbStopAndFavorite.*,
