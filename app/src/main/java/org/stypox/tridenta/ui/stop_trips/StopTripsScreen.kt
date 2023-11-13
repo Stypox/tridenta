@@ -26,6 +26,7 @@ import org.stypox.tridenta.db.data.DbStop
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
+import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.AppBarFavoriteIcon
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
@@ -115,7 +116,17 @@ private fun StopTripsScreen(
                 stopIdToHighlight = stop?.stopId,
                 stopTypeToHighlight = stop?.type,
                 navigator = navigator,
-                modifier = Modifier.padding(paddingValues)
+                onLineClick = {
+                    navigator.navigate(
+                        LineTripsScreenDestination(
+                            lineId = it.lineId,
+                            lineType = it.type,
+                            stopIdToHighlight = stop?.stopId,
+                            stopTypeToHighlight = stop?.type,
+                        )
+                    )
+                },
+                modifier = Modifier.padding(paddingValues),
             )
         }
     )

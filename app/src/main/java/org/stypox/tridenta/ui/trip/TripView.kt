@@ -1,5 +1,6 @@
 package org.stypox.tridenta.ui.trip
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -19,10 +20,13 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import org.stypox.tridenta.R
+import org.stypox.tridenta.db.data.DbLine
 import org.stypox.tridenta.enums.StopLineType
+import org.stypox.tridenta.repo.data.UiLine
 import org.stypox.tridenta.repo.data.UiTrip
 import org.stypox.tridenta.sample.SampleDbStopProvider
 import org.stypox.tridenta.sample.SampleUiTripProvider
+import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.error.ErrorPanel
 import org.stypox.tridenta.ui.error.ErrorRow
@@ -44,6 +48,7 @@ fun TripView(
     stopIdToHighlight: Int?,
     stopTypeToHighlight: StopLineType?,
     navigator: DestinationsNavigator,
+    onLineClick: (line: DbLine) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxHeight()) {
@@ -55,7 +60,13 @@ fun TripView(
             ) {
                 TripViewTopRow(
                     trip = trip,
-                    modifier = Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 12.dp)
+                    onLineClick = onLineClick,
+                    modifier = Modifier.padding(
+                        start = 12.dp,
+                        top = 4.dp,
+                        end = 12.dp,
+                        bottom = 12.dp
+                    )
                 )
 
                 if (error) {
@@ -128,7 +139,11 @@ fun TripView(
 }
 
 @Composable
-private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
+private fun TripViewTopRow(
+    trip: UiTrip,
+    onLineClick: (line: DbLine) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -139,6 +154,7 @@ private fun TripViewTopRow(trip: UiTrip, modifier: Modifier = Modifier) {
             Surface(
                 color = shortNameBackground,
                 shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.clickable { onLineClick(trip.line) }
             ) {
                 TitleText(
                     text = trip.line.shortName,
@@ -280,6 +296,7 @@ private fun TripViewPreview(@PreviewParameter(SampleUiTripProvider::class) trip:
                 stopIdToHighlight = stopToHighlight.stopId,
                 stopTypeToHighlight = stopToHighlight.type,
                 navigator = EmptyDestinationsNavigator,
+                onLineClick = {},
             )
         }
     }
@@ -306,6 +323,7 @@ private fun TripViewPreviewLoading() {
                 stopIdToHighlight = null,
                 stopTypeToHighlight = null,
                 navigator = EmptyDestinationsNavigator,
+                onLineClick = {},
             )
         }
     }
