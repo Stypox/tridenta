@@ -1,0 +1,13 @@
+Neu:
+- Filterung von Linienfahrten nach Richtung
+- Unterscheidung von Haltestellen mit gleichem Namen anhand ihrer Himmelsrichtung
+- Anzeige der Bus-ID für Fahrten
+
+Verbessert:
+- Überarbeitung des Stils der Fahrtdarstellung
+- Klickbare Haltestellen und Linien in der Fahrtdarstellung
+- Fettgedruckte Anzeige der Haltezeit bei Hervorhebung
+- Verwendung einer nicht-zentrierten App-Leiste
+
+Behoben:
+- Aktualisierung verschiedener Bibliotheken und Behebung von Veraltungen

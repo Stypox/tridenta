@@ -1,0 +1,13 @@
+Novità:
+- Puoi filtrare le corse di una linea in base alla direzione
+- Si possono ora distiguere le fermate omonime in base al loro punto cardinale
+- Viene mostrato l'ID del bus delle corse
+
+Miglioramenti:
+- Rifinito lo stile delle corse
+- Le fermate e la linea di una corsa sono ora cliccabili
+- Il tempo di una fermata è ora grassetto se evidenziato
+- L'app bar non è più centrata
+
+Correzioni:
+- Aggiornate varie librerie e corrette deprecazioni

@@ -1,0 +1,13 @@
+New:
+- Filter line trips based on direction
+- Distinguish stops with the same name based on their cardinal point
+- Show bus ID for trips
+
+Improved:
+- Polish trip view style
+- Make stops and lines in trip view clickable
+- Make stop time bold when highlighted
+- Use a non-centered app bar
+
+Fixed:
+- Update various libraries and fix deprecations
