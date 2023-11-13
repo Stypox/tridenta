@@ -55,7 +55,7 @@ fun TripView(
             ) {
                 TripViewTopRow(
                     trip = trip,
-                    modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 16.dp)
+                    modifier = Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 12.dp)
                 )
 
                 if (error) {
