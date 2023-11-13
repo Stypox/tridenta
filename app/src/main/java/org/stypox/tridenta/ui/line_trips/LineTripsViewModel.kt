@@ -258,8 +258,8 @@ class LineTripsViewModel @Inject constructor(
         }
     }
 
-    // TODO add comments and reduce function size
     private suspend fun loadIndexAsync(index: Int) {
+        // hide the current trip, as it's going to change
         val prevState = mutableUiState.getAndUpdate {
             it.copy(
                 tripIndex = index,
@@ -269,88 +269,105 @@ class LineTripsViewModel @Inject constructor(
             )
         }
 
+        // load the trip, and show it right after it gets loaded (see the related functions)
         val (trip, network) = if (prevState.directionFilter == Direction.ForwardAndBackward) {
-            val (trip, loadedFromNetwork) = withContext(Dispatchers.IO) {
-                try {
-                    tripsRepository.getUiTrip(
-                        lineId = navArgs.lineId,
-                        lineType = navArgs.lineType,
-                        referenceDateTime = uiState.value.referenceDateTime,
-                        index = index,
-                    )
-                } catch (e: Throwable) {
-                    logError(
-                        "Could not load trip at index $index for UI line " +
-                                "(${navArgs.lineId}, ${navArgs.lineType})",
-                        e
-                    )
-                    Pair(null, true /* <- useless when trip == null */)
-                }
-            }
-
-            // show the trip even if loadedFromNetwork is false (in which case it could be outdated)
-            mutableUiState.update {
-                it.copy(
-                    trip = trip,
-                    error = trip == null,
-                )
-            }
-
-            Pair(trip, loadedFromNetwork)
+            loadIndexNoFilterAsync(index)
         } else {
-            val res = withContext(Dispatchers.IO) {
-                try {
-                    tripsRepository.getUiTripWithDirection(
-                        lineId = navArgs.lineId,
-                        lineType = navArgs.lineType,
-                        referenceDateTime = uiState.value.referenceDateTime,
-                        index = index,
-                        direction = prevState.directionFilter,
-                        prevIndex = prevState.tripIndex,
-                    )
-                } catch (e: Throwable) {
-                    logError(
-                        "Could not load trip at index $index for UI line " +
-                                "(${navArgs.lineId}, ${navArgs.lineType})",
-                        e
-                    )
-                    null
-                }
-            }
-
-            if (res == null) {
-                // restore previous state, but update prevEnabled or nextEnabled
-                mutableUiState.update {
-                    it.copy(
-                        tripIndex = prevState.tripIndex,
-                        trip = prevState.trip,
-                        prevEnabled = if (index < prevState.tripIndex) false else prevState.prevEnabled,
-                        nextEnabled = if (index > prevState.tripIndex) false else prevState.nextEnabled,
-                    )
-                }
-
-                Pair(null, true)
-
-            } else {
-                val (trip, newIndex, loadedFromNetwork) = res
-                mutableUiState.update {
-                    it.copy(
-                        tripIndex = newIndex,
-                        trip = trip,
-                        prevEnabled = newIndex > 0,
-                        nextEnabled = newIndex < uiState.value.tripsInDayCount - 1,
-                    )
-                }
-
-                Pair(trip, loadedFromNetwork)
-            }
+            loadIndexDirectionAsync(index, prevState)
         }
-
 
         if (!network && trip != null && trip.completedStops < trip.stopTimes.size) {
             // after showing the (possibly) outdated trip fast, reload it to show latest updates
             // (but reload it only if there actually is a trip and it is not completed)
             onReloadAsync()
+        }
+    }
+
+    /**
+     * Load the trip at the specific index without filtering by direction (simple case)
+     */
+    private suspend fun loadIndexNoFilterAsync(index: Int): Pair<UiTrip?, Boolean> {
+        val res = withContext(Dispatchers.IO) {
+            try {
+                tripsRepository.getUiTrip(
+                    lineId = navArgs.lineId,
+                    lineType = navArgs.lineType,
+                    referenceDateTime = uiState.value.referenceDateTime,
+                    index = index,
+                )
+            } catch (e: Throwable) {
+                logError(
+                    "Could not load trip at index $index for UI line " +
+                            "(${navArgs.lineId}, ${navArgs.lineType})",
+                    e
+                )
+                Pair(null, true /* <- useless when trip == null */)
+            }
+        }
+
+        // show the trip even if loadedFromNetwork is false (in which case it could be outdated)
+        mutableUiState.update {
+            it.copy(
+                trip = res.first,
+                error = res.first == null,
+            )
+        }
+
+        return res
+    }
+
+    /**
+     * Load the trip at the provided index, but if it's not in the correct direction, try to search
+     * nearby indices until a trip in the correct direction is found
+     */
+    private suspend fun loadIndexDirectionAsync(index: Int, prevState: LineTripsUiState): Pair<UiTrip?, Boolean> {
+        val res = withContext(Dispatchers.IO) {
+            try {
+                tripsRepository.getUiTripWithDirection(
+                    lineId = navArgs.lineId,
+                    lineType = navArgs.lineType,
+                    referenceDateTime = uiState.value.referenceDateTime,
+                    index = index,
+                    direction = prevState.directionFilter,
+                    prevIndex = prevState.tripIndex,
+                )
+            } catch (e: Throwable) {
+                logError(
+                    "Could not load trip at index $index for UI line " +
+                            "(${navArgs.lineId}, ${navArgs.lineType}) " +
+                            "in direction ${prevState.directionFilter}",
+                    e
+                )
+                null
+            }
+        }
+
+        if (res == null) {
+            // no trip could be loaded in the set direction, restore previous state,
+            // but update prevEnabled or nextEnabled
+            mutableUiState.update {
+                it.copy(
+                    tripIndex = prevState.tripIndex,
+                    trip = prevState.trip,
+                    prevEnabled = if (index < prevState.tripIndex) false else prevState.prevEnabled,
+                    nextEnabled = if (index > prevState.tripIndex) false else prevState.nextEnabled,
+                )
+            }
+
+            return Pair(null, true /* <- useless when trip == null */)
+
+        } else {
+            val (trip, newIndex, loadedFromNetwork) = res
+            mutableUiState.update {
+                it.copy(
+                    tripIndex = newIndex,
+                    trip = trip,
+                    prevEnabled = newIndex > 0,
+                    nextEnabled = newIndex < uiState.value.tripsInDayCount - 1,
+                )
+            }
+
+            return Pair(trip, loadedFromNetwork)
         }
     }
 }

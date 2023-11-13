@@ -78,7 +78,8 @@ class LineTripsRepository @Inject constructor(
     }
 
     /**
-     * Returns a pair with the ui trip and whether the trip was loaded from network
+     * Get or load a trip at the provided index, without filtering by direction (simple case)
+     * @return a pair (ui trip, whether the trip was loaded from network)
      */
     fun getUiTrip(
         lineId: Int,
@@ -97,7 +98,73 @@ class LineTripsRepository @Inject constructor(
         return Pair(loadUiTripFromExTrip(days[key]!![index]!!), loadFromNetwork)
     }
 
-    // TODO add comments and reduce function size
+    private fun generateNearbyIndices(
+        index: Int,
+        prevIndex: Int,
+        tripsInDayCount: Int,
+        direction: Direction
+    ) = iterator {
+        if (index < prevIndex) {
+            // the last index change was decreasing, so keep decreasing => 5,4,3,...
+            yieldAll(index.downTo(0))
+
+        } else if (index > prevIndex) {
+            // the last index change was increasing, so keep increasing => 5,6,7,...
+            yieldAll(index..tripsInDayCount)
+
+
+        } else /* prevIndex == index*/ {
+            // Find the closest trip starting from the current index in both directions.
+            // Two slightly different sequences are generated based on the direction, to make it
+            // so that switching direction multiple times cycles between the same two trips:
+            // - Forward => 5,6,4,7,3...
+            // - Backward => 5,4,6,3,7,...
+
+            if (direction == Direction.Forward) {
+                var newIndexDown = index
+                var newIndexUp = index + 1
+                while (newIndexDown >= 0 || newIndexUp < tripsInDayCount) {
+                    if (newIndexDown >= 0) {
+                        yield(newIndexDown)
+                        --newIndexDown
+                    }
+                    if (newIndexUp < tripsInDayCount) {
+                        yield(newIndexUp)
+                        ++newIndexUp
+                    }
+                }
+
+            } else /* direction == Direction.Backward */ {
+                var newIndexDown = index - 1
+                var newIndexUp = index
+                while (newIndexDown >= 0 || newIndexUp < tripsInDayCount) {
+                    if (newIndexUp < tripsInDayCount) {
+                        yield(newIndexUp)
+                        ++newIndexUp
+                    }
+                    if (newIndexDown >= 0) {
+                        yield(newIndexDown)
+                        --newIndexDown
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get or load a trip at the provided index in the specific direction. If the trip at the
+     * provided index is not in the correct direction, nearby indices will be taken into
+     * consideration, based on what the last index change was:
+     * - `index < prevIndex` => only try lower indices (e.g. 5,4,3,...)
+     * - `index = prevIndex` => try nearby indices in a spiral (e.g. 5,4,6,3,7,...)
+     * - `index > prevIndex` => only try higher indices (e.g. 5,6,7,...)
+     *
+     * While searching for nearby trips, new trips might be loaded from network, but this will
+     * happen at most once, as it's highly unlikely that after loading more items from network and
+     * finding none of the correct type, there will be some even further.
+     *
+     * @return a triple (ui trip, actual trip index, whether the trip was loaded from network)
+     */
     fun getUiTripWithDirection(
         lineId: Int,
         lineType: StopLineType,
@@ -111,39 +178,18 @@ class LineTripsRepository @Inject constructor(
 
         val initialTripsInDay = days[key];
         val tripsInDay = if (initialTripsInDay == null) {
+            // no trips for this day have been loaded at all so far, so load for the first time
             loadedFromNetworkOnce = true
             loadMoreTripsAtIndex(key, referenceDateTime, index)
         } else {
             initialTripsInDay
         }
 
-        val indexGenerator = iterator {
-            if (index < prevIndex) {
-                // the last index change was decreasing, so keep decreasing
-                yieldAll(index.downTo(0))
+        val nearbyIndices =
+            generateNearbyIndices(index, prevIndex, tripsInDay.tripsInDayCount, direction)
 
-            } else if (index > prevIndex) {
-                // the last index change was increasing, so keep increasing
-                yieldAll(index..tripsInDay.tripsInDayCount)
-
-            } else /* prevIndex == index */ {
-                // find the closest trip starting from the current index in both directions
-                var newIndexDown = index
-                var newIndexUp = index+1
-                while (newIndexDown >= 0 || newIndexUp < tripsInDay.tripsInDayCount) {
-                    if (newIndexDown >= 0) {
-                        yield(newIndexDown)
-                        --newIndexDown
-                    }
-                    if (newIndexUp < tripsInDay.tripsInDayCount) {
-                        yield(newIndexUp)
-                        ++newIndexUp
-                    }
-                }
-            }
-        }
-
-        indexGenerator.forEach { newIndex ->
+        nearbyIndices.forEach { newIndex ->
+            // load from network at most once
             if (!loadedFromNetworkOnce && tripsInDay[newIndex] == null) {
                 loadedFromNetworkOnce = true
                 loadMoreTripsAtIndex(key, referenceDateTime, newIndex)

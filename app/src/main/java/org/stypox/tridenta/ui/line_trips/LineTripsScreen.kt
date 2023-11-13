@@ -185,7 +185,7 @@ private fun LineAppBar(
                 }
             }
             IconButton(onClick = onDirectionClicked) {
-                // without `key` it would miss some updates... this is a bug in Compose
+                // FIXME without `key` it would miss some updates... probably a bug in Compose
                 key(directionFilter) {
                     DirectionIcon(direction = directionFilter)
                 }
