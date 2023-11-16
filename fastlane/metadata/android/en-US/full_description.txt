@@ -8,4 +8,4 @@ Tridenta loads and shows the <b>public transport</b> data of the italian region 
 <li><b>Shortcuts</b> in your phone's application launcher can link directly to a specific screen inside Tridenta, allowing you to save even more time</li>
 </ul>
 
-Tridenta was built using Jetpack Compose, along with Material 3 design, and supports dark and light themes with dynamic colors (Android 12+ only). The information shown in Tridenta comes from the same APIs that the official "Muoversi in Trentino" app uses.
+Tridenta was built using Jetpack Compose, along with Material 3 design, and supports dark and light themes with dynamic colors (Android 12+ only). The information shown in Tridenta comes from the same APIs that the official "Muoversi in Trentino" app uses, but Tridenta is not affiliated with "Muoversi in Trentino".
