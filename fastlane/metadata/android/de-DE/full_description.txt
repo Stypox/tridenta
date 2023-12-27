@@ -8,4 +8,6 @@ Tridenta ist eine App für den <b>öffentlichen Verkehr im Trentino</b>. Sie kö
 <li>Erstellen Sie <b>Verknüpfungen</b> im App-Launcher Ihres Telefons, die direkt einen bestimmten Bildschirm in Tridenta öffnen und Ihnen so noch mehr Zeit sparen</li>
 </ul>
 
-Mit Jetpack Compose und Material Design 3 wurde Tridenta entwickelt und unterstützt sowohl helle als auch dunkle Themes (mit dynamischen Farben auf Android 12+). Die Informationen, die in Tridenta angezeigt werden, stammen aus denselben APIs wie die offizielle App für den öffentlichen Verkehr im Trentino, "Muoversi in Trentino", aber Tridenta ist nicht mit "Muoversi in Trentino" verbunden.
+Mit Jetpack Compose und Material Design 3 wurde Tridenta entwickelt und unterstützt sowohl helle als auch dunkle Themes (mit dynamischen Farben auf Android 12+).
+
+HINWEIS: Die Informationen, die in Tridenta angezeigt werden, stammen aus denselben APIs wie die offizielle App für den öffentlichen Verkehr im Trentino, "Muoversi in Trentino", aber Tridenta ist nicht mit "Muoversi in Trentino", "Trentino Trasporti", die italienische Regierung oder andere staatliche Stellen verbunden.

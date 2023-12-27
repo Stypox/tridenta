@@ -8,4 +8,6 @@ Tridenta è un'app per il <b>trasporto pubblico del trentino</b>. Puoi vedere le
 <li>Crea <b>scorciatoie</b> nel lanciatore di app del tuo telefono che aprono direttamente una schermata specifica dentro Tridenta, permettendoti di risparmiare ancora più tempo</li>
 </ul>
 
-Tridenta è stata costruita con Jetpack Compose e il Material Design 3, e supporta sia il tema chiaro che quello scuro (con colori dinamici su Android 12+). Le informazioni mostrate in Tridenta vengono dalle stesse APIs dell'app ufficiale dei trasporti pubblici trentini, "Muoversi in Trentino", ma Tridenta non è affiliata con "Muoversi in Trentino".
+Tridenta è stata costruita con Jetpack Compose e il Material Design 3, e supporta sia il tema chiaro che quello scuro (con colori dinamici su Android 12+).
+
+NOTA BENE: Le informazioni mostrate in Tridenta vengono dalle stesse APIs dell'app ufficiale dei trasporti pubblici trentini, "Muoversi in Trentino", ma Tridenta non è affiliata con "Muoversi in Trentino", "Trentino Trasporti", il governo italiano o altre entità governative.
