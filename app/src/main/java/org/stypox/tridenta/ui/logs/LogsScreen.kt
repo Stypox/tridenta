@@ -1,7 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package org.stypox.tridenta.ui.logs
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,15 +10,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import org.stypox.tridenta.R
@@ -67,19 +70,32 @@ private fun LogsScreen(
             )
         },
         content = { paddingValues ->
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isRefreshing = loading),
-                onRefresh = { },
-                swipeEnabled = false, // live data reloads automatically
+            val pullToRefreshState = rememberPullToRefreshState()
+
+            // need to rewrite PullToRefreshBox because it does not expose the `enabled` parameter
+            Box(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxHeight()
+                    .pullToRefresh(
+                        state = pullToRefreshState,
+                        isRefreshing = loading,
+                        onRefresh = {},
+                        enabled = false, // live data reloads automatically
+                    ),
+                contentAlignment = Alignment.TopStart
             ) {
                 LazyColumn {
                     items(logs) {
                         LogItem(logEntry = it)
                     }
                 }
+
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = loading,
+                    state = pullToRefreshState,
+                )
             }
         }
     )
@@ -90,6 +106,17 @@ private fun LogsScreen(
 private fun LogsScreenPreview() {
     LogsScreen(
         loading = false,
+        logs = SampleLogEntryProvider().values.toList(),
+        onClearLogsClick = { },
+        navigationIcon = { }
+    )
+}
+
+@Preview(backgroundColor = 0xffffff, showBackground = true)
+@Composable
+private fun LogsScreenPreviewLoading() {
+    LogsScreen(
+        loading = true,
         logs = SampleLogEntryProvider().values.toList(),
         onClearLogsClick = { },
         navigationIcon = { }

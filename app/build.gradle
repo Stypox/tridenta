@@ -85,11 +85,6 @@ dependencies {
     implementation libs.compose.androidx.runtime.livedata
     implementation libs.androidx.material3
 
-    // Accompanist
-    // accompanist SwipeRefresh is deprecated, but there is still no alternative
-    // available in material3: https://issuetracker.google.com/issues/261760718
-    implementation libs.accompanist.swiperefresh
-
     // Navigation
     implementation libs.compose.destinations.core
     ksp libs.compose.destinations.ksp
