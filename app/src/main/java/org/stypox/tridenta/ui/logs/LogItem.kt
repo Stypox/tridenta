@@ -3,6 +3,7 @@ package org.stypox.tridenta.ui.logs
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -11,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -107,21 +109,24 @@ private fun LogItemExpanded(
             )
 
             val clipboardManager = LocalClipboardManager.current
-            IconButton(
-                onClick = {
-                    clipboardManager.setText(
-                        AnnotatedString("${logEntry.text}\n\n-----\n\n${logEntry.stackTrace}")
-                    )
-                },
+            Icon(
+                imageVector = Icons.Filled.ContentCopy,
+                contentDescription = stringResource(R.string.copy_to_clipboard),
                 modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(bounded = false),
+                        onClick = {
+                            clipboardManager.setText(
+                                AnnotatedString(
+                                    "${logEntry.text}\n\n-----\n\n${logEntry.stackTrace}"
+                                )
+                            )
+                        }
+                    )
                     .align(Alignment.TopEnd)
                     .size(iconSize)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ContentCopy,
-                    contentDescription = stringResource(R.string.copy_to_clipboard)
-                )
-            }
+            )
         }
 
         Text(
