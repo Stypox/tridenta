@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -113,7 +114,7 @@ private fun TripViewStopItem(
     ) {
         Icon(
             imageVector = if (trip.lastEventReceivedAt == null) {
-                Icons.Filled.ArrowRight
+                Icons.AutoMirrored.Filled.ArrowRight
             } else if (completed) {
                 Icons.Filled.CheckCircle
             } else {

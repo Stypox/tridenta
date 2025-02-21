@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Accessible
 import androidx.compose.material.icons.filled.Accessible
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
@@ -105,7 +106,7 @@ fun StopItem(
 
             if (stop.wheelchairAccessible) {
                 Icon(
-                    imageVector = Icons.Filled.Accessible,
+                    imageVector = Icons.AutoMirrored.Filled.Accessible,
                     contentDescription = stringResource(R.string.accessible)
                 )
             }

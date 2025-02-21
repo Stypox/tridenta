@@ -3,6 +3,8 @@ package org.stypox.tridenta.ui.trip
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.NavigateBefore
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -233,7 +235,7 @@ private fun TripViewBottomRow(
             modifier = Modifier.alpha(if (prevEnabled) 1.0f else 0.5f)
         ) {
             Icon(
-                imageVector = Icons.Filled.NavigateBefore,
+                imageVector = Icons.AutoMirrored.Filled.NavigateBefore,
                 contentDescription = stringResource(R.string.previous)
             )
         }
@@ -267,7 +269,7 @@ private fun TripViewBottomRow(
             modifier = Modifier.alpha(if (nextEnabled) 1.0f else 0.5f)
         ) {
             Icon(
-                imageVector = Icons.Filled.NavigateNext,
+                imageVector = Icons.AutoMirrored.Filled.NavigateNext,
                 contentDescription = stringResource(R.string.next)
             )
         }
