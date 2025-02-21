@@ -10,13 +10,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
@@ -70,6 +73,24 @@ fun DrawerSheetContent(
     )
 }
 
+val VerticalArrangementWithFooter = object : Arrangement.Vertical {
+    override fun Density.arrange(
+        totalSize: Int,
+        sizes: IntArray,
+        outPositions: IntArray
+    ) {
+        var currentOffset = 0
+        sizes.forEachIndexed { index, size ->
+            if (index == sizes.lastIndex) {
+                outPositions[index] = totalSize - size
+            } else {
+                outPositions[index] = currentOffset
+                currentOffset += size
+            }
+        }
+    }
+}
+
 @Composable
 fun DrawerSheetContent(
     currentDestination: NavDestination?,
@@ -80,10 +101,13 @@ fun DrawerSheetContent(
         setDirection = setDirection,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(24.dp)
     )
 
-    LazyColumn {
+    LazyColumn(
+        verticalArrangement = VerticalArrangementWithFooter,
+        modifier = Modifier.fillMaxHeight()
+    ) {
         sections.forEach { section ->
             drawerSectionView(
                 currentDestination = currentDestination,
@@ -92,7 +116,12 @@ fun DrawerSheetContent(
             )
         }
         item {
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.policy_disclaimer),
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }

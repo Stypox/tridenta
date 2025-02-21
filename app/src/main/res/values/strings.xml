@@ -78,4 +78,6 @@
     <string name="south_west_short">SW</string>
     <string name="south_short">S</string>
     <string name="south_east_short">SE</string>
+    <string name="policy_disclaimer">The information shown in Tridenta comes from the same APIs that the official "Muoversi in Trentino" app uses, but Tridenta is not affiliated with \"Muoversi in Trentino\", \"Trentino Trasporti\", the Italian government or other government entities.</string>
+    <string name="accept">Accept</string>
 </resources>
