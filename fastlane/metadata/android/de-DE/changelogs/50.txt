@@ -1,0 +1,5 @@
+Neu:
+- Hinzufügen einer Warnung beim ersten Öffnen der App und in der Schublade, um zu erklären, dass die App nicht mit der Regierung verbunden ist, wie von den Google Play Store-Richtlinien gefordert
+
+Behoben:
+- Aktualisierung verschiedener Bibliotheken und Behebung von Veraltungen

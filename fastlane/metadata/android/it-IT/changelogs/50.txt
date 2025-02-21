@@ -1,0 +1,5 @@
+Novità:
+- Aggiunto un avviso alla prima apertura dell'app e nel drawer, per spiegare che l'app non è affiliata al governo, come richiesto dalle politiche di Google Play Store
+
+Correzioni:
+- Aggiornate varie librerie e corrette deprecazioni

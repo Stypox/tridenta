@@ -1,0 +1,5 @@
+New:
+- Add disclaimer notice first time app is opened and in the drawer, to explain that the app is not affiliated with the government, as requested by Google Play Store policies
+
+Fixed:
+- Update various libraries and fix deprecations
