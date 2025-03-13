@@ -1,5 +1,6 @@
 package org.stypox.tridenta.ui.nav
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -116,11 +118,14 @@ fun DrawerSheetContent(
             )
         }
         item {
+            val uriHandler = LocalUriHandler.current
+            val uri = stringResource(R.string.policy_url)
             Text(
                 text = stringResource(R.string.policy_disclaimer),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
+                    .clickable { uriHandler.openUri(uri) }
             )
         }
     }

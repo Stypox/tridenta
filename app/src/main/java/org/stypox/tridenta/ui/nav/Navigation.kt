@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import org.stypox.tridenta.ui.NavGraphs
 import org.stypox.tridenta.ui.destinations.LinesScreenDestination
 import org.stypox.tridenta.ui.theme.HeadlineText
 import org.stypox.tridenta.util.PreferenceKeys
+import androidx.core.content.edit
 
 const val DEEP_LINK_PREFIX = "tridenta://"
 const val DEEP_LINK_URL_PATTERN = DEEP_LINK_PREFIX + FULL_ROUTE_PLACEHOLDER
@@ -59,13 +61,19 @@ fun Navigation(
         // file, but Play Store removed the app and I needed a simple solution to restore it.
         AlertDialog(
             onDismissRequest = {},
+            dismissButton = {
+                val uriHandler = LocalUriHandler.current
+                val uri = stringResource(R.string.policy_url)
+                TextButton(onClick = { uriHandler.openUri(uri) }) {
+                    Text(text = stringResource(R.string.open_url))
+                }
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        PreferenceManager.getDefaultSharedPreferences(context)
-                            .edit()
-                            .putBoolean(PreferenceKeys.POLICY_ACCEPTED, true)
-                            .apply()
+                        PreferenceManager.getDefaultSharedPreferences(context).edit {
+                            putBoolean(PreferenceKeys.POLICY_ACCEPTED, true)
+                        }
                         policyAccepted = true
                     }
                 ) {

@@ -67,6 +67,8 @@
     <string name="south_west_short">SW</string>
     <string name="south_short">S</string>
     <string name="south_east_short">SE</string>
-    <string name="policy_disclaimer">Die Informationen, die in Tridenta angezeigt werden, stammen aus denselben APIs wie die offizielle App für den öffentlichen Verkehr im Trentino, \"Muoversi in Trentino\", aber Tridenta ist nicht mit \"Muoversi in Trentino\", \"Trentino Trasporti\", die italienische Regierung oder andere staatliche Stellen verbunden.</string>
+    <string name="policy_disclaimer">Die ursprüngliche Quelle der in Tridenta angezeigten Informationen sind die APIs der offiziellen App für den öffentlichen Verkehr des Trentino, \"Muoversi in Trentino\": https://www.trentinotrasporti.it/de/reise-mit-uns/muoversi-de . Tridenta ist nicht mit \"Muoversi in Trentino\", \"Trentino Trasporti\", die italienische Regierung oder andere staatliche Stellen verbunden.</string>
+    <string name="policy_url">https://www.trentinotrasporti.it/de/reise-mit-uns/muoversi-de</string>
+    <string name="open_url">URL öffnen</string>
     <string name="accept">Akzeptieren</string>
 </resources>

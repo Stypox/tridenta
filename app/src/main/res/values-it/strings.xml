@@ -67,6 +67,8 @@
     <string name="south_west_short">SO</string>
     <string name="south_short">S</string>
     <string name="south_east_short">SE</string>
-    <string name="policy_disclaimer">Le informazioni mostrate in Tridenta vengono dalle stesse APIs dell\'app ufficiale dei trasporti pubblici trentini, \"Muoversi in Trentino\", ma Tridenta non è affiliata con \"Muoversi in Trentino\", \"Trentino Trasporti\", il governo italiano o altre entità governative.</string>
+    <string name="policy_disclaimer">La fonte originale delle informazioni mostrate in Tridenta sono le APIs dell\'app ufficiale dei trasporti pubblici trentini, \"Muoversi in Trentino\": https://www.trentinotrasporti.it/viaggia-con-noi/app-muoversi . Tridenta non è affiliata con \"Muoversi in Trentino\", \"Trentino Trasporti\", il governo italiano o altre entità governative.</string>
+    <string name="policy_url">https://www.trentinotrasporti.it/viaggia-con-noi/app-muoversi</string>
+    <string name="open_url">Apri URL</string>
     <string name="accept">Va bene</string>
 </resources>

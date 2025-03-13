@@ -1,6 +1,7 @@
 Tridenta è un'app per il <b>trasporto pubblico del trentino</b>. Puoi vedere le <b>fermate</b>, le <b>linee</b> e soprattutto le <b>corse</b> effettuate, con il <b>ritardo</b> in <b>tempo reale</b>! Ci sono anche i preferiti e la cronologia, e si possono creare scorciatoie sul lanciatore di app del telefono.
 
-NOTA BENE: Le informazioni mostrate in Tridenta vengono dalle stesse APIs dell'app ufficiale dei trasporti pubblici trentini, "Muoversi in Trentino", ma <b>Tridenta non è affiliata con "Muoversi in Trentino", "Trentino Trasporti", il governo italiano o altre entità governative.</b>
+NOTA BENE: La fonte originale delle informazioni mostrate in Tridenta sono le APIs dell'app ufficiale dei trasporti pubblici trentini, "Muoversi in Trentino": https://www.trentinotrasporti.it/viaggia-con-noi/app-muoversi
+<b>Tridenta non è affiliata con "Muoversi in Trentino", "Trentino Trasporti", il governo italiano o altre entità governative.</b>
 
 <ul>
 <li><b>Fermate</b>: trova le fermate di tutto il Trentino; vedrai anche quali linee passano da una fermata</li>
