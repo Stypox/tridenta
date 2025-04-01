@@ -44,8 +44,8 @@ fun lineFromJSONObject(o: JSONObject): ExLine {
 fun newsItemFromJSONObject(o: JSONObject): ExNewsItem {
     return ExNewsItem(
         serviceType = o.getString("serviceType"),
-        startDate = dateTimeFromEpochString(o.getString("startDate")),
-        endDate = dateTimeFromEpochString(o.getString("endDate")),
+        startDate = dateTimeFromISOStringBasicOffset(o.getString("startDate")),
+        endDate = dateTimeFromISOStringBasicOffset(o.getString("endDate")),
         header = o.getString("header").trim(),
         details = o.getString("details").trim(),
         url = o.getString("url"),

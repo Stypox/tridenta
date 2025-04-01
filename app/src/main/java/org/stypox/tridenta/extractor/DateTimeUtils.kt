@@ -2,7 +2,12 @@ package org.stypox.tridenta.extractor
 
 import java.io.IOException
 import java.time.*
+import java.time.chrono.IsoChronology
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.ResolverStyle
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 val ROME_ZONE_ID: ZoneId = ZoneId.of("Europe/Rome")
 
@@ -22,6 +27,16 @@ fun dateTimeFromISOString(s: String?): OffsetDateTime? {
     } else {
         OffsetDateTime.parse(s).atZoneSameInstant(ROME_ZONE_ID).toOffsetDateTime()
     }
+}
+
+fun dateTimeFromISOStringBasicOffset(s: String): OffsetDateTime {
+    val format = DateTimeFormatterBuilder()
+        .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        .optionalStart()
+        .appendOffset("+HHmm", "+0000")
+        .toFormatter()
+
+    return OffsetDateTime.parse(s, format)
 }
 
 class ZonedTimeHelper(private var referenceDateTime: ZonedDateTime) {
