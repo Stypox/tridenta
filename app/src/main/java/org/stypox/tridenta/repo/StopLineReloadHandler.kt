@@ -24,6 +24,8 @@ import javax.inject.Singleton
 import kotlin.math.PI
 import kotlin.math.atan2
 import androidx.core.content.edit
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Singleton
 class StopLineReloadHandler @Inject constructor(
@@ -33,6 +35,9 @@ class StopLineReloadHandler @Inject constructor(
     private val stopDao: StopDao,
     private val lineDao: LineDao,
 ) {
+    private val _lastReloadWasError = MutableStateFlow(false)
+    val lastReloadWasError: StateFlow<Boolean> = _lastReloadWasError
+
     private var job: Job? = null
 
     fun <R> reloadIfNeededAndRun(forceReload: Boolean = false, function: () -> R): R {
@@ -105,8 +110,10 @@ class StopLineReloadHandler @Inject constructor(
             runBlocking {
                 job = launch {
                     try {
+                        _lastReloadWasError.value = false
                         reloadFromNetwork()
                     } catch (e: Throwable) {
+                        _lastReloadWasError.value = true
                         logError("Could not reload stops and lines", e)
                     }
                 }

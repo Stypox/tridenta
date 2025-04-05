@@ -11,13 +11,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.stypox.tridenta.log.logError
+import org.stypox.tridenta.repo.StopLineReloadHandler
 import org.stypox.tridenta.repo.StopsRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class StopsViewModel @Inject constructor(
     application: Application,
-    private val stopsRepository: StopsRepository
+    private val stopsRepository: StopsRepository,
+    private val stopLineReloadHandler: StopLineReloadHandler,
 ) : AndroidViewModel(application) {
 
     private val mutableUiState = MutableStateFlow(
@@ -29,6 +31,8 @@ class StopsViewModel @Inject constructor(
         )
     )
     val uiState = mutableUiState.asStateFlow()
+
+    val lastReloadWasError get() = stopLineReloadHandler.lastReloadWasError
 
     init {
         reloadStops(forceReload = false)

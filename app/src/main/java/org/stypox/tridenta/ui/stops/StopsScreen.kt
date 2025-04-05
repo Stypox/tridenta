@@ -4,6 +4,7 @@ package org.stypox.tridenta.ui.stops
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,7 @@ import org.stypox.tridenta.sample.SampleUiStopProvider
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.destinations.StopTripsScreenDestination
 import org.stypox.tridenta.ui.error.ErrorPanel
+import org.stypox.tridenta.ui.error.ErrorRow
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
@@ -50,9 +52,11 @@ fun StopsScreen(
 ) {
     val stopsViewModel: StopsViewModel = hiltViewModel()
     val stopsUiState by stopsViewModel.uiState.collectAsState()
+    val lastReloadWasError by stopsViewModel.lastReloadWasError.collectAsState()
 
     StopsScreen(
-        error = stopsUiState.error,
+        criticalError = stopsUiState.error,
+        minorError = lastReloadWasError,
         loading = stopsUiState.loading,
         onReload = stopsViewModel::onReload,
         stops = stopsUiState.stops,
@@ -65,7 +69,8 @@ fun StopsScreen(
 
 @Composable
 private fun StopsScreen(
-    error: Boolean,
+    criticalError: Boolean,
+    minorError: Boolean,
     loading: Boolean,
     onReload: () -> Unit,
     stops: List<UiStop>,
@@ -85,7 +90,7 @@ private fun StopsScreen(
             )
         },
         content = { paddingValues ->
-            if (error) {
+            if (criticalError) {
                 Box(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -107,29 +112,38 @@ private fun StopsScreen(
                         .padding(paddingValues)
                         .fillMaxHeight()
                 ) {
-                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(stops) { stop ->
-                            StopItem(
-                                stop = stop,
-                                onLineClick = { line ->
-                                    navigator.navigate(
-                                        LineTripsScreenDestination(
-                                            lineId = line.lineId,
-                                            lineType = line.type,
-                                            stopIdToHighlight = stop.stopId,
-                                            stopTypeToHighlight = stop.type
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.clickable {
-                                    navigator.navigate(
-                                        StopTripsScreenDestination(
-                                            stopId = stop.stopId,
-                                            stopType = stop.type
-                                        )
-                                    )
-                                }
+                    Column {
+                        if (minorError) {
+                            ErrorRow(
+                                onRetry = onReload,
+                                navigator = navigator,
+                                modifier = Modifier.fillMaxWidth(),
                             )
+                        }
+                        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                            items(stops) { stop ->
+                                StopItem(
+                                    stop = stop,
+                                    onLineClick = { line ->
+                                        navigator.navigate(
+                                            LineTripsScreenDestination(
+                                                lineId = line.lineId,
+                                                lineType = line.type,
+                                                stopIdToHighlight = stop.stopId,
+                                                stopTypeToHighlight = stop.type
+                                            )
+                                        )
+                                    },
+                                    modifier = Modifier.clickable {
+                                        navigator.navigate(
+                                            StopTripsScreenDestination(
+                                                stopId = stop.stopId,
+                                                stopType = stop.type
+                                            )
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -143,7 +157,8 @@ private fun StopsScreen(
 private fun StopsScreenPreview() {
     var showSearchString by rememberSaveable { mutableStateOf(true) }
     StopsScreen(
-        error = false,
+        criticalError = false,
+        minorError = true,
         loading = false,
         onReload = {},
         stops = SampleUiStopProvider().values.toList(),

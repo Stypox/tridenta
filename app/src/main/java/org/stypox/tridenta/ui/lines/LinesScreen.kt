@@ -27,6 +27,7 @@ import org.stypox.tridenta.enums.Area
 import org.stypox.tridenta.sample.SampleDbLineProvider
 import org.stypox.tridenta.ui.destinations.LineTripsScreenDestination
 import org.stypox.tridenta.ui.error.ErrorPanel
+import org.stypox.tridenta.ui.error.ErrorRow
 import org.stypox.tridenta.ui.nav.AppBarDrawerIcon
 import org.stypox.tridenta.ui.nav.DEEP_LINK_URL_PATTERN
 import org.stypox.tridenta.ui.nav.NavigationIconWrapper
@@ -42,9 +43,11 @@ fun LinesScreen(
 ) {
     val linesViewModel: LinesViewModel = hiltViewModel()
     val linesUiState by linesViewModel.uiState.collectAsState()
+    val lastReloadWasError by linesViewModel.lastReloadWasError.collectAsState()
 
     LinesScreen(
-        error = linesUiState.error,
+        criticalError = linesUiState.error,
+        minorError = lastReloadWasError,
         loading = linesUiState.loading,
         onReload = linesViewModel::onReload,
         lines = linesUiState.lines,
@@ -58,7 +61,8 @@ fun LinesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LinesScreen(
-    error: Boolean,
+    criticalError: Boolean,
+    minorError: Boolean,
     loading: Boolean,
     onReload: () -> Unit,
     lines: List<DbLine>,
@@ -103,7 +107,7 @@ private fun LinesScreen(
             )
         },
         content = { paddingValues ->
-            if (error) {
+            if (criticalError) {
                 Box(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -125,20 +129,29 @@ private fun LinesScreen(
                         .padding(paddingValues)
                         .fillMaxHeight()
                 ) {
-                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(lines) {
-                            LineItem(
-                                line = it,
-                                showAreaChip = selectedArea == Area.All,
-                                modifier = Modifier.clickable {
-                                    navigator.navigate(
-                                        LineTripsScreenDestination(
-                                            lineId = it.lineId,
-                                            lineType = it.type
-                                        )
-                                    )
-                                }
+                    Column {
+                        if (minorError) {
+                            ErrorRow(
+                                onRetry = onReload,
+                                navigator = navigator,
+                                modifier = Modifier.fillMaxWidth(),
                             )
+                        }
+                        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                            items(lines) {
+                                LineItem(
+                                    line = it,
+                                    showAreaChip = selectedArea == Area.All,
+                                    modifier = Modifier.clickable {
+                                        navigator.navigate(
+                                            LineTripsScreenDestination(
+                                                lineId = it.lineId,
+                                                lineType = it.type
+                                            )
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -154,7 +167,8 @@ private fun LinesViewAllPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesScreen(
-            error = false,
+            criticalError = false,
+            minorError = true,
             loading = true,
             onReload = {},
             lines = SampleDbLineProvider().values.toList(),
@@ -176,7 +190,8 @@ private fun LinesViewSmallHeightPreview() {
     val showAreaDialog = rememberSaveable { mutableStateOf(true) }
     AppTheme {
         LinesScreen(
-            error = false,
+            criticalError = false,
+            minorError = true,
             loading = true,
             onReload = {},
             lines = SampleDbLineProvider().values.toList(),

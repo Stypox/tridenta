@@ -16,12 +16,15 @@ import org.stypox.tridenta.log.logError
 import org.stypox.tridenta.repo.LinesRepository
 import org.stypox.tridenta.util.PreferenceKeys
 import javax.inject.Inject
+import androidx.core.content.edit
+import org.stypox.tridenta.repo.StopLineReloadHandler
 
 @HiltViewModel
 class LinesViewModel @Inject constructor(
     application: Application,
     private val prefs: SharedPreferences,
-    private val linesRepository: LinesRepository
+    private val linesRepository: LinesRepository,
+    private val stopLineReloadHandler: StopLineReloadHandler,
 ) : AndroidViewModel(application) {
 
     private val mutableUiState =
@@ -31,7 +34,7 @@ class LinesViewModel @Inject constructor(
                     LinesUiState(
                         lines = listOf(),
                         // if the preferences do not contain a selected area, use DEFAULT_AREA
-                        selectedArea = Area.values().firstOrNull { it.value == prefArea }
+                        selectedArea = Area.entries.firstOrNull { it.value == prefArea }
                             ?: Area.DEFAULT_AREA,
                         loading = true,
                         error = false,
@@ -39,6 +42,8 @@ class LinesViewModel @Inject constructor(
                 )
             }
     val uiState = mutableUiState.asStateFlow()
+
+    val lastReloadWasError get() = stopLineReloadHandler.lastReloadWasError
 
     init {
         reloadLines(forceReload = false)
@@ -52,7 +57,7 @@ class LinesViewModel @Inject constructor(
             reloadLines(forceReload = false)
 
             // save the last selected area to preferences
-            prefs.edit().putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value).apply()
+            prefs.edit { putInt(PreferenceKeys.LAST_SELECTED_AREA, area.value) }
         }
     }
 
