@@ -1,0 +1,7 @@
+Fixed:
+- Fix app crashing at startup due to invalid date format in line news items
+- Nicely handle errors while reloading lines and stops by showing an error row, so that next time there is a problem the app will not crash abruptly, allowing users to report the error
+
+Development:
+- Target API 36 (Android 16)
+- Update various libraries and fix deprecations

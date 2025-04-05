@@ -1,0 +1,7 @@
+Correzioni:
+- Sistemato il crash all'avvio dell'app causato dal formato invalido delle date negli avvisi delle linee
+- Ora viene mostrato un errore nell'interfaccia se fallisce ricaricamento di linee e fermate, così la prossima volta che si rompe qualcosa l'app non crasherà, consentendo agli utenti di segnalare l'errore
+
+Sviluppo:
+- Target API 36 (Android 16)
+- Aggiornate varie librerie e corrette deprecazioni

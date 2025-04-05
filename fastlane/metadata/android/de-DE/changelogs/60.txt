@@ -1,0 +1,7 @@
+Behoben:
+- Behebung eines Absturzes beim Starten der App, der durch ein ungültiges Datumsformat in Buslinienwarnungen verursacht wurde
+- Ein Fehler wird nun in der Benutzeroberfläche angezeigt, wenn das Nachladen von Buslinien und Haltestellen fehlschlägt, so dass die App beim nächsten Mal nicht abstürzt und die Benutzer den Fehler melden können
+
+Entwicklung:
+- Ziel API 36 (Android 16)
+- Aktualisierung verschiedener Bibliotheken und Behebung von Verwerfungen
