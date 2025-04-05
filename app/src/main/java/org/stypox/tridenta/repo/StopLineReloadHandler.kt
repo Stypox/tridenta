@@ -23,6 +23,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.PI
 import kotlin.math.atan2
+import androidx.core.content.edit
 
 @Singleton
 class StopLineReloadHandler @Inject constructor(
@@ -103,7 +104,11 @@ class StopLineReloadHandler @Inject constructor(
             logInfo("Running lines and stops reloading job")
             runBlocking {
                 job = launch {
-                    reloadFromNetwork()
+                    try {
+                        reloadFromNetwork()
+                    } catch (e: Throwable) {
+                        logError("Could not reload stops and lines", e)
+                    }
                 }
                 job?.join()
             }
@@ -141,7 +146,7 @@ class StopLineReloadHandler @Inject constructor(
 
         val nameToAverageCoordinates = mutableMapOf<String, Pair<Double, Double>>()
         nameToCoordinates.forEach { (name, list) ->
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 nameToAverageCoordinates[name] = list
                     .reduce { acc, pair -> Pair(acc.first + pair.first, acc.second + pair.second) }
                     .let { Pair(it.first / list.size, it.second / list.size) }
@@ -244,12 +249,12 @@ class StopLineReloadHandler @Inject constructor(
         }
 
         // once reloading succeeds, store the last reload time
-        prefs.edit()
-            .putLong(
+        prefs.edit {
+            putLong(
                 PreferenceKeys.LAST_STOP_LINE_RELOAD_SECONDS,
                 LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
             )
-            .apply()
+        }
     }
 
     private fun normalizeStopName(stop: ExStop): String {
