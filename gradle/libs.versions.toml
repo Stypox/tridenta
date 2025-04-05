@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.2"
+agp = "8.9.1"
 composeDestinations = "1.9.54"
 espressoCore = "3.6.1"
 hilt = "2.55"
