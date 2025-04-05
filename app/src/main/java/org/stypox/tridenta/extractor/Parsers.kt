@@ -4,6 +4,7 @@ import androidx.annotation.ColorInt
 import org.json.JSONObject
 import org.stypox.tridenta.enums.*
 import org.stypox.tridenta.extractor.data.*
+import java.time.OffsetDateTime
 
 
 fun stopFromJSONObject(o: JSONObject): ExStop {
@@ -44,8 +45,8 @@ fun lineFromJSONObject(o: JSONObject): ExLine {
 fun newsItemFromJSONObject(o: JSONObject): ExNewsItem {
     return ExNewsItem(
         serviceType = o.getString("serviceType"),
-        startDate = dateTimeFromEpochString(o.getString("startDate")),
-        endDate = dateTimeFromEpochString(o.getString("endDate")),
+        startDate = tryDateTimeFormatsOrNull(o.getString("startDate")) ?: OffsetDateTime.MIN,
+        endDate = tryDateTimeFormatsOrNull(o.getString("endDate")) ?: OffsetDateTime.MAX,
         header = o.getString("header").trim(),
         details = o.getString("details").trim(),
         url = o.getString("url"),
@@ -92,16 +93,16 @@ fun stopTimeFromJsonObject(
 }
 
 fun stopLineTypeFromString(s: String): StopLineType {
-    return StopLineType.values().first { type -> type.value == s }
+    return StopLineType.entries.first { type -> type.value == s }
 }
 
 fun areaFromInt(i: Int): Area {
-    return Area.values().firstOrNull { area -> area.value == i }
+    return Area.entries.firstOrNull { area -> area.value == i }
         ?: throw java.lang.RuntimeException("Invalid $i")
 }
 
 fun directionFromInt(i: Int): Direction {
-    return Direction.values().first { direction -> direction.value == i }
+    return Direction.entries.first { direction -> direction.value == i }
 }
 
 @ColorInt

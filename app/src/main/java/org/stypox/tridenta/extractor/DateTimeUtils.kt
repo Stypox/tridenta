@@ -24,6 +24,19 @@ fun dateTimeFromISOString(s: String?): OffsetDateTime? {
     }
 }
 
+fun tryDateTimeFormatsOrNull(s: String?): OffsetDateTime? {
+    if (s != null) {
+        try {
+            return dateTimeFromEpochString(s)
+        } catch (_: Exception) {}
+
+        try {
+            return dateTimeFromISOString(s)
+        } catch (_: Exception) {}
+    }
+    return null
+}
+
 class ZonedTimeHelper(private var referenceDateTime: ZonedDateTime) {
     private var prevTime = LocalTime.of(0, 0, 0) // midnight, no time can come before this
 
